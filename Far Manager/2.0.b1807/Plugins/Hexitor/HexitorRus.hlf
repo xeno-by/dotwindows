@@ -1,0 +1,43 @@
+﻿.Language=Russian,Russian (Русский)
+.PluginContents=Hexitor
+.Options CtrlColorChar=|
+
+@Contents
+
+  #Навигация#
+  Перемещение по байтам:         |37Up, Down Left, Rigth|-
+  Перемещение по словам:         |37Ctrl-Left, Ctrl-Rigth|-
+  В начало строки:               |37Home|-
+  В конец строки:                |37End|-
+  В начало файла:                |37Ctrl-Home|-
+  В конец файла:                 |37Ctrl-End|-
+  Сместить вверх:                |37Ctrl-Up, Mouse Wheel up|-
+  Сместить вниз:                 |37Ctrl-Down, Mouse Wheel down|-
+  Переключение hex/text:         |37Tab|-
+
+  #Редактирование#
+  В режиме hex:                  |37[0-9A-Fa-f]|-
+  В режиме text:                 |37Любые символы|-
+  Отмена:                        |37Ctrl-Z|-
+  Повтор:                        |37Ctrl-Y, Ctrl-Shift-Z|-
+
+  #Поиск#
+  Поиск:                         |37F7, Ctrl-F|-
+  Поиск (следующий):             |37Shift-F7|-
+  Поиск (предыдущий):            |37Alt-F7|-
+
+  #Прочие функции#
+  Помощь:                        |37F1|-
+  Сохранить файл:                |37F2, Ctrl-S|-
+  Сохранить файл как:            |37Shift-F2|-
+  Переход:                       |37F5|-
+  Переключение кодовой страницы: |37F8|-
+  Настройки:                     |37F9, Alt-Shift-F9|-
+  Выход:                         |37Esc, F10|-
+
+
+^* * *
+
+^Исходные коды и обновления для данного модуля можно найти на странице проекта:
+
+^~http://code.google.com/p/farplugs~@http://code.google.com/p/farplugs@

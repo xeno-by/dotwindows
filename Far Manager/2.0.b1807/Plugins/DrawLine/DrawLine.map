@@ -1,0 +1,50 @@
+ DrawLine
+
+ Timestamp is 4d49e2e9 (Thu Feb 03 00:04:09 2011)
+
+ Preferred load address is 10000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00000010H .idata$5                CODE
+ 0001:00000010 00000002H .rdata                  CODE
+ 0001:00000020 00000695H .text                   CODE
+ 0001:000006b8 00000014H .idata$2                CODE
+ 0001:000006cc 00000014H .idata$3                CODE
+ 0001:000006e0 00000010H .idata$4                CODE
+ 0001:000006f0 00000038H .idata$6                CODE
+ 0001:00000730 0000009aH .edata                  CODE
+ 0002:00000000 00000190H .data                   DATA
+ 0002:00000190 0000008cH .bss                    DATA
+ 0003:00000000 00000058H .rsrc$01                DATA
+ 0003:00000060 00000370H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base       Lib:Object
+
+ 0000:00000000       ___safe_se_handler_count   00000000     <absolute>
+ 0000:00000000       ___safe_se_handler_table   00000000     <absolute>
+ 0001:00000000       __imp__GetProcessHeap@0    10001000     kernel32:KERNEL32.dll
+ 0001:00000004       __imp__HeapAlloc@12        10001004     kernel32:KERNEL32.dll
+ 0001:00000008       __imp__HeapFree@12         10001008     kernel32:KERNEL32.dll
+ 0001:0000000c       \177KERNEL32_NULL_THUNK_DATA 1000100c     kernel32:KERNEL32.dll
+ 0001:00000010       ??_C@_11LOCGONAA@?$AA?$AA@ 10001010     DrawLine.obj
+ 0001:00000020       __chkstk                   10001020 f   chkstk.obj
+ 0001:00000020       __alloca_probe             10001020     chkstk.obj
+ 0001:0000004b       _wmemset                   1000104b f i DrawLine.obj
+ 0001:00000075       _GetMinFarVersionW@0       10001075 f   DrawLine.obj
+ 0001:0000007b       _SetStartupInfoW@4         1000107b f   DrawLine.obj
+ 0001:00000090       ?GetEnvType@@YIXPA_WHPAUEditorInfo@@AAH222@Z 10001090 f   DrawLine.obj
+ 0001:000001a4       ?GetMsg@@YIPB_WH@Z         100011a4 f   DrawLine.obj
+ 0001:000001b2       ?SetTitle@@YIXHH@Z         100011b2 f   DrawLine.obj
+ 0001:00000258       ?ProcessShiftKey@@YIXHH@Z  10001258 f   DrawLine.obj
+ 0001:00000501       _GetPluginInfoW@4          10001501 f   DrawLine.obj
+ 0001:00000540       _OpenPluginW@8             10001540 f   DrawLine.obj
+ 0001:00000650       _memcpy                    10001650 f   libCRT:memcpy.obj
+ 0001:00000680       _free                      10001680 f   libCRT:free.obj
+ 0001:000006a0       _malloc                    100016a0 f   libCRT:malloc.obj
+ 0001:000006b8       __IMPORT_DESCRIPTOR_KERNEL32 100016b8     kernel32:KERNEL32.dll
+ 0001:000006cc       __NULL_IMPORT_DESCRIPTOR   100016cc     kernel32:KERNEL32.dll
+
+ entry point at        0000:00000000
+
+ Static symbols
+
