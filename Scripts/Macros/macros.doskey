@@ -5,7 +5,6 @@
 ;= goto end
 
 ;= Favorite directories
-p=ping google.com
 hm=cd /D "%HOME%"
 cyg=cd /D "%CYGROOT%"
 cyl=cd /D "%CYGLINKS%"
@@ -57,6 +56,10 @@ edt=echo ^(setq my-current-desktop """$*"""^) > "%APPDATA%\.emacs.d\desktops\cur
 edb=find "%DROPBOX%" -type f -name index.html -delete & echo -e \n\n | "%SOFTWARE%\Software\Pyndexer\Distr\pyndexer.exe"
 vs10="C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe" $*
 vs11="C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe" $*
+mc=myke compile $*
+mb=myke rebuild $*
+mr=myke run $*
+mt=myke test $*
 
 ;= :end
 ;= rem ******************************************************************

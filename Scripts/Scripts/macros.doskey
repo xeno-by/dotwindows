@@ -5,7 +5,6 @@
 ;= goto end
 
 ;= Favorite directories
-p=ping google.com
 hm=cd /D "%HOME%"
 cyg=cd /D "%CYGROOT%"
 cyl=cd /D "%CYGLINKS%"
@@ -49,19 +48,22 @@ pf32=cd /D "%PROGRAMFILES(X86)"
 pf64=cd /D "%PROGRAMW6432%"
 dt=cd /D "%HOME%\Desktop"
 em=far.exe /e "%SCRIPTS_HOME%\macros.doskey" & copy "%SCRIPTS_HOME%\macros.doskey" "%DROPBOX%\Software\Windows\Scripts\Macros\macros.doskey" & doskey /listsize=10000 /macrofile="%SCRIPTS_HOME%\macros.doskey"
-ss=regedit /e "%DROPBOX%\Software\Windows\Software\Far Manager\Distr\settings.reg" "HKEY_CURRENT_USER\Software\Far2" & rd "%DROPBOX%\Software\Windows\Software\Far Manager\Distr\2.0.b1807" /S /Q & xcopy "%FAR_HOME%" "%DROPBOX%\Software\Windows\Software\Far Manager\Distr\2.0.b1807" /H /I /E
+ss=save-settings.bat
 ee=export-environment.bat
-ie=import-environment.bat
 eer="%DROPBOX%\Software\Emacs\xplatform\windows\runner\EmacsRunner.sln"
 cer=cp "%DROPBOX%\Software\Emacs\xplatform\windows\runner\bin\Debug\EmacsRunner.exe" "%EMACS_HOME%\emacs.exe" & cp "%DROPBOX%\Software\Emacs\xplatform\windows\runner\bin\Debug\EmacsRunner.exe" "%DROPBOX%\Software\Windows\Development\Emacs\Distr\emacs.exe"
 edt=echo ^(setq my-current-desktop """$*"""^) > "%APPDATA%\.emacs.d\desktops\current.el"
 edb=find "%DROPBOX%" -type f -name index.html -delete & echo -e \n\n | "%SOFTWARE%\Software\Pyndexer\Distr\pyndexer.exe"
 vs10="C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe" $*
 vs11="C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe" $*
+mc=myke compile $*
+mb=myke rebuild $*
+mr=myke run $*
+mt=myke test $*
 
 ;= :end
 ;= rem ******************************************************************
-;= rem * EOF - Don't remove the following line.  It clears out the ';' 
+;= rem * EOF - Don't remove the following line.  It clears out the ';'
 ;= rem * macro. Were using it because there is no support for comments
 ;= rem * in a DOSKEY macro file.
 ;= rem ******************************************************************
