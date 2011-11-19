@@ -1,10 +1,17 @@
 @echo off
 
+rd "%DROPBOX%\Software\Windows\Scripts\Macros" /S /Q > NUL
+mkdir "%DROPBOX%\Software\Windows\Scripts\Macros"
+copy "%SCRIPTS_HOME%\macros.doskey" "%DROPBOX%\Software\Windows\Scripts\Macros\macros.doskey"
+copy "%SCRIPTS_HOME%\macros.installer" "%DROPBOX%\Software\Windows\Scripts\Macros\macros.installer"
+rd "%DROPBOX%\Software\Windows\Scripts\Scripts" /S /Q > NUL
+xcopy "%SCRIPTS_HOME%" "%DROPBOX%\Software\Windows\Scripts\Scripts" /H /I /E
+
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\console.reg" "HKEY_CURRENT_USER\Console"
 call "%~dp0\save-settings-privacy-enable.bat"
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\settings-public.reg" "HKEY_CURRENT_USER\Software\Far2"
 call "%~dp0\save-settings-privacy-disable.bat"
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\settings-private.reg" "HKEY_CURRENT_USER\Software\Far2"
 
-rd "%DROPBOX%\Software\Windows\Far Manager\2.0.b1807" /S /Q
+rd "%DROPBOX%\Software\Windows\Far Manager\2.0.b1807" /S /Q > NUL
 xcopy "%FAR_HOME%" "%DROPBOX%\Software\Windows\Far Manager\2.0.b1807" /H /I /E
