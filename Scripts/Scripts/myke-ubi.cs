@@ -43,8 +43,7 @@ public class Ubi : Csc {
   }
 
   [Action]
-  public override int commit() {
-    Console.batch("save-settings.bat");
-    return base.commit();
+  public override ExitCode commit() {
+    return Console.batch("save-settings.bat") && base.commit();
   }
 }

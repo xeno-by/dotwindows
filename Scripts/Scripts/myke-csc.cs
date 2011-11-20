@@ -29,31 +29,22 @@ public class Csc : Git {
   }
 
   [Action]
-  public virtual int rebuild() {
+  public virtual ExitCode rebuild() {
     return compile();
   }
 
   [Default, Action]
-  public virtual int compile() {
+  public virtual ExitCode compile() {
     if (Config.verbose) Console.println(compiler);
     return Console.batch(compiler);
   }
 
   [Action]
-  public virtual int run(Arguments arguments) {
+  public virtual ExitCode run(Arguments arguments) {
     var result = compile();
     if (result != 0) return result;
 
     var exe = new FileInfo(Path.ChangeExtension(file.FullName, ".exe"));
-    if (Config.verbose) {
-      Console.println();
-      Console.println("========================================");
-      Console.println("Executing the compiled app");
-      Console.println("========================================");
-      Console.println();
-      Console.println(exe);
-    }
-
     return exe.Exists ? Console.interactive(exe.FullName, arguments) : -1;
   }
 }

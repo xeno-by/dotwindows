@@ -8,13 +8,18 @@ using System.Text.RegularExpressions;
 
 public abstract class Git {
   private FileInfo file;
+  private DirectoryInfo dir;
 
   public Git(FileInfo file) {
     this.file = file;
   }
 
+  public Git(DirectoryInfo dir) {
+    this.dir = dir;
+  }
+
   public virtual DirectoryInfo repo { get {
-    var wannabe = file.Directory;
+    var wannabe = file != null ? file.Directory : dir;
     while (wannabe != null) {
       var gitIndex = wannabe.GetDirectories().FirstOrDefault(child => child.Name == ".git");
       if (gitIndex != null) return wannabe;
@@ -41,36 +46,36 @@ public abstract class Git {
   }
 
   [Action]
-  public virtual int commit() {
+  public virtual ExitCode commit() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit commit \"{0}\"", repo.FullName));
   }
 
   [Action]
-  public virtual int logall() {
+  public virtual ExitCode logall() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", repo.FullName));
   }
 
   [Action]
-  public virtual int logthis() {
+  public virtual ExitCode logthis() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", file.FullName));
   }
 
   [Action]
-  public virtual int log() {
+  public virtual ExitCode log() {
     return logall();
   }
 
   [Action]
-  public virtual int push() {
+  public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
     return Console.interactive("git push", home: repo);
   }
 
   [Action]
-  public virtual int pull() {
+  public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
     return Console.interactive("git pull", home: repo);
   }

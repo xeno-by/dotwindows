@@ -16,7 +16,7 @@ public class App {
     try {
       try {
         var status = MainWrapper(args);
-        Environment.ExitCode = status;
+        Environment.ExitCode = status.value;
       } catch {
         Environment.ExitCode = -1;
         throw;
@@ -28,7 +28,7 @@ public class App {
     return Environment.ExitCode;
   }
 
-  private static int MainWrapper(String[] args) {
+  private static ExitCode MainWrapper(String[] args) {
     var status = Config.parse(args);
     if (status != 0) return status;
 
@@ -85,7 +85,7 @@ public class App {
             return -1;
           }
 
-          return (int)actions[action]();
+          return (ExitCode)actions[action]();
         }
       }
 
@@ -98,6 +98,52 @@ public class App {
 
     Console.println("error: no connector accepted the target {0}", originalTarget);
     return -1;
+  }
+}
+
+public class ExitCode {
+  public int value;
+
+  public static bool operator ==(ExitCode c1, ExitCode c2) {
+    return Equals(c1, c2);
+  }
+
+  public static bool operator !=(ExitCode c1, ExitCode c2) {
+    return !Equals(c1, c2);
+  }
+
+  public override bool Equals(Object o_other) {
+    var other = o_other as ExitCode;
+    if (other == null) return false;
+    return this.value == other.value;
+  }
+
+  public override int GetHashCode() {
+    return value;
+  }
+
+  public override string ToString() {
+    return value.ToString();
+  }
+
+  public static implicit operator ExitCode(int value) {
+    return new ExitCode { value = value };
+  }
+
+  public static ExitCode operator &(ExitCode c1, ExitCode c2) {
+    return c1 ? c2 : 0;
+  }
+
+  public static ExitCode operator |(ExitCode c1, ExitCode c2) {
+    return c1 ? 0 : c2;
+  }
+
+  public static bool operator true(ExitCode c) {
+    return c.value == 0;
+  }
+
+  public static bool operator false(ExitCode c) {
+    return c.value != 0;
   }
 }
 
@@ -186,7 +232,7 @@ public static class Console {
     return new ProcessStartInfo{FileName = fileName, Arguments = arguments, WorkingDirectory = workingDirectory};
   }
 
-  private static int cmd(String command, DirectoryInfo home = null) {
+  private static ExitCode cmd(String command, DirectoryInfo home = null) {
     var psi = parse(command, home);
     if (Config.verbose) {
       Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
@@ -212,7 +258,7 @@ public static class Console {
     }
   }
 
-  private static int shellex(String command, DirectoryInfo home = null) {
+  private static ExitCode shellex(String command, DirectoryInfo home = null) {
     var psi = parse(command, home);
     if (Config.verbose) {
       Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
@@ -235,7 +281,7 @@ public static class Console {
     }
   }
 
-  public static int batch(String command, Arguments arguments = null, DirectoryInfo home = null) {
+  public static ExitCode batch(String command, Arguments arguments = null, DirectoryInfo home = null) {
     if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
 
     if (home == null) {
@@ -247,12 +293,12 @@ public static class Console {
     return cmd(command, home);
   }
 
-  public static int interactive(String command, Arguments arguments = null, DirectoryInfo home = null) {
+  public static ExitCode interactive(String command, Arguments arguments = null, DirectoryInfo home = null) {
     if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
     return cmd(command, home);
   }
 
-  public static int ui(String command, Arguments arguments = null, DirectoryInfo home = null) {
+  public static ExitCode ui(String command, Arguments arguments = null, DirectoryInfo home = null) {
     if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
 
     if (home == null) {
@@ -272,7 +318,7 @@ public static class Config {
   public static String target;
   public static Arguments args;
 
-  public static int parse(String[] args) {
+  public static ExitCode parse(String[] args) {
     var flags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
     args = args.SkipWhile(arg => arg.StartsWith("/")).ToArray();
     Config.verbose = flags.Contains("/V");
@@ -396,8 +442,8 @@ public static class Connectors {
       if (x.priority() > y.priority()) return 1;
       if (x.priority() < y.priority()) return -1;
 
-      for (var x0 = x.BaseType; x0 != null; x0 = x0.BaseType) if (x0 == y) return -1;
-      for (var y0 = y.BaseType; y0 != null; y0 = y0.BaseType) if (y0 == x) return 1;
+      for (var x0 = x.BaseType; x0 != null; x0 = x0.BaseType) if (x0 == y) return 1;
+      for (var y0 = y.BaseType; y0 != null; y0 = y0.BaseType) if (y0 == x) return -1;
       return 0;
     }
   }
@@ -405,7 +451,8 @@ public static class Connectors {
   public static List<Type> all { get {
     var root = Assembly.GetExecutingAssembly();
     var t_connectors = root.GetTypes().Where(t => t.IsDefined(typeof(ConnectorAttribute), true)).ToList();
-    return t_connectors.OrderBy(connector => connector, new ConnectorsComparer()).ToList();
+    t_connectors.Sort(new ConnectorsComparer());
+    return t_connectors;
   } }
 
   public static String name(this Object connector) {
@@ -460,12 +507,12 @@ public static class Connectors {
     return map;
   }
 
-  public static Dictionary<String, Func<int>> actions(this Object connector) {
+  public static Dictionary<String, Func<ExitCode>> actions(this Object connector) {
     var t_actions = connector.GetType().actions();
-    return t_actions.Keys.ToDictionary<String, String, Func<int>>(key => key, key => {
+    return t_actions.Keys.ToDictionary<String, String, Func<ExitCode>>(key => key, key => {
       var method = t_actions[key];
       var args = method.bindArgs();
-      return () => (int)method.Invoke(connector, args);
+      return () => (ExitCode)method.Invoke(connector, args);
     });
   }
 
@@ -481,7 +528,7 @@ public static class Connectors {
     return args == null ? false : (bool)method.Invoke(connector, args);
   }
 
-  public static int action(this Object connector, String action) {
+  public static ExitCode action(this Object connector, String action) {
     return connector.actions()[action]();
   }
 
@@ -495,7 +542,7 @@ public static class Connectors {
           if (!file.Exists) throw new FileNotFoundException(Config.target);
           return file;
         } else if (p.ParameterType == typeof(DirectoryInfo)) {
-          var dir = new FileInfo(Config.target);
+          var dir = new DirectoryInfo(Config.target);
           if (!dir.Exists) throw new DirectoryNotFoundException(Config.target);
           return dir;
         } else if (p.ParameterType == typeof(Lines)) {
