@@ -9,9 +9,26 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using Microsoft.Win32;
 
 public class App {
   public static int Main(String[] args) {
+    try {
+      try {
+        var status = MainWrapper(args);
+        Environment.ExitCode = status;
+      } catch {
+        Environment.ExitCode = -1;
+        throw;
+      }
+    } finally {
+      Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeStatus", Environment.ExitCode.ToString());
+    }
+
+    return Environment.ExitCode;
+  }
+
+  private static int MainWrapper(String[] args) {
     var status = Config.parse(args);
     if (status != 0) return status;
 

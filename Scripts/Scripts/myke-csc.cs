@@ -28,6 +28,11 @@ public class Csc {
     return file.Extension == ".cs" && compiler != null;
   }
 
+  [Action]
+  public int rebuild() {
+    return compile();
+  }
+
   [Default, Action]
   public int compile() {
     if (Config.verbose) Console.println(compiler);
