@@ -62,8 +62,13 @@ public class App {
             Console.println();
           }
 
-          Console.setupHistory(String.Format("{0}_{1}", conn.name(), action));
-          return (int)conn.action(action);
+          var actions = conn.actions();
+          if (!actions.ContainsKey(action)) {
+            Console.println("error: {0} does not know how to do {1}", conn.name(), Config.action);
+            return -1;
+          }
+
+          return (int)actions[action]();
         }
       }
 
@@ -111,10 +116,6 @@ public static class Console {
   public static String readln(String prompt = null) {
     if (prompt != null && prompt != String.Empty) print(prompt + ": ");
     return System.Console.ReadLine();
-  }
-
-  public static void setupHistory(String key) {
-    // todo
   }
 
   private static ProcessStartInfo parse(String command) {
@@ -231,8 +232,12 @@ public static class Config {
   public static int parse(String[] args) {
     var flags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
     args = args.SkipWhile(arg => arg.StartsWith("/")).ToArray();
-    Config.dryrun = flags.Contains("/X") || !flags.Contains("/D");
     Config.verbose = flags.Contains("/V");
+
+    if (flags.Where(flag => flag == "/?").Count() > 0) {
+      Help.printUsage();
+      return -1;
+    }
 
     var action = args.Take(1).ElementAtOrDefault(0) ?? "compile";
     if (File.Exists(action) || Directory.Exists(action)) {
@@ -276,23 +281,21 @@ public static class Help {
   public static void printUsage(String action = null) {
     if (action == null) {
       Console.println();
-      Console.println("myke [/X] [/D] [/V] [action] [target] [args...]");
+      Console.println("myke [/X] [/V] [action] [target] [args...]");
       Console.println("  action :  one of \"compile\", \"rebuild\", \"run\", \"repl\", \"test\"; defaults to \"compile\"");
       Console.println("  target :  a single file or directory name that will hint what to do next; defaults to \".\"");
-      Console.println("             you cannot provide multiple input file/directory names (e.g. as in scalac)");
-      Console.println("             this is by design to be bijectively compatible with single-file editors");
-      Console.println("             if you do need this, consider configuring your project with some build system");
-      Console.println("             and hand-editing myke.cs to integrate with it (e.g. this is how it was done for sbt)");
+      Console.println("            you cannot provide multiple input file/directory names (e.g. as in scalac)");
+      Console.println("            this is by design to be bijectively compatible with single-file editors");
+      Console.println("            if you do need this, consider configuring your project with some build system");
+      Console.println("            and hand-editing myke.cs to integrate with it (e.g. this is how it was done for sbt)");
       Console.println("  args   :  custom data that will be passed to the handler of the command; defaults to \"\"");
       Console.println();
       Console.println("flags:");
       Console.println("  /X     :  execute the command provided by the command-line; enabled by default");
-      Console.println("  /D     :  runs all prerequisites (e.g. compilation) and prints the command-line of the continuation");
-      Console.println("             this is useful if the continuation is interactive, and myke is incapable of emulating it");
       Console.println("  /V     :  enables verbose mode of execution; disabled by default");
       Console.println();
-      Console.println("see https://raw.github.com/xeno-by/dotwindows/master/Scripts/Scripts/myke.cs for more information");
-      Console.println("if you scroll past console and configuration logic, you will find connectors to various build engines");
+      Console.println("see https://raw.github.com/xeno-by/dotwindows/master/Scripts/Scripts for more information");
+      Console.println("myke.cs represents the core, while myke-*.cs implement connectors to various build engines");
       Console.println();
       Console.println("connectors:");
     } else {
@@ -392,6 +395,15 @@ public static class Connectors {
     return map;
   }
 
+  public static Dictionary<String, Func<int>> actions(this Object connector) {
+    var t_actions = connector.GetType().actions();
+    return t_actions.Keys.ToDictionary<String, String, Func<int>>(key => key, key => {
+      var method = t_actions[key];
+      var args = method.bindArgs();
+      return () => (int)method.Invoke(connector, args);
+    });
+  }
+
   public static Object instantiate(this Type connector) {
     var ctor = connector.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Single();
     var args = ctor.bindArgs();
@@ -404,10 +416,8 @@ public static class Connectors {
     return args == null ? false : (bool)method.Invoke(connector, args);
   }
 
-  public static Object action(this Object connector, String action) {
-    var method = connector.GetType().actions()[action];
-    var args = method.bindArgs();
-    return method.Invoke(connector, args);
+  public static int action(this Object connector, String action) {
+    return connector.actions()[action]();
   }
 
   public static bool lastBindArgsOk = false;
