@@ -135,7 +135,7 @@ public static class Console {
     return System.Console.ReadLine();
   }
 
-  private static ProcessStartInfo parse(String command) {
+  private static ProcessStartInfo parse(String command, DirectoryInfo home = null) {
     command = command.TrimStart(new []{' '});
 
     var i = 0;
@@ -182,14 +182,12 @@ public static class Console {
 
     var fileName = buf.ToString();
     var arguments = command.Substring(i);
-    String workingDirectory = ".";
-    if (Directory.Exists(Config.target)) workingDirectory = Config.target;
-    if (File.Exists(Config.target)) workingDirectory = Path.GetDirectoryName(Config.target);
+    String workingDirectory = (home ?? new DirectoryInfo(".")).FullName;
     return new ProcessStartInfo{FileName = fileName, Arguments = arguments, WorkingDirectory = workingDirectory};
   }
 
-  private static int execute(String command, bool interactive) {
-    var psi = parse(command);
+  private static int cmd(String command, DirectoryInfo home = null) {
+    var psi = parse(command, home);
     if (Config.verbose) {
       Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
       Console.println();
@@ -214,28 +212,56 @@ public static class Console {
     }
   }
 
-  public static int batch(String command) {
-    return execute(command, false);
+  private static int shellex(String command, DirectoryInfo home = null) {
+    var psi = parse(command, home);
+    if (Config.verbose) {
+      Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
+      Console.println();
+      Console.println("========================================");
+      Console.println("The command will now be executed by shellex");
+      Console.println("========================================");
+      Console.println();
+    }
+
+    psi.UseShellExecute = true;
+
+    var p = new Process();
+    p.StartInfo = psi;
+
+    if (p.Start()) {
+      return 0;
+    } else {
+      return -1;
+    }
   }
 
-  public static int batch(String command, Arguments arguments) {
-    return batch(command + " " + String.Join(" ", arguments.ToArray()));
+  public static int batch(String command, Arguments arguments = null, DirectoryInfo home = null) {
+    if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
+
+    if (home == null) {
+      home = new DirectoryInfo(".");
+      if (Directory.Exists(Config.target)) home = new DirectoryInfo(Config.target);
+      if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
+    }
+
+    return cmd(command, home);
   }
 
-  public static int interactive(String command) {
-    return execute(command, true);
+  public static int interactive(String command, Arguments arguments = null, DirectoryInfo home = null) {
+    if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
+    return cmd(command, home);
   }
 
-  public static int interactive(String command, Arguments arguments) {
-    return interactive(command + " " + String.Join(" ", arguments.ToArray()));
-  }
+  public static int ui(String command, Arguments arguments = null, DirectoryInfo home = null) {
+    if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
 
-  public static int ui(String command) {
-    return -1;
-  }
+    if (home == null) {
+      home = new DirectoryInfo(".");
+      if (Directory.Exists(Config.target)) home = new DirectoryInfo(Config.target);
+      if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
+    }
 
-  public static int ui(String command, Arguments arguments) {
-    return ui(command + " " + String.Join(" ", arguments.ToArray()));
+    return shellex(command, home);
   }
 }
 
@@ -300,6 +326,7 @@ public static class Help {
       Console.println();
       Console.println("myke [/X] [/V] [action] [target] [args...]");
       Console.println("  action :  one of \"compile\", \"rebuild\", \"run\", \"repl\", \"test\"; defaults to \"compile\"");
+      Console.println("            also supports \"commit\", \"logall\", \"logthis\", \"log\", \"push\", \"pull\"");
       Console.println("  target :  a single file or directory name that will hint what to do next; defaults to \".\"");
       Console.println("            you cannot provide multiple input file/directory names (e.g. as in scalac)");
       Console.println("            this is by design to be bijectively compatible with single-file editors");
@@ -358,13 +385,32 @@ public class DefaultAttribute : Attribute {
 }
 
 public static class Connectors {
+  public class ConnectorsComparer : IComparer<Object> {
+    public int Compare(Object x, Object y) {
+      if (x == null || y == null) return x == null && y == null ? 0 : x == null ? -1 : 1;
+      if (!(x is Type) || !(y is Type)) return Compare(x.GetType(), y.GetType());
+      return Compare((Type)x, (Type)y);
+    }
+
+    public int Compare(Type x, Type y) {
+      if (x.priority() > y.priority()) return 1;
+      if (x.priority() < y.priority()) return -1;
+
+      for (var x0 = x.BaseType; x0 != null; x0 = x0.BaseType) if (x0 == y) return -1;
+      for (var y0 = y.BaseType; y0 != null; y0 = y0.BaseType) if (y0 == x) return 1;
+      return 0;
+    }
+  }
+
   public static List<Type> all { get {
     var root = Assembly.GetExecutingAssembly();
     var t_connectors = root.GetTypes().Where(t => t.IsDefined(typeof(ConnectorAttribute), true)).ToList();
-    return t_connectors.OrderBy(connector => connector.priority()).ToList();
+    return t_connectors.OrderBy(connector => connector, new ConnectorsComparer()).ToList();
   } }
 
   public static String name(this Object connector) {
+    if (connector is Type) return ((Type)connector).name();
+    if (connector is MethodInfo) return ((MethodInfo)connector).name();
     return connector.GetType().name();
   }
 
@@ -379,6 +425,7 @@ public static class Connectors {
   }
 
   public static String description(this Object connector) {
+    if (connector is Type) return ((Type)connector).description();
     return connector.GetType().description();
   }
 
@@ -388,6 +435,7 @@ public static class Connectors {
   }
 
   public static double priority(this Object connector) {
+    if (connector is Type) return ((Type)connector).priority();
     return connector.GetType().priority();
   }
 
@@ -397,7 +445,7 @@ public static class Connectors {
   }
 
   public static Dictionary<String, MethodInfo> actions(this Type connector) {
-    var methods = connector.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(m => m.IsDefined(typeof(ActionAttribute), true)).ToList();
+    var methods = connector.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.IsDefined(typeof(ActionAttribute), true)).ToList();
 
     var map = methods.ToDictionary(meth => {
       var attr = meth.GetCustomAttributes(typeof(ActionAttribute), true).Cast<ActionAttribute>().Single();
@@ -428,7 +476,7 @@ public static class Connectors {
   }
 
   public static bool accept(this Object connector) {
-    var method = connector.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(m => m.Name == "accept").Single();
+    var method = connector.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.Name == "accept").Single();
     var args = method.bindArgs();
     return args == null ? false : (bool)method.Invoke(connector, args);
   }

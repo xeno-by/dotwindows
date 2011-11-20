@@ -8,39 +8,39 @@ using System.Text.RegularExpressions;
 
 [Connector(name = "csc", description = "Builds a csharp program using the command-line provided in the first line of the target file.\r\n" +
                                        "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using msbuild.")]
-public class Csc {
+public class Csc : Git {
   private FileInfo file;
   private Lines lines;
 
-  public Csc(FileInfo file, Lines lines) {
+  public Csc(FileInfo file, Lines lines) : base(file) {
     this.file = file;
     this.lines = lines;
   }
 
-  private String compiler { get {
+  public virtual String compiler { get {
     var shebang = lines.ElementAtOrDefault(0) ?? "";
     var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
     var m = r.Match(shebang);
     return m.Success ? m.Result("${commandline}") : null;
   } }
 
-  public bool accept() {
+  public virtual bool accept() {
     return file.Extension == ".cs" && compiler != null;
   }
 
   [Action]
-  public int rebuild() {
+  public virtual int rebuild() {
     return compile();
   }
 
   [Default, Action]
-  public int compile() {
+  public virtual int compile() {
     if (Config.verbose) Console.println(compiler);
     return Console.batch(compiler);
   }
 
   [Action]
-  public int run(Arguments arguments) {
+  public virtual int run(Arguments arguments) {
     var result = compile();
     if (result != 0) return result;
 
