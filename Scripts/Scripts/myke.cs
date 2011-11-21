@@ -188,6 +188,20 @@ public static class Console {
   public class Point {
     public int x;
     public int y;
+
+    public Point(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    public Point(Point other) {
+      this.x = other.x;
+      this.y = other.y;
+    }
+
+    public override String ToString() {
+      return String.Format("x = {0}, y = {0}", x, y);
+    }
   }
 
   public static String readln(String prompt = null, String history = null) {
@@ -200,40 +214,60 @@ public static class Console {
         return int.TryParse(name.Substring("arguments".Length), out index) ? index: -1;
       }).OrderBy(index => index).Where(index => index != -1).ToList();
       var maxIndex = indices.Count == 0 ? 0 : indices.Max();
-      var list = indices.Select(index => reg.GetValue("arguments" + index).ToString()).Distinct().ToList();
+      var fullList = indices.Select(index => reg.GetValue("arguments" + index).ToString()).ToList();
+      var shortList = indices.Select(index => reg.GetValue("arguments" + index).ToString()).Distinct().ToList();
 
-      var @default = list.LastOrDefault();
+      var @default = fullList.LastOrDefault();
       if (!String.IsNullOrEmpty(prompt)) {
         print(prompt);
         if (!String.IsNullOrEmpty(@default)) print(" (default is {0})", @default);
         print(": ");
       };
 
+      var logfile = ((Func<String>)(() => {
+        if (File.Exists(Config.originalTarget)) return Config.originalTarget + ".log";
+        if (Directory.Exists(Config.originalTarget)) return Config.originalTarget + ".log";
+        return null;
+      }))();
+
+      if (logfile != null && File.Exists(logfile)) File.Delete(logfile);
+      Action<String> log = msg => {
+        if (Config.verbose && logfile != null) {
+          File.AppendAllText(logfile, msg + "\r\n");
+        }
+      };
+
       var input = String.Empty;
       var oldinput = input;
-      var historypos = list.Count;
+      var historypos = shortList.Count;
       Action dechistorypos = () => { if (historypos > 0) historypos--; };
-      Action inchistorypos = () => { if (historypos < list.Count) historypos++; };
-      Func<String> currenthistory = () => historypos == list.Count ? "" : list[historypos];
-      var pos = new Point{x = System.Console.CursorLeft, y = System.Console.CursorTop};
-      var origpos = new Point{x = System.Console.CursorLeft, y = System.Console.CursorTop};
-      Func<int> currentpos = () => (System.Console.CursorTop - origpos.y) * System.Console.WindowWidth + (System.Console.CursorLeft - origpos.x);
+      Action inchistorypos = () => { if (historypos < shortList.Count) historypos++; };
+      Func<String> currenthistory = () => historypos == shortList.Count ? "" : shortList[historypos];
+      var pos = new Point(System.Console.CursorLeft, System.Console.CursorTop);
+      var origpos = new Point(System.Console.CursorLeft, System.Console.CursorTop);
+      log(String.Format("original pos: x = {0}, y = {1}", origpos.x, origpos.y));
+      Func<int> currentpos = () => (pos.y - origpos.y) * System.Console.WindowWidth + (pos.x - origpos.x);
       Func<Char> currentchar = () => currentpos() >= input.Length ? '\0' : input[currentpos()];
       Action<int> gotopos = null;
       gotopos = idx => {
         if (idx < 0) gotopos(0);
         else if (idx > input.Length) gotopos(input.Length);
         else {
-          pos = origpos;
+          log(String.Format("going to {0}", idx));
+          log(String.Format("currentpos: {0}", currentpos()));
+          log(String.Format("pos is now {0}", pos));
+          pos = new Point(origpos);
           pos.x += idx;
           while (pos.x > System.Console.WindowWidth) {
             pos.x -= System.Console.WindowWidth;
             pos.y += 1;
           }
+          log(String.Format("currentpos: {0}", currentpos()));
+          log(String.Format("pos is now {0}", pos));
         }
       };
       Action decpos = () => gotopos(currentpos() - 1);
-      Action incpos = () => gotopos(currentpos() - 1);
+      Action incpos = () => gotopos(currentpos() + 1);
       Action redraw = () => {
         System.Console.SetCursorPosition(origpos.x, origpos.y);
         System.Console.Write(new String(' ', oldinput.Length));
@@ -243,14 +277,10 @@ public static class Console {
         System.Console.SetCursorPosition(pos.x, pos.y);
       };
 
-      File.Delete(@"c:\program files (x86)\scripts\sleep.log");
-      Action<String> log = msg => File.AppendAllText(@"c:\program files (x86)\scripts\sleep.log", msg + "\r\n");
-      log(String.Format("original pos: x = {0}, y = {1}", origpos.x, origpos.y));
-
       while (true) {
         log("");
         log("===readkey===");
-        log(String.Format("input = {0}, pos = {1}", input, currentpos()));
+        log(String.Format("input = {0}, currentpos = {1}", input, currentpos()));
         log(String.Format("[before] pos: x = {0}, y = {1}", System.Console.CursorLeft, System.Console.CursorTop));
         var kp = System.Console.ReadKey();
         log(String.Format("key = {0}, char = {1}, modifiers = {2}", kp.Key, ((int)kp.KeyChar).ToString("x4"), kp.Modifiers));
@@ -260,16 +290,20 @@ public static class Console {
           if (kp.KeyChar == 0x0d) {
             println();
             break;
+          } else if (kp.KeyChar == 0x08) { // backspace
+            if (currentpos() > 0) {
+              var buf = new StringBuilder();
+              if (currentpos() > 0 && input.Length > 1) buf.Append(input.Substring(0, currentpos() - 1));
+              if (currentpos() < input.Length) buf.Append(input.Substring(currentpos(), input.Length - currentpos()));
+              input = buf.ToString();
+              decpos();
+            }
           } else if (kp.KeyChar == 0x1b) { // escape
             gotopos(0);
             input = "";
           } else if (kp.KeyChar < 0x20) {
             // do nothing
           } else {
-            // important! console has printed the key that has been entered
-            // that's why we need to take this into account
-            decpos();
-
             var buf = new StringBuilder();
             if (currentpos() > 0) buf.Append(input.Substring(0, currentpos()));
             buf.Append(kp.KeyChar);
@@ -316,7 +350,7 @@ public static class Console {
               gotopos(input.Length);
             }
           } else if (kp.Key == ConsoleKey.DownArrow) {
-            if (historypos < list.Count) {
+            if (historypos < shortList.Count) {
               gotopos(0);
               inchistorypos();
               input = currenthistory();
@@ -349,7 +383,7 @@ public static class Console {
           }
         }
 
-        log(String.Format("[result] input = {0}, pos = {1}", input, currentpos()));
+        log(String.Format("[result] input = {0}, currentpos = {1}", input, currentpos()));
         redraw();
         log(String.Format("[finally] pos: x = {0}, y = {1}", System.Console.CursorLeft, System.Console.CursorTop));
       }
@@ -357,7 +391,11 @@ public static class Console {
       if (input == String.Empty && !String.IsNullOrEmpty(prompt)) input = @default;
       if (input == "<empty>" && !String.IsNullOrEmpty(prompt)) input = String.Empty;
 
-      println("[debug] all right, input is: {0}", input);
+      if (Config.verbose) {
+        println("all right, input is: {0}", input);
+        println();
+      }
+
       reg.SetValue("arguments" + (maxIndex + 1), input, RegistryValueKind.String);
       return input;
     } else {
@@ -536,6 +574,7 @@ public static class Config {
   public static bool dryrun;
   public static bool verbose;
   public static String action;
+  public static String originalTarget;
   public static String target;
   public static Arguments args;
 
@@ -576,6 +615,7 @@ public static class Config {
     }
 
     // don't check for file existence - connector might actually create that non-existent file/directory
+    Config.originalTarget = Path.GetFullPath(target);
     Config.target = Path.GetFullPath(target);
     Config.args = new Arguments(args.ToList());
 
