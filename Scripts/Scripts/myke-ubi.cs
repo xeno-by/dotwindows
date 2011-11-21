@@ -29,7 +29,7 @@ public class Ubi : Csc {
   }
 
   public override bool verifyRepo() {
-    if (detectRepo() == null) {
+    if (repo == null) {
       Console.println("%DROPBOX%\\Software\\Windows not found or is not a Git repo");
       return false;
     } else {

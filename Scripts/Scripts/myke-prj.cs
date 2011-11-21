@@ -16,6 +16,7 @@ public abstract class Prj {
 
   public Prj(DirectoryInfo dir) {
     this.dir = dir ?? (project == null ? null : new DirectoryInfo(project));
+    Console.println("invoked Prj(DirectoryMethod dir) with dir {0}", this.dir);
   }
 
   public virtual String project { get { return null; } }
@@ -25,7 +26,6 @@ public abstract class Prj {
       return new DirectoryInfo(project);
     }
 
-    var repo = detectRepo();
     if (repo != null) {
       return repo;
     }
@@ -34,8 +34,17 @@ public abstract class Prj {
   } }
 
   public virtual bool accept() {
+    if (project != null) {
+      return dir != null && Path.GetFullPath(dir.FullName) == Path.GetFullPath(project);
+    }
+
     return true;
   }
+
+  public DirectoryInfo repo { get {
+    // todo. do we need to cache this?
+    return detectRepo();
+  } }
 
   public virtual DirectoryInfo detectRepo() {
     var wannabe = file != null ? file.Directory : dir;
@@ -49,7 +58,6 @@ public abstract class Prj {
   }
 
   public virtual bool verifyRepo() {
-    var repo = detectRepo();
     if (repo == null) {
       Console.println("error: {0} is not under Git repository", file.FullName);
       Console.print("Create the repo with the project root (y/n)? ");
@@ -68,13 +76,13 @@ public abstract class Prj {
   [Action]
   public virtual ExitCode commit() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit commit \"{0}\"", detectRepo().FullName));
+    return Console.ui(String.Format("tgit commit \"{0}\"", repo.FullName));
   }
 
   [Action]
   public virtual ExitCode logall() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit log \"{0}\"", detectRepo().FullName));
+    return Console.ui(String.Format("tgit log \"{0}\"", repo.FullName));
   }
 
   [Action]
@@ -91,12 +99,12 @@ public abstract class Prj {
   [Action]
   public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git push", home: detectRepo());
+    return Console.interactive("git push", home: repo);
   }
 
   [Action]
   public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git pull", home: detectRepo());
+    return Console.interactive("git pull", home: repo);
   }
 }

@@ -14,27 +14,36 @@ public class Sbt : Prj {
 
   public virtual String sbtproject { get { return null; } }
 
-  public virtual DirectoryInfo sbtroot { get {
-    var buildSbt = dir.GetFiles().FirstOrDefault(child => child.Name == "build.sbt");
-    var project = dir.GetDirectories().FirstOrDefault(child => child.Name == "project");
-    if (!buildSbt.Exists && !project.Exists) return null;
-
-    return dir;
+  public DirectoryInfo sbtRoot { get {
+    // todo. do we need to cache this?
+    return detectSbtRoot();
   } }
 
+  public virtual DirectoryInfo detectSbtRoot() {
+    var wannabe = file != null ? file.Directory : dir;
+    while (wannabe != null) {
+      var buildSbt = wannabe.GetFiles().FirstOrDefault(child => child.Name == "build.sbt");
+      var project = wannabe.GetDirectories().FirstOrDefault(child => child.Name == "project");
+      if (buildSbt.Exists && project.Exists) return wannabe;
+      wannabe = wannabe.Parent;
+    }
+
+    return null;
+  }
+
   public override bool accept() {
-    return root != null && sbtroot != null;
+    return root != null && sbtRoot != null && Path.GetFullPath(sbtRoot.FullName) == Path.GetFullPath(dir.FullName);
   }
 
   [Action]
   public virtual ExitCode rebuild() {
-    var status = Console.batch(String.Format("sbt {0}clean", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtroot);
+    var status = Console.batch(String.Format("sbt {0}clean", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtRoot);
     return status && compile();
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
-    return Console.batch(String.Format("sbt {0}compile", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtroot);
+    return Console.batch(String.Format("sbt {0}compile", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtRoot);
   }
 
   [Action]
@@ -55,6 +64,6 @@ public class Sbt : Prj {
 
   [Action]
   public virtual ExitCode test() {
-    return Console.batch(String.Format("sbt {0}test", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtroot);
+    return Console.batch(String.Format("sbt {0}test", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtRoot);
   }
 }
