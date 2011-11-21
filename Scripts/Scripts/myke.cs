@@ -184,7 +184,7 @@ public static class Console {
     System.Console.WriteLine();
   }
 
-  public static String readln(String prompt = null) {
+  public static String readln(String prompt = null, String history = null) {
     if (prompt != null && prompt != String.Empty) print(prompt + ": ");
     return System.Console.ReadLine();
   }
@@ -290,7 +290,7 @@ public static class Console {
   }
 
   public static ExitCode batch(String command, Arguments arguments = null, DirectoryInfo home = null) {
-    if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
+    if (arguments != null) command = command.ShellEscape() + " " + String.Join(" ", arguments.ToArray());
 
     if (home == null) {
       home = new DirectoryInfo(".");
@@ -302,12 +302,19 @@ public static class Console {
   }
 
   public static ExitCode interactive(String command, Arguments arguments = null, DirectoryInfo home = null) {
-    if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
+    if (arguments != null) command = command.ShellEscape() + " " + String.Join(" ", arguments.ToArray());
+
+    if (home == null) {
+      home = new DirectoryInfo(".");
+      if (Directory.Exists(Config.target)) home = new DirectoryInfo(Config.target);
+      if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
+    }
+
     return cmd(command, home);
   }
 
   public static ExitCode ui(String command, Arguments arguments = null, DirectoryInfo home = null) {
-    if (arguments != null) command = command + " " + String.Join(" ", arguments.ToArray());
+    if (arguments != null) command = command.ShellEscape() + " " + String.Join(" ", arguments.ToArray());
 
     if (home == null) {
       home = new DirectoryInfo(".");
@@ -322,6 +329,12 @@ public static class Console {
 public static class Env {
   public static String Expand(this String s) {
     return new Regex("%(?<envvar>.*?)%").Replace(s, m => Environment.GetEnvironmentVariable(m.Result("${envvar}")));
+  }
+}
+
+public static class Shell {
+  public static String ShellEscape(this String s) {
+    return s.Contains(" ") ? "\"" + s + "\"" : s;
   }
 }
 

@@ -49,6 +49,10 @@ public class Csc : Prj {
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    return compile() && (exe != null && exe.Exists) && Console.interactive(exe.FullName, arguments);
+    var status = compile() && (exe != null && exe.Exists);
+    if (status != 0) return status;
+
+    Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", exe.FullName));
+    return Console.interactive(exe.FullName, arguments.Count > 0 ? arguments : new Arguments(new []{readArguments()}.ToList()));
   }
 }
