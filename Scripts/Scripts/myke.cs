@@ -318,6 +318,23 @@ public static class Env {
   }
 }
 
+public static class FileSystem {
+  public static bool EquivalentTo(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
+    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
+    return Path.GetFullPath(fsi1.FullName).ToUpper() == Path.GetFullPath(fsi2.FullName).ToUpper();
+  }
+
+  public static bool EquivalentTo(this FileSystemInfo fsi1, String fsi2) {
+    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
+    return Path.GetFullPath(fsi1.FullName).ToUpper() == Path.GetFullPath(fsi2).ToUpper();
+  }
+
+  public static bool EquivalentTo(this String fsi1, FileSystemInfo fsi2) {
+    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
+    return Path.GetFullPath(fsi1).ToUpper() == Path.GetFullPath(fsi2.FullName).ToUpper();
+  }
+}
+
 public static class Config {
   public static bool dryrun;
   public static bool verbose;

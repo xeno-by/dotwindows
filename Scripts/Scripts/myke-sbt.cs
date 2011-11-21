@@ -24,7 +24,7 @@ public class Sbt : Prj {
     while (wannabe != null) {
       var buildSbt = wannabe.GetFiles().FirstOrDefault(child => child.Name == "build.sbt");
       var project = wannabe.GetDirectories().FirstOrDefault(child => child.Name == "project");
-      if (buildSbt.Exists && project.Exists) return wannabe;
+      if (buildSbt != null && project != null) return wannabe;
       wannabe = wannabe.Parent;
     }
 
@@ -32,7 +32,7 @@ public class Sbt : Prj {
   }
 
   public override bool accept() {
-    return root != null && sbtRoot != null && Path.GetFullPath(sbtRoot.FullName) == Path.GetFullPath(dir.FullName);
+    return base.accept() && dir.EquivalentTo(sbtRoot);
   }
 
   [Action]

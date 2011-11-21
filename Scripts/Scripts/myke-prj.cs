@@ -16,7 +16,6 @@ public abstract class Prj {
 
   public Prj(DirectoryInfo dir) {
     this.dir = dir ?? (project == null ? null : new DirectoryInfo(project));
-    Console.println("invoked Prj(DirectoryMethod dir) with dir {0}", this.dir);
   }
 
   public virtual String project { get { return null; } }
@@ -35,7 +34,7 @@ public abstract class Prj {
 
   public virtual bool accept() {
     if (project != null) {
-      return dir != null && Path.GetFullPath(dir.FullName) == Path.GetFullPath(project);
+      return dir.EquivalentTo(project);
     }
 
     return true;

@@ -13,10 +13,7 @@ public class Ubi : Csc {
   }
 
   public override bool accept() {
-    var dir = Path.GetFullPath(file.Directory.FullName);
-    var ubi = Environment.GetEnvironmentVariable("SCRIPTS_HOME");
-    if (ubi != null) ubi = Path.GetFullPath(ubi);
-    return base.accept() && dir == ubi;
+    return base.accept() && file.Directory.EquivalentTo("%SCRIPTS_HOME%".Expand());
   }
 
   public override DirectoryInfo detectRepo() {

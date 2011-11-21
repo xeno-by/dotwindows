@@ -16,20 +16,19 @@ public class Kep : Prj {
 
   [Action]
   public virtual ExitCode rebuild() {
-    var status = Console.batch("ant all.clean --buildfile build.xml", home: root);
+    var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
     return status && compile();
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
-    var status = Console.batch("ant build --buildfile build.xml", home: root);
-    return status && Console.batch("ant pack --buildfile pack.xml", home: root);
+    return Console.batch("ant build -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode repl() {
     var status = compile();
-    return status && Console.interactive(@"build\pack\bin\scala.bat", home: root);
+    return status && Console.interactive(@"build\pack\bin\scala.bat -deprecation", home: root);
   }
 
   [Action]
