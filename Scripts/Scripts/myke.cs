@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Forms;
 using Microsoft.Win32;
 
 public class App {
@@ -184,9 +185,138 @@ public static class Console {
     System.Console.WriteLine();
   }
 
+  public class Point {
+    public int x;
+    public int y;
+  }
+
   public static String readln(String prompt = null, String history = null) {
-    if (prompt != null && prompt != String.Empty) print(prompt + ": ");
-    return System.Console.ReadLine();
+    if (history != null) {
+      var key = @"Software\Myke\" + history.Replace("\\", "$slash$");
+      var reg = Registry.CurrentUser.OpenSubKey(key, true) ?? Registry.CurrentUser.CreateSubKey(key);
+
+      var indices = reg.GetValueNames().Where(name => name.StartsWith("arguments")).Select(name => {
+        int index;
+        return int.TryParse(name.Substring("arguments".Length), out index) ? index: -1;
+      }).OrderBy(index => index).Where(index => index != -1).ToList();
+      var maxIndex = indices.Count == 0 ? 0 : indices.Max();
+      var list = indices.Select(index => reg.GetValue("arguments" + index).ToString()).Distinct().ToList();
+
+      var @default = list.LastOrDefault();
+      if (!String.IsNullOrEmpty(prompt)) {
+        print(prompt);
+        if (!String.IsNullOrEmpty(@default)) print(" (default is {0})", @default);
+        print(": ");
+      };
+
+      var input = String.Empty;
+      var historypos = list.Count;
+      Action dechistorypos = () => { if (historypos > 0) historypos--; };
+      Action inchistorypos = () => { if (historypos < list.Count) historypos++; };
+      Func<String> currenthistory = () => historypos == list.Count ? "" : list[historypos];
+      var pos = new Point{x = System.Console.CursorLeft, y = System.Console.CursorTop};
+      var origpos = new Point{x = System.Console.CursorLeft, y = System.Console.CursorTop};
+      Func<int> currentpos = () => 0;
+      Func<Char> currentchar = () => currentpos() >= input.Length ? '\0' : input[currentpos()];
+      Action<int> gotopos = idx => { throw new Exception("not implemented"); };
+      Action decpos = () => gotopos(currentpos() - 1);
+      Action incpos = () => gotopos(currentpos() - 1);
+      Action redraw = () => { throw new Exception("not implemented"); };
+
+      while (true) {
+        var kp = System.Console.ReadKey();
+
+        // println("===");
+        // println("key = {0}, char = {1}, modifiers = {2}", kp.Key, ((int)kp.KeyChar).ToString("x4"), kp.Modifiers);
+        // continue;
+
+        if (kp.KeyChar != '\0') {
+          if (kp.KeyChar == 0x0a) {
+            break;
+          } else if (kp.KeyChar == 0x1b) { // escape
+            gotopos(0);
+            input = "";
+          } else if (kp.KeyChar < 0x20) {
+            // do nothing
+          } else {
+            input = input.Substring(0, currentpos()) + kp.KeyChar + input.Substring(currentpos(), input.Length - currentpos());
+            gotopos(currentpos() + 1);
+          }
+        } else {
+          if (kp.Key == ConsoleKey.Home) {
+            gotopos(0);
+          } else if (kp.Key == ConsoleKey.End) {
+            gotopos(input.Length);
+          } if (kp.Key == ConsoleKey.LeftArrow && !kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
+            decpos();
+          } if (kp.Key == ConsoleKey.RightArrow && !kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
+            incpos();
+          } if (kp.Key == ConsoleKey.LeftArrow && kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
+            decpos();
+            if (Char.IsLetterOrDigit(currentchar())) {
+              while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) decpos();
+              if (!Char.IsLetterOrDigit(currentchar())) incpos();
+            } else {
+              while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) decpos();
+              if (Char.IsLetterOrDigit(currentchar())) {
+                while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) decpos();
+                if (!Char.IsLetterOrDigit(currentchar())) incpos();
+              }
+            }
+          } if (kp.Key == ConsoleKey.RightArrow && kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
+            incpos();
+            if (Char.IsLetterOrDigit(currentchar())) {
+              while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) incpos();
+              if (!Char.IsLetterOrDigit(currentchar())) {
+                while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) incpos();
+              }
+            } else {
+              while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) incpos();
+            }
+          } else if (kp.Key == ConsoleKey.UpArrow) {
+            if (historypos > 0) {
+              gotopos(0);
+              dechistorypos();
+              input = currenthistory();
+              gotopos(input.Length);
+            }
+          } else if (kp.Key == ConsoleKey.DownArrow) {
+            if (historypos < list.Count) {
+              gotopos(0);
+              inchistorypos();
+              input = currenthistory();
+              gotopos(input.Length);
+            }
+          } else if (kp.Key == ConsoleKey.Insert || (kp.Key == ConsoleKey.V && kp.Modifiers.HasFlag(ConsoleModifiers.Control))) {
+            var text = Clipboard.GetText();
+            input = input.Substring(0, currentpos()) + text + input.Substring(currentpos(), input.Length - currentpos());
+            gotopos(currentpos() + text.Length);
+          } else if (kp.Key == ConsoleKey.Escape) {
+            gotopos(0);
+            input = "";
+          } else if (kp.Key == ConsoleKey.Delete) {
+            if (currentpos() < input.Length) {
+              input = input.Substring(0, currentpos()) + input.Substring(currentpos() + 1, input.Length - currentpos() - 1);
+            }
+          } else if (kp.Key == ConsoleKey.Backspace) {
+            if (currentpos() > 0) {
+              input = input.Substring(0, currentpos() - 1) + input.Substring(currentpos(), input.Length - currentpos());
+            }
+          }
+        }
+
+        redraw();
+      }
+
+      if (input == String.Empty && !String.IsNullOrEmpty(prompt)) input = @default;
+      if (input == "<empty>" && !String.IsNullOrEmpty(prompt)) input = String.Empty;
+      reg.SetValue("arguments" + (maxIndex + 1), input, RegistryValueKind.String);
+
+      return input;
+    } else {
+      if (prompt != null && prompt != String.Empty) print(prompt + ": ");
+      return System.Console.ReadLine();
+    }
   }
 
   private static ProcessStartInfo parse(String command, DirectoryInfo home = null) {
