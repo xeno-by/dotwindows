@@ -1,4 +1,4 @@
-// build this with "csc /t:exe /debug+ myke*.cs"
+// build this with "csc /t:exe /out:myke.exe /debug+ myke*.cs"
 
 using System;
 using System.Collections;
@@ -14,6 +14,9 @@ using Microsoft.Win32;
 
 public class App {
   public static int Main(String[] args) {
+    Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeStatus", "");
+    Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", "");
+
     try {
       try {
         var status = MainWrapper(args);
@@ -125,6 +128,10 @@ public class ExitCode {
 
   public override string ToString() {
     return value.ToString();
+  }
+
+  public static implicit operator ExitCode(bool value) {
+    return new ExitCode { value = value ? 0 : -1 };
   }
 
   public static implicit operator ExitCode(int value) {
@@ -682,5 +689,9 @@ public class Arguments : BaseList<String> {
 
   protected override IEnumerable<String> Read() {
     return arguments;
+  }
+
+  public override String ToString() {
+    return String.Join(", ", arguments);
   }
 }

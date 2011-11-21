@@ -1,4 +1,4 @@
-// build this with "csc /t:exe /debug+ myke*.cs"
+// build this with "csc /t:exe /out:myke.exe /debug+ myke*.cs"
 
 using System;
 using System.IO;
@@ -19,7 +19,7 @@ public class Kep : Prj {
   [Action]
   public virtual ExitCode rebuild() {
     var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
-    return status && compile();
+    return status && println() && compile();
   }
 
   [Default, Action]

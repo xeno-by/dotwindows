@@ -1,4 +1,4 @@
-// build this with "csc /t:exe /debug+ myke*.cs"
+// build this with "csc /t:exe /out:myke.exe /debug+ myke*.cs"
 
 using System;
 using System.IO;
@@ -24,6 +24,14 @@ public class Csc : Prj {
     return m.Success ? m.Result("${commandline}") : null;
   } }
 
+  public virtual FileInfo exe { get {
+    if (compiler == null) return null;
+
+    var r = new Regex(@"(?<out>/out:\w+)");
+    var m = r.Match(compiler);
+    return new FileInfo(m.Success ? m.Result("${out}") : Path.ChangeExtension(file.FullName, ".exe"));
+  } }
+
   public override bool accept() {
     return base.accept() && file.Extension == ".cs" && compiler != null;
   }
@@ -41,10 +49,6 @@ public class Csc : Prj {
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    var result = compile();
-    if (result != 0) return result;
-
-    var exe = new FileInfo(Path.ChangeExtension(file.FullName, ".exe"));
-    return exe.Exists ? Console.interactive(exe.FullName, arguments) : -1;
+    return compile() && (exe != null && exe.Exists) && Console.interactive(exe.FullName, arguments);
   }
 }
