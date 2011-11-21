@@ -16,10 +16,17 @@ public class Myke : Ubi {
   public Myke(FileInfo file, Lines lines) : base(file, lines) {
   }
 
+  public override bool accept() {
+    return base.accept() && file.Name.StartsWith("myke");
+  }
+
   [Action]
   public override ExitCode compile() {
     var mykerun = @"%TMP%\myke-self-compile.bat".Expand();
     File.WriteAllText(mykerun, "@echo off\r\n" + String.Format(@"
+      rem Wait for self to exit
+      sleep 100
+
       cd /D ""{0}""
       {1}
       set status=%errorlevel%
@@ -42,6 +49,9 @@ public class Myke : Ubi {
   public override ExitCode run(Arguments arguments) {
     var mykerun = @"%TMP%\myke-self-compile-and-then-run.bat".Expand();
     File.WriteAllText(mykerun, "@echo off\r\n" + String.Format(@"
+      rem Wait for self to exit
+      sleep 100
+
       cd /D ""{0}""
       {1}
       set status=%errorlevel%
