@@ -6,6 +6,7 @@
 
 ;= Favorite directories
 hm=cd /D "%HOME%"
+tmp=cd /D "%HOME%\AppData\Local\Temp"
 cyg=cd /D "%CYGROOT%"
 cyl=cd /D "%CYGLINKS%"
 ubi=cd /D "%SCRIPTS_HOME%"

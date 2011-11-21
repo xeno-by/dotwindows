@@ -218,7 +218,7 @@ public static class Console {
       var fullList = indices.Select(index => reg.GetValue("arguments" + index).ToString()).ToList();
       var shortList = indices.Select(index => reg.GetValue("arguments" + index).ToString()).Distinct().ToList();
 
-      var @default = fullList.LastOrDefault();
+      var @default = fullList.LastOrDefault() ?? String.Empty;
       if (!String.IsNullOrEmpty(prompt)) {
         print(prompt);
         if (!String.IsNullOrEmpty(@default)) print(" (default is {0})", @default);

@@ -47,6 +47,11 @@ public class Myke : Ubi {
 
   [Action]
   public override ExitCode run(Arguments arguments) {
+    return runWithCompile(arguments);
+  }
+
+  [Action]
+  public virtual ExitCode runWithCompile(Arguments arguments) {
     var mykerun = @"%TMP%\myke-self-compile-and-then-run.bat".Expand();
     File.WriteAllText(mykerun, "@echo off\r\n" + String.Format(@"
       rem Wait for self to exit
@@ -64,7 +69,7 @@ public class Myke : Ubi {
       regedit /s %TMP%\mykestatus.reg
       if not %status% == 0 exit /b %status%
 
-      ""{2}"" {3}
+      myke runWithoutCompile ""{2}"" {3}
       set status=%errorlevel%
 
       echo Windows Registry Editor Version 5.00 > %TMP%\mykestatus.reg
@@ -76,9 +81,15 @@ public class Myke : Ubi {
       if not %status% == 0 exit /b %status%
 
       exit /b %status%
-    ", "%SCRIPTS_HOME%".Expand(), compiler, exe.FullName, arguments));
+    ", "%SCRIPTS_HOME%".Expand(), compiler, Config.target, arguments));
 
     Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", mykerun);
     return 0;
+  }
+
+  [Action]
+  public virtual ExitCode runWithoutCompile(Arguments arguments) {
+    Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", exe.FullName));
+    return Console.interactive(exe.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()));
   }
 }
