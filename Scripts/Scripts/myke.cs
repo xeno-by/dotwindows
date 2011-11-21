@@ -231,7 +231,8 @@ public static class Console {
         // continue;
 
         if (kp.KeyChar != '\0') {
-          if (kp.KeyChar == 0x0a) {
+          if (kp.KeyChar == 0x0d) {
+            println();
             break;
           } else if (kp.KeyChar == 0x1b) { // escape
             gotopos(0);
@@ -310,8 +311,9 @@ public static class Console {
 
       if (input == String.Empty && !String.IsNullOrEmpty(prompt)) input = @default;
       if (input == "<empty>" && !String.IsNullOrEmpty(prompt)) input = String.Empty;
-      reg.SetValue("arguments" + (maxIndex + 1), input, RegistryValueKind.String);
 
+      println("[debug] all right, input is: {0}", input);
+      reg.SetValue("arguments" + (maxIndex + 1), input, RegistryValueKind.String);
       return input;
     } else {
       if (prompt != null && prompt != String.Empty) print(prompt + ": ");
