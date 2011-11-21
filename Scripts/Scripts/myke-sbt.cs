@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
   "Supports projects that can be built under sbt.\r\n" +
   "Runner and repl are overloaded because of glitches with vanilla implementation.")]
 
-public class Sbt : Prj {
+public class Sbt : Git {
   public Sbt(DirectoryInfo dir = null) : base(dir) {
   }
 

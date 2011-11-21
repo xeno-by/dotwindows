@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 [Connector(name = "bat", priority = -1, description =
   "Simply runs Windows batch files (*.bat, *.cmd extensions)")]
 
-public class Bat : Prj {
+public class Bat : Git {
   public Bat(FileInfo file) : base(file) {
   }
 

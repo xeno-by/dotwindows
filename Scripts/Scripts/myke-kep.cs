@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
   "Wraps the development workflow of project Kepler.\r\n" +
   "Uses ant for building, itself for a repl, runs Reflection and doesn't support tests yet.")]
 
-public class Kep : Prj {
+public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
 
   public Kep(DirectoryInfo dir = null) : base(dir) {
