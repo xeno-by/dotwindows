@@ -12,6 +12,13 @@ call "%~dp0\save-settings-privacy-enable.bat"
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\settings-public.reg" "HKEY_CURRENT_USER\Software\Far2"
 call "%~dp0\save-settings-privacy-disable.bat"
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\settings-private.reg" "HKEY_CURRENT_USER\Software\Far2"
-
 rd "%DROPBOX%\Software\Windows\Far Manager\2.0.b1807" /S /Q > NUL
 xcopy "%FAR_HOME%" "%DROPBOX%\Software\Windows\Far Manager\2.0.b1807" /H /I /E
+
+regedit /e "%TMP%\User.reg" "HKEY_CURRENT_USER\Environment"
+more +0 "%TMP%\User.reg" > "%TMP%\User-trimmed.reg"
+regedit /e "%TMP%\Machine.reg" "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+more +2 "%TMP%\Machine.reg" > "%TMP%\Machine-trimmed.reg"
+copy "%TMP%\User-trimmed.reg"+"%TMP%\Machine-trimmed.reg" "%DROPBOX%\Software\Windows\Scripts\02-environment.reg"
+
+regedit /e "%DROPBOX%\Software\Windows\Scripts\02-myke-private.reg" "HKEY_CURRENT_USER\Software\Myke"
