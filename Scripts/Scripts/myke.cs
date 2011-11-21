@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -397,6 +398,7 @@ public static class Console {
       }
 
       reg.SetValue("arguments" + (maxIndex + 1), input, RegistryValueKind.String);
+      reg.SetValue("lastarguments", input, RegistryValueKind.String);
       return input;
     } else {
       if (prompt != null && prompt != String.Empty) print(prompt + ": ");
@@ -404,7 +406,34 @@ public static class Console {
     }
   }
 
-  private static ProcessStartInfo parse(String command, DirectoryInfo home = null) {
+  private static ExitCode cmd(String command, DirectoryInfo home = null) {
+    var psi = new ProcessStartInfo();
+    psi.FileName = "cmd.exe";
+    psi.Arguments = "/C " + command;
+    psi.WorkingDirectory = (home ?? new DirectoryInfo(".")).FullName;
+    psi.UseShellExecute = false;
+
+    if (Config.verbose) {
+      Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
+      Console.println();
+      Console.println("========================================");
+      Console.println("The command will now be executed by cmd.exe");
+      Console.println("========================================");
+      Console.println();
+    }
+
+    var p = new Process();
+    p.StartInfo = psi;
+
+    if (p.Start()) {
+      p.WaitForExit();
+      return p.ExitCode;
+    } else {
+      return -1;
+    }
+  }
+
+  private static ExitCode shellex(String command, DirectoryInfo home = null) {
     command = command.TrimStart(new []{' '});
 
     var i = 0;
@@ -449,40 +478,12 @@ public static class Console {
       }
     }
 
-    var fileName = buf.ToString();
-    var arguments = command.Substring(i);
-    String workingDirectory = (home ?? new DirectoryInfo(".")).FullName;
-    return new ProcessStartInfo{FileName = fileName, Arguments = arguments, WorkingDirectory = workingDirectory};
-  }
+    var psi = new ProcessStartInfo();
+    psi.FileName = buf.ToString();
+    psi.Arguments = command.Substring(i);
+    psi.WorkingDirectory = (home ?? new DirectoryInfo(".")).FullName;
+    psi.UseShellExecute = true;
 
-  private static ExitCode cmd(String command, DirectoryInfo home = null) {
-    var psi = parse(command, home);
-    if (Config.verbose) {
-      Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
-      Console.println();
-      Console.println("========================================");
-      Console.println("The command will now be executed by cmd.exe");
-      Console.println("========================================");
-      Console.println();
-    }
-
-    psi.Arguments = "/C \"" + psi.FileName + "\" " + psi.Arguments;
-    psi.FileName = "cmd.exe";
-    psi.UseShellExecute = false;
-
-    var p = new Process();
-    p.StartInfo = psi;
-
-    if (p.Start()) {
-      p.WaitForExit();
-      return p.ExitCode;
-    } else {
-      return -1;
-    }
-  }
-
-  private static ExitCode shellex(String command, DirectoryInfo home = null) {
-    var psi = parse(command, home);
     if (Config.verbose) {
       Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
       Console.println();
@@ -491,8 +492,6 @@ public static class Console {
       Console.println("========================================");
       Console.println();
     }
-
-    psi.UseShellExecute = true;
 
     var p = new Process();
     p.StartInfo = psi;
@@ -504,9 +503,7 @@ public static class Console {
     }
   }
 
-  public static ExitCode batch(String command, Arguments arguments = null, DirectoryInfo home = null) {
-    if (arguments != null) command = command.ShellEscape() + " " + String.Join(" ", arguments.ToArray());
-
+  public static ExitCode batch(String command, DirectoryInfo home = null) {
     if (home == null) {
       home = new DirectoryInfo(".");
       if (Directory.Exists(Config.target)) home = new DirectoryInfo(Config.target);
@@ -516,9 +513,7 @@ public static class Console {
     return cmd(command, home);
   }
 
-  public static ExitCode interactive(String command, Arguments arguments = null, DirectoryInfo home = null) {
-    if (arguments != null) command = command.ShellEscape() + " " + String.Join(" ", arguments.ToArray());
-
+  public static ExitCode interactive(String command, DirectoryInfo home = null) {
     if (home == null) {
       home = new DirectoryInfo(".");
       if (Directory.Exists(Config.target)) home = new DirectoryInfo(Config.target);
@@ -528,9 +523,7 @@ public static class Console {
     return cmd(command, home);
   }
 
-  public static ExitCode ui(String command, Arguments arguments = null, DirectoryInfo home = null) {
-    if (arguments != null) command = command.ShellEscape() + " " + String.Join(" ", arguments.ToArray());
-
+  public static ExitCode ui(String command, DirectoryInfo home = null) {
     if (home == null) {
       home = new DirectoryInfo(".");
       if (Directory.Exists(Config.target)) home = new DirectoryInfo(Config.target);
@@ -544,6 +537,26 @@ public static class Console {
 public static class Env {
   public static String Expand(this String s) {
     return new Regex("%(?<envvar>.*?)%").Replace(s, m => Environment.GetEnvironmentVariable(m.Result("${envvar}")));
+  }
+
+  [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+  private static extern int GetShortPathName([MarshalAs(UnmanagedType.LPTStr)] String path, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder shortPath, int shortPathLength);
+
+  public static String GetShortPath(this String path) {
+    var buf = new StringBuilder(255);
+    var status = GetShortPathName(path, buf, buf.Capacity);
+    if (status == 0) return null;
+    return buf.ToString();
+  }
+
+  [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+  private static extern int GetLongPathName([MarshalAs(UnmanagedType.LPTStr)] String path, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder shortPath, int shortPathLength);
+
+  public static String GetLongPath(this String path) {
+    var buf = new StringBuilder(255);
+    var status = GetLongPathName(path, buf, buf.Capacity);
+    if (status == 0) return null;
+    return buf.ToString();
   }
 }
 
@@ -922,6 +935,6 @@ public class Arguments : BaseList<String> {
   }
 
   public override String ToString() {
-    return String.Join(", ", arguments);
+    return String.Join(", ", arguments.Select(arg => arg.ShellEscape()));
   }
 }
