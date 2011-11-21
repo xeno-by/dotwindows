@@ -30,14 +30,13 @@ public class Kep : Prj {
   [Action]
   public virtual ExitCode repl() {
     var status = compile();
-    return status && Console.interactive(@"build\pack\bin\scala.bat -deprecation", home: root);
+    return status && println() && Console.interactive(@"build\pack\bin\scala.bat -deprecation", home: root);
   }
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
     var status = compile();
-    status = status && println("\r\nBuilding reflection playground:") && new Rf().compile();
-    return status && println("\r\nRunning reflection playground:") && new Rf().run(arguments);
+    return status && println() && new Rf().run(arguments);
   }
 
   [Action]
