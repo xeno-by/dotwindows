@@ -27,7 +27,7 @@ public class Csc : Prj {
   public virtual FileInfo exe { get {
     if (compiler == null) return null;
 
-    var r = new Regex(@"(?<out>/out:\w+)");
+    var r = new Regex(@"/out:(?<out>\S+)");
     var m = r.Match(compiler);
     return new FileInfo(m.Success ? m.Result("${out}") : Path.ChangeExtension(file.FullName, ".exe"));
   } }
