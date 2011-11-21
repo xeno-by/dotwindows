@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "csc", description = "Builds a csharp program using the command-line provided in the first line of the target file.\r\n" +
-                                       "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using msbuild.")]
+[Connector(name = "csc", priority = -1, description =
+  "Builds a csharp program using the command-line provided in the first line of the target file.\r\n" +
+  "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using msbuild.")]
+
 public class Csc : Prj {
   private Lines lines;
 

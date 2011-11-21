@@ -463,11 +463,11 @@ public static class Connectors {
     }
 
     public int Compare(Type x, Type y) {
-      if (x.priority() > y.priority()) return 1;
-      if (x.priority() < y.priority()) return -1;
+      if (x.priority() > y.priority()) return -1;
+      if (x.priority() < y.priority()) return 1;
 
-      for (var x0 = x.BaseType; x0 != null; x0 = x0.BaseType) if (x0 == y) return 1;
-      for (var y0 = y.BaseType; y0 != null; y0 = y0.BaseType) if (y0 == x) return -1;
+      for (var x0 = x.BaseType; x0 != null; x0 = x0.BaseType) if (x0 == y) return -1;
+      for (var y0 = y.BaseType; y0 != null; y0 = y0.BaseType) if (y0 == x) return 1;
       return 0;
     }
   }

@@ -40,6 +40,41 @@ public abstract class Prj {
     return true;
   }
 
+  protected static ExitCode print(String format, params Object[] objs) {
+    Console.print(format, objs);
+    return 0;
+  }
+
+  protected static ExitCode print(String obj) {
+    Console.print(obj);
+    return 0;
+  }
+
+  protected static ExitCode print(Object obj) {
+    Console.print(obj);
+    return 0;
+  }
+
+  protected static ExitCode println(String format, params Object[] objs) {
+    Console.println(format, objs);
+    return 0;
+  }
+
+  protected static ExitCode println(String obj) {
+    Console.println(obj);
+    return 0;
+  }
+
+  protected static ExitCode println(Object obj) {
+    Console.println(obj);
+    return 0;
+  }
+
+  protected static ExitCode println() {
+    Console.println();
+    return 0;
+  }
+
   public DirectoryInfo repo { get {
     // todo. do we need to cache this?
     return detectRepo();

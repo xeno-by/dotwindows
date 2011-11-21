@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "ubi", description = "A refinement of the \"csc\" builder adapted for my custom CS scripts.\r\n" +
-                                       "Adjusts git-related actions to work with %SOFTWARE% instead of current dir.")]
+[Connector(name = "ubi", description =
+  "A refinement of the csc connector adapted for my custom CS scripts.\r\n" +
+  "Adjusts git-related actions to work with %SOFTWARE% instead of current dir.")]
+
 public class Ubi : Csc {
   public Ubi(FileInfo file, Lines lines) : base(file, lines) {
   }

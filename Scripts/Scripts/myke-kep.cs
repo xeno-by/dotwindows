@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "kep", description = "Wraps the development workflow of project Kepler.\r\n" +
-                                       "Uses ant for building, itself for a repl, runs Reflection and doesn't support tests yet.")]
+[Connector(name = "kep", description =
+  "Wraps the development workflow of project Kepler.\r\n" +
+  "Uses ant for building, itself for a repl, runs Reflection and doesn't support tests yet.")]
+
 public class Kep : Prj {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
 
@@ -34,8 +36,8 @@ public class Kep : Prj {
   [Action]
   public virtual ExitCode run(Arguments arguments) {
     var status = compile();
-    status = status && new Rf().compile();
-    return status && new Rf().run(arguments);
+    status = status && println("\r\nBuilding reflection playground:") && new Rf().compile();
+    return status && println("\r\nRunning reflection playground:") && new Rf().run(arguments);
   }
 
   [Action]

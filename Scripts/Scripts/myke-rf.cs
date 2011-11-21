@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "rf", description = "Wraps the development workflow of project Reflection.\r\n" +
-                                      "Uses sbt for everything, but doesn't support tests by design.")]
+[Connector(name = "rf", description =
+  "Wraps the development workflow of project Reflection.\r\n" +
+  "Uses sbt for everything, but doesn't support tests by design.")]
+
 public class Rf : Sbt {
   public override String project { get { return @"%PROJECTS%\Reflection".Expand(); } }
 

@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "sbt", description = "Supports projects that can be built under sbt.\r\n" +
-                                       "Runner and repl are overloaded because of glitches with vanilla implementation.")]
+[Connector(name = "sbt", priority = -1, description =
+  "Supports projects that can be built under sbt.\r\n" +
+  "Runner and repl are overloaded because of glitches with vanilla implementation.")]
+
 public class Sbt : Prj {
   public Sbt(DirectoryInfo dir = null) : base(dir) {
   }
@@ -24,7 +26,7 @@ public class Sbt : Prj {
     while (wannabe != null) {
       var buildSbt = wannabe.GetFiles().FirstOrDefault(child => child.Name == "build.sbt");
       var project = wannabe.GetDirectories().FirstOrDefault(child => child.Name == "project");
-      if (buildSbt != null && project != null) return wannabe;
+      if (buildSbt != null || project != null) return wannabe;
       wannabe = wannabe.Parent;
     }
 
