@@ -9,12 +9,7 @@ using System.Text.RegularExpressions;
 [Connector(name = "ubi", description = "A refinement of the \"csc\" builder adapted for my custom CS scripts.\r\n" +
                                        "Adjusts git-related actions to work with %SOFTWARE% instead of current dir.")]
 public class Ubi : Csc {
-  private FileInfo file;
-  private Lines lines;
-
   public Ubi(FileInfo file, Lines lines) : base(file, lines) {
-    this.file = file;
-    this.lines = lines;
   }
 
   public override bool accept() {
@@ -24,17 +19,17 @@ public class Ubi : Csc {
     return base.accept() && dir == ubi;
   }
 
-  public override DirectoryInfo repo { get {
-    var s_sw = Environment.GetEnvironmentVariable("SOFTWARE");
-    if (s_sw == null) return null;
+  public override DirectoryInfo detectRepo() {
+    var sw = new DirectoryInfo(@"%SOFTWARE%".Expand());
 
-    var sw = new DirectoryInfo(s_sw);
     var gitIndex = sw.GetDirectories().FirstOrDefault(child => child.Name == ".git");
-    return gitIndex != null ? sw : null;
-  } }
+    if (gitIndex == null) return null;
+
+    return sw;
+  }
 
   public override bool verifyRepo() {
-    if (repo == null) {
+    if (detectRepo() == null) {
       Console.println("%DROPBOX%\\Software\\Windows not found or is not a Git repo");
       return false;
     } else {

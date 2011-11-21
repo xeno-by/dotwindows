@@ -9,28 +9,9 @@ using System.Text.RegularExpressions;
 [Connector(name = "rf", description = "Wraps the development workflow of project Reflection.\r\n" +
                                       "Uses sbt for everything, but doesn't support tests by design.")]
 public class Rf : Sbt {
-  private DirectoryInfo dir;
+  public override String project { get { return @"%PROJECTS%\Reflection".Expand(); } }
 
-  public Rf(DirectoryInfo dir) : base(dir) {
-    this.dir = dir;
-  }
-
-  public override DirectoryInfo repo { get {
-    var s_prj = Environment.GetEnvironmentVariable("PROJECTS");
-    if (s_prj == null) return null;
-
-    var prj = new DirectoryInfo(s_prj);
-    var reflection = prj.GetDirectories().FirstOrDefault(child => child.Name == "Reflection");
-
-    var repo = base.repo;
-    if (repo == null) return null;
-    if (repo != dir) return null;
-
-    return repo;
-  } }
-
-  public virtual bool accept() {
-    return repo != null;
+  public Rf(DirectoryInfo dir = null) : base(dir) {
   }
 
   [Action]

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.Win32;
 
@@ -311,6 +312,12 @@ public static class Console {
   }
 }
 
+public static class Env {
+  public static String Expand(this String s) {
+    return new Regex("%(?<envvar>.*?)%").Replace(s, m => Environment.GetEnvironmentVariable(m.Result("${envvar}")));
+  }
+}
+
 public static class Config {
   public static bool dryrun;
   public static bool verbose;
@@ -517,7 +524,7 @@ public static class Connectors {
   }
 
   public static Object instantiate(this Type connector) {
-    var ctor = connector.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Single();
+    var ctor = connector.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(ctor1 => ctor1.GetParameters().Length > 0).Single();
     var args = ctor.bindArgs();
     return args == null ? null : ctor.Invoke(args);
   }

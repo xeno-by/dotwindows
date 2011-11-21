@@ -6,19 +6,38 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-public abstract class Git {
-  private FileInfo file;
-  private DirectoryInfo dir;
+public abstract class Prj {
+  public FileInfo file;
+  public DirectoryInfo dir;
 
-  public Git(FileInfo file) {
+  public Prj(FileInfo file) {
     this.file = file;
   }
 
-  public Git(DirectoryInfo dir) {
-    this.dir = dir;
+  public Prj(DirectoryInfo dir) {
+    this.dir = dir ?? (project == null ? null : new DirectoryInfo(project));
   }
 
-  public virtual DirectoryInfo repo { get {
+  public virtual String project { get { return null; } }
+
+  public virtual DirectoryInfo root { get {
+    if (project != null) {
+      return new DirectoryInfo(project);
+    }
+
+    var repo = detectRepo();
+    if (repo != null) {
+      return repo;
+    }
+
+    return new DirectoryInfo(".");
+  } }
+
+  public virtual bool accept() {
+    return true;
+  }
+
+  public virtual DirectoryInfo detectRepo() {
     var wannabe = file != null ? file.Directory : dir;
     while (wannabe != null) {
       var gitIndex = wannabe.GetDirectories().FirstOrDefault(child => child.Name == ".git");
@@ -27,15 +46,16 @@ public abstract class Git {
     }
 
     return null;
-  } }
+  }
 
   public virtual bool verifyRepo() {
+    var repo = detectRepo();
     if (repo == null) {
       Console.println("error: {0} is not under Git repository", file.FullName);
-      Console.print("Create the repo with the root next to the target (y/n, default is no)? ");
+      Console.print("Create the repo with the project root (y/n)? ");
       var answer = Console.readln();
-      if (answer.ToLower() == "y" || answer.ToLower() == "yes") {
-        Console.batch("git init");
+      if (answer == "" || answer.ToLower() == "y" || answer.ToLower() == "yes") {
+        Console.batch("git init", home: root);
         return true;
       } else {
         return false;
@@ -48,13 +68,13 @@ public abstract class Git {
   [Action]
   public virtual ExitCode commit() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit commit \"{0}\"", repo.FullName));
+    return Console.ui(String.Format("tgit commit \"{0}\"", detectRepo().FullName));
   }
 
   [Action]
   public virtual ExitCode logall() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit log \"{0}\"", repo.FullName));
+    return Console.ui(String.Format("tgit log \"{0}\"", detectRepo().FullName));
   }
 
   [Action]
@@ -71,12 +91,12 @@ public abstract class Git {
   [Action]
   public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git push", home: repo);
+    return Console.interactive("git push", home: detectRepo());
   }
 
   [Action]
   public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git pull", home: repo);
+    return Console.interactive("git pull", home: detectRepo());
   }
 }

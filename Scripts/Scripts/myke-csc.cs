@@ -8,12 +8,10 @@ using System.Text.RegularExpressions;
 
 [Connector(name = "csc", description = "Builds a csharp program using the command-line provided in the first line of the target file.\r\n" +
                                        "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using msbuild.")]
-public class Csc : Git {
-  private FileInfo file;
+public class Csc : Prj {
   private Lines lines;
 
   public Csc(FileInfo file, Lines lines) : base(file) {
-    this.file = file;
     this.lines = lines;
   }
 
@@ -24,8 +22,8 @@ public class Csc : Git {
     return m.Success ? m.Result("${commandline}") : null;
   } }
 
-  public virtual bool accept() {
-    return file.Extension == ".cs" && compiler != null;
+  public override bool accept() {
+    return base.accept() && file.Extension == ".cs" && compiler != null;
   }
 
   [Action]

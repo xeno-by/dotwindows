@@ -8,30 +8,33 @@ using System.Text.RegularExpressions;
 
 [Connector(name = "sbt", description = "Supports projects that can be built under sbt.\r\n" +
                                        "Runner and repl are overloaded because of glitches with vanilla implementation.")]
-public class Sbt : Git {
-  private DirectoryInfo dir;
-
-  public Sbt(DirectoryInfo dir) : base(dir) {
-    this.dir = dir;
+public class Sbt : Prj {
+  public Sbt(DirectoryInfo dir = null) : base(dir) {
   }
 
-  public override DirectoryInfo repo { get {
-    var buildSbt = repo.GetFiles().FirstOrDefault(child => child.Name == "build.sbt");
-    var project = repo.GetDirectories().FirstOrDefault(child => child.Name == "project");
+  public virtual String sbtproject { get { return null; } }
+
+  public virtual DirectoryInfo sbtroot { get {
+    var buildSbt = dir.GetFiles().FirstOrDefault(child => child.Name == "build.sbt");
+    var project = dir.GetDirectories().FirstOrDefault(child => child.Name == "project");
     if (!buildSbt.Exists && !project.Exists) return null;
 
     return dir;
   } }
 
+  public override bool accept() {
+    return root != null && sbtroot != null;
+  }
+
   [Action]
   public virtual ExitCode rebuild() {
-    var status = Console.batch("sbt clean", home: repo);
+    var status = Console.batch(String.Format("sbt {0}clean", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtroot);
     return status && compile();
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
-    return Console.batch("sbt compile", home: repo);
+    return Console.batch(String.Format("sbt {0}compile", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtroot);
   }
 
   [Action]
@@ -52,6 +55,6 @@ public class Sbt : Git {
 
   [Action]
   public virtual ExitCode test() {
-    return Console.batch("sbt test", home: repo);
+    return Console.batch(String.Format("sbt {0}test", sbtproject == null ? null : "project " + sbtproject + " "), home: sbtroot);
   }
 }
