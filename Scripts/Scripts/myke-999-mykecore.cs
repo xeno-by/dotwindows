@@ -8,12 +8,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
-[Connector(name = "myke", priority = 999, description =
+[Connector(name = "myke-core", priority = 999, description =
   "Self-compiler of myke.\r\n" +
   "Is actually capable of replacing itself after being compiled.")]
 
-public class Myke : Csc {
-  public Myke(FileInfo file, Lines lines) : base(file, lines) {
+public class MykeCore : Csc {
+  public MykeCore(FileInfo file, Lines lines) : base(file, lines) {
   }
 
   public override bool accept() {
