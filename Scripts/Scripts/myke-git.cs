@@ -72,6 +72,7 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode logthis() {
     if (!verifyRepo()) return -1;
+    file = new FileInfo(Config.originalTarget); // omg hack
     return Console.ui(String.Format("tgit log \"{0}\"", file.GetRealPath().FullName));
   }
 
