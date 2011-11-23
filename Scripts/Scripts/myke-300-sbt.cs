@@ -18,6 +18,7 @@ public class Sbt : Git {
   public Sbt(FileInfo file) : base(file) {}
   public Sbt(DirectoryInfo dir) : base(dir) {}
 
+  public override String project { get { return sbtroot == null ? null : sbtroot.FullName; } }
   public DirectoryInfo sbtroot { get {
     // todo. do we need to cache this?
     return detectsbtroot();
