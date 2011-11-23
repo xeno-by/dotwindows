@@ -12,12 +12,6 @@ REGEDIT4
 
 [-HKEY_CURRENT_USER\Software\Far2\SavedFolderHistory]
 
-[HKEY_CURRENT_USER\Software\Far2\Panel\Left]
-"Folder"=-
-"CurFile"=-
-"Visible"=-
+[-HKEY_CURRENT_USER\Software\Far2\Panel\Left]
 
-[HKEY_CURRENT_USER\Software\Far2\Panel\Right]
-"Folder"=-
-"CurFile"=-
-"Visible"=-
+[-HKEY_CURRENT_USER\Software\Far2\Panel\Right]

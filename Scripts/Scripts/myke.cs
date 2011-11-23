@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using Microsoft.Win32.SafeHandles;
 
 public class App {
   public static int Main(String[] args) {
@@ -558,6 +560,56 @@ public static class Env {
     if (status == 0) return null;
     return buf.ToString();
   }
+
+  // copy/pasted from http://chrisbensen.blogspot.com/2010/06/getfinalpathnamebyhandle.html
+  private const int FILE_SHARE_READ = 1;
+  private const int FILE_SHARE_WRITE = 2;
+  private const int CREATION_DISPOSITION_OPEN_EXISTING = 3;
+  private const int FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
+
+  // http://msdn.microsoft.com/en-us/library/aa364962%28VS.85%29.aspx
+  [DllImport("kernel32.dll", EntryPoint = "GetFinalPathNameByHandleW", CharSet = CharSet.Unicode, SetLastError = true)]
+  private static extern int GetFinalPathNameByHandle(IntPtr handle, [In, Out] StringBuilder path, int bufLen, int flags);
+
+  // http://msdn.microsoft.com/en-us/library/aa363858(VS.85).aspx
+  [DllImport("kernel32.dll", EntryPoint = "CreateFileW", CharSet = CharSet.Unicode, SetLastError = true)]
+  private static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, int dwShareMode, IntPtr SecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
+
+  public static FileInfo GetSymlinkTarget(this FileInfo symlink)
+  {
+    if (!symlink.Attributes.HasFlag(FileAttributes.ReparsePoint)) return symlink;
+
+    SafeFileHandle directoryHandle = CreateFile(symlink.FullName, 0, 2, System.IntPtr.Zero, CREATION_DISPOSITION_OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, System.IntPtr.Zero);
+    if(directoryHandle.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
+
+    StringBuilder path = new StringBuilder(512);
+    int size = GetFinalPathNameByHandle(directoryHandle.DangerousGetHandle(), path, path.Capacity, 0);
+    if (size<0) throw new Win32Exception(Marshal.GetLastWin32Error());
+
+    // The remarks section of GetFinalPathNameByHandle mentions the return being prefixed with "\\?\"
+    // More information about "\\?\" here -> http://msdn.microsoft.com/en-us/library/aa365247(v=VS.85).aspx
+    if (path[0] == '\\' && path[1] == '\\' && path[2] == '?' && path[3] == '\\')
+    return new FileInfo(path.ToString().Substring(4));
+    else return new FileInfo(path.ToString());
+  }
+
+  public static DirectoryInfo GetSymlinkTarget(this DirectoryInfo symlink)
+  {
+    if (!symlink.Attributes.HasFlag(FileAttributes.ReparsePoint)) return symlink;
+
+    SafeFileHandle directoryHandle = CreateFile(symlink.FullName, 0, 2, System.IntPtr.Zero, CREATION_DISPOSITION_OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, System.IntPtr.Zero);
+    if(directoryHandle.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
+
+    StringBuilder path = new StringBuilder(512);
+    int size = GetFinalPathNameByHandle(directoryHandle.DangerousGetHandle(), path, path.Capacity, 0);
+    if (size<0) throw new Win32Exception(Marshal.GetLastWin32Error());
+
+    // The remarks section of GetFinalPathNameByHandle mentions the return being prefixed with "\\?\"
+    // More information about "\\?\" here -> http://msdn.microsoft.com/en-us/library/aa365247(v=VS.85).aspx
+    if (path[0] == '\\' && path[1] == '\\' && path[2] == '?' && path[3] == '\\')
+    return new DirectoryInfo(path.ToString().Substring(4));
+    else return new DirectoryInfo(path.ToString());
+  }
 }
 
 public static class Shell {
@@ -602,17 +654,7 @@ public static class Config {
     }
 
     var action = args.Take(1).ElementAtOrDefault(0) ?? "compile";
-    if (File.Exists(action) || Directory.Exists(action)) {
-      if (Config.verbose) {
-        Console.println("[WARNING! I'M TRYING TO BE SMARTASS!!] Action {0} read from the first command-line arg is very similar to a filename.", action);
-        Console.println("Thus, I will think that {0} represents the target, and will infer that action defaults to a connector-specific value", action);
-      }
-
-      action = "default";
-    } else {
-      args = args.Skip(1).ToArray();
-    }
-
+    args = args.Skip(1).ToArray();
     if (action == null || action == "/?" || action == "-help" || action == "--help") {
       Help.printUsage();
       return -1;

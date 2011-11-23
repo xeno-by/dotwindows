@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "ubi", description =
-  "A refinement of the csc connector adapted for my custom CS scripts.\r\n" +
-  "Adjusts git-related actions to work with %SOFTWARE% instead of current dir.")]
+[Connector(name = "ubidir", description =
+  "Version-control abstractions for ubi.\r\n" +
+  "Effectively maps ubi onto %SOFTWARE% and performs copy/paste transfers before commits.")]
 
-public class Ubi : Csc {
-  public Ubi(FileInfo file, Lines lines) : base(file, lines) {
+public class Ubidir : Git {
+  public Ubidir(DirectoryInfo dir) : base(dir) {
   }
 
   public override bool accept() {
-    return base.accept() && file.Directory.EquivalentTo("%SCRIPTS_HOME%".Expand());
+    return base.accept() && dir.EquivalentTo("%SCRIPTS_HOME%".Expand());
   }
 
   public override DirectoryInfo detectRepo() {
