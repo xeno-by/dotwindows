@@ -47,7 +47,6 @@ public class Csc : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    if (Config.verbose) Console.println(compiler);
     return Console.batch(compiler);
   }
 
