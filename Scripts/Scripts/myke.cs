@@ -220,169 +220,178 @@ public static class Console {
         print(": ");
       };
 
-      var logfile = ((Func<String>)(() => {
-        if (File.Exists(Config.originalTarget)) return Config.originalTarget + ".log";
-        if (Directory.Exists(Config.originalTarget)) return Config.originalTarget + ".log";
-        return null;
-      }))();
-
-      if (logfile != null && File.Exists(logfile)) File.Delete(logfile);
-      Action<String> log = msg => {
-        if (Config.verbose && logfile != null) {
-          File.AppendAllText(logfile, msg + "\r\n");
-        }
-      };
-
-      var input = String.Empty;
-      var oldinput = input;
-      var historypos = shortList.Count;
-      Action dechistorypos = () => { if (historypos > 0) historypos--; };
-      Action inchistorypos = () => { if (historypos < shortList.Count) historypos++; };
-      Func<String> currenthistory = () => historypos == shortList.Count ? "" : shortList[historypos];
-      var pos = new Point(System.Console.CursorLeft, System.Console.CursorTop);
-      var origpos = new Point(System.Console.CursorLeft, System.Console.CursorTop);
-      log(String.Format("original pos: x = {0}, y = {1}", origpos.x, origpos.y));
-      Func<int> currentpos = () => (pos.y - origpos.y) * System.Console.WindowWidth + (pos.x - origpos.x);
-      Func<Char> currentchar = () => currentpos() >= input.Length ? '\0' : input[currentpos()];
-      Action<int> gotopos = null;
-      gotopos = idx => {
-        if (idx < 0) gotopos(0);
-        else if (idx > input.Length) gotopos(input.Length);
-        else {
-          log(String.Format("going to {0}", idx));
-          log(String.Format("currentpos: {0}", currentpos()));
-          log(String.Format("pos is now {0}", pos));
-          pos = new Point(origpos);
-          pos.x += idx;
-          while (pos.x > System.Console.WindowWidth) {
-            pos.x -= System.Console.WindowWidth;
-            pos.y += 1;
-          }
-          log(String.Format("currentpos: {0}", currentpos()));
-          log(String.Format("pos is now {0}", pos));
-        }
-      };
-      Action decpos = () => gotopos(currentpos() - 1);
-      Action incpos = () => gotopos(currentpos() + 1);
-      Action redraw = () => {
-        System.Console.SetCursorPosition(origpos.x, origpos.y);
-        System.Console.Write(new String(' ', oldinput.Length));
-        System.Console.SetCursorPosition(origpos.x, origpos.y);
-        System.Console.Write(input);
-        oldinput = input;
-        System.Console.SetCursorPosition(pos.x, pos.y);
-      };
-
-      while (true) {
-        log("");
-        log("===readkey===");
-        log(String.Format("input = {0}, currentpos = {1}", input, currentpos()));
-        log(String.Format("[before] pos: x = {0}, y = {1}", System.Console.CursorLeft, System.Console.CursorTop));
-        var kp = System.Console.ReadKey();
-        log(String.Format("key = {0}, char = {1}, modifiers = {2}", kp.Key, ((int)kp.KeyChar).ToString("x4"), kp.Modifiers));
-        log(String.Format("[after] pos: x = {0}, y = {1}", System.Console.CursorLeft, System.Console.CursorTop));
-
-        if (kp.KeyChar != '\0') {
-          if (kp.KeyChar == 0x0d) {
-            println();
-            break;
-          } else if (kp.KeyChar == 0x08) { // backspace
-            if (currentpos() > 0) {
-              var buf = new StringBuilder();
-              if (currentpos() > 0 && input.Length > 1) buf.Append(input.Substring(0, currentpos() - 1));
-              if (currentpos() < input.Length) buf.Append(input.Substring(currentpos(), input.Length - currentpos()));
-              input = buf.ToString();
-              decpos();
-            }
-          } else if (kp.KeyChar == 0x1b) { // escape
-            gotopos(0);
-            input = "";
-          } else if (kp.KeyChar < 0x20) {
-            // do nothing
-          } else {
-            var buf = new StringBuilder();
-            if (currentpos() > 0) buf.Append(input.Substring(0, currentpos()));
-            buf.Append(kp.KeyChar);
-            if (currentpos() < input.Length) buf.Append(input.Substring(currentpos(), input.Length - currentpos()));
-            input = buf.ToString();
-            gotopos(currentpos() + 1);
-          }
+      var input = ((Func<String>)(() => {
+        var dumb = ((Func<bool>)(() => { try { var aux = System.Console.KeyAvailable; return false; } catch { return true; } }))();
+        if (dumb) {
+          return System.Console.ReadLine();
         } else {
-          if (kp.Key == ConsoleKey.Home) {
-            gotopos(0);
-          } else if (kp.Key == ConsoleKey.End) {
-            gotopos(input.Length);
-          } if (kp.Key == ConsoleKey.LeftArrow && !kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
-            decpos();
-          } if (kp.Key == ConsoleKey.RightArrow && !kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
-            incpos();
-          } if (kp.Key == ConsoleKey.LeftArrow && kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
-            decpos();
-            if (Char.IsLetterOrDigit(currentchar())) {
-              while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) decpos();
-              if (!Char.IsLetterOrDigit(currentchar())) incpos();
-            } else {
-              while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) decpos();
-              if (Char.IsLetterOrDigit(currentchar())) {
-                while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) decpos();
-                if (!Char.IsLetterOrDigit(currentchar())) incpos();
-              }
-            }
-          } if (kp.Key == ConsoleKey.RightArrow && kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
-            incpos();
-            if (Char.IsLetterOrDigit(currentchar())) {
-              while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) incpos();
-              if (!Char.IsLetterOrDigit(currentchar())) {
-                while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) incpos();
-              }
-            } else {
-              while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) incpos();
-            }
-          } else if (kp.Key == ConsoleKey.UpArrow) {
-            if (historypos > 0) {
-              gotopos(0);
-              dechistorypos();
-              input = currenthistory();
-              gotopos(input.Length);
-            }
-          } else if (kp.Key == ConsoleKey.DownArrow) {
-            if (historypos < shortList.Count) {
-              gotopos(0);
-              inchistorypos();
-              input = currenthistory();
-              gotopos(input.Length);
-            }
-          } else if (kp.Key == ConsoleKey.Insert || (kp.Key == ConsoleKey.V && kp.Modifiers.HasFlag(ConsoleModifiers.Control))) {
-            var text = Clipboard.GetText();
-            var buf = new StringBuilder();
-            if (currentpos() > 0) buf.Append(input.Substring(0, currentpos()));
-            buf.Append(text);
-            if (currentpos() < input.Length) buf.Append(input.Substring(currentpos(), input.Length - currentpos()));
-            input = buf.ToString();
-            gotopos(currentpos() + text.Length);
-          } else if (kp.Key == ConsoleKey.Escape) {
-            gotopos(0);
-            input = "";
-          } else if (kp.Key == ConsoleKey.Delete) {
-            var buf = new StringBuilder();
-            if (currentpos() > 0) buf.Append(input.Substring(0, currentpos()));
-            if (currentpos() < input.Length && input.Length > 1) buf.Append(input.Substring(currentpos() + 1, input.Length - currentpos() - 1));
-            input = buf.ToString();
-          } else if (kp.Key == ConsoleKey.Backspace) {
-            if (currentpos() > 0) {
-              var buf = new StringBuilder();
-              if (currentpos() > 0 && input.Length > 1) buf.Append(input.Substring(0, currentpos() - 1));
-              if (currentpos() < input.Length) buf.Append(input.Substring(currentpos(), input.Length - currentpos()));
-              input = buf.ToString();
-              decpos();
-            }
-          }
-        }
+          var logfile = ((Func<String>)(() => {
+            if (File.Exists(Config.originalTarget)) return Config.originalTarget + ".log";
+            if (Directory.Exists(Config.originalTarget)) return Config.originalTarget + ".log";
+            return null;
+          }))();
 
-        log(String.Format("[result] input = {0}, currentpos = {1}", input, currentpos()));
-        redraw();
-        log(String.Format("[finally] pos: x = {0}, y = {1}", System.Console.CursorLeft, System.Console.CursorTop));
-      }
+          if (logfile != null && File.Exists(logfile)) File.Delete(logfile);
+          Action<String> log = msg => {
+            if (Config.verbose && logfile != null) {
+              File.AppendAllText(logfile, msg + "\r\n");
+            }
+          };
+
+          var buf = String.Empty;
+          var oldbuf = buf;
+          var historypos = shortList.Count;
+          Action dechistorypos = () => { if (historypos > 0) historypos--; };
+          Action inchistorypos = () => { if (historypos < shortList.Count) historypos++; };
+          Func<String> currenthistory = () => historypos == shortList.Count ? "" : shortList[historypos];
+          var pos = new Point(System.Console.CursorLeft, System.Console.CursorTop);
+          var origpos = new Point(System.Console.CursorLeft, System.Console.CursorTop);
+          log(String.Format("original pos: x = {0}, y = {1}", origpos.x, origpos.y));
+          Func<int> currentpos = () => (pos.y - origpos.y) * System.Console.WindowWidth + (pos.x - origpos.x);
+          Func<Char> currentchar = () => currentpos() >= buf.Length ? '\0' : buf[currentpos()];
+          Action<int> gotopos = null;
+          gotopos = idx => {
+            if (idx < 0) gotopos(0);
+            else if (idx > buf.Length) gotopos(buf.Length);
+            else {
+              log(String.Format("going to {0}", idx));
+              log(String.Format("currentpos: {0}", currentpos()));
+              log(String.Format("pos is now {0}", pos));
+              pos = new Point(origpos);
+              pos.x += idx;
+              while (pos.x > System.Console.WindowWidth) {
+                pos.x -= System.Console.WindowWidth;
+                pos.y += 1;
+              }
+              log(String.Format("currentpos: {0}", currentpos()));
+              log(String.Format("pos is now {0}", pos));
+            }
+          };
+          Action decpos = () => gotopos(currentpos() - 1);
+          Action incpos = () => gotopos(currentpos() + 1);
+          Action redraw = () => {
+            System.Console.SetCursorPosition(origpos.x, origpos.y);
+            System.Console.Write(new String(' ', oldbuf.Length));
+            System.Console.SetCursorPosition(origpos.x, origpos.y);
+            System.Console.Write(buf);
+            oldbuf = buf;
+            System.Console.SetCursorPosition(pos.x, pos.y);
+          };
+
+          while (true) {
+            log("");
+            log("===readkey===");
+            log(String.Format("buf = {0}, currentpos = {1}", buf, currentpos()));
+            log(String.Format("[before] pos: x = {0}, y = {1}", System.Console.CursorLeft, System.Console.CursorTop));
+            var kp = System.Console.ReadKey();
+            log(String.Format("key = {0}, char = {1}, modifiers = {2}", kp.Key, ((int)kp.KeyChar).ToString("x4"), kp.Modifiers));
+            log(String.Format("[after] pos: x = {0}, y = {1}", System.Console.CursorLeft, System.Console.CursorTop));
+
+            if (kp.KeyChar != '\0') {
+              if (kp.KeyChar == 0x0d) {
+                println();
+                break;
+              } else if (kp.KeyChar == 0x08) { // backspace
+                if (currentpos() > 0) {
+                  var buf1 = new StringBuilder();
+                  if (currentpos() > 0 && buf.Length > 1) buf1.Append(buf.Substring(0, currentpos() - 1));
+                  if (currentpos() < buf.Length) buf1.Append(buf.Substring(currentpos(), buf.Length - currentpos()));
+                  buf = buf1.ToString();
+                  decpos();
+                }
+              } else if (kp.KeyChar == 0x1b) { // escape
+                gotopos(0);
+                buf = "";
+              } else if (kp.KeyChar < 0x20) {
+                // do nothing
+              } else {
+                var buf1 = new StringBuilder();
+                if (currentpos() > 0) buf1.Append(buf.Substring(0, currentpos()));
+                buf1.Append(kp.KeyChar);
+                if (currentpos() < buf.Length) buf1.Append(buf.Substring(currentpos(), buf.Length - currentpos()));
+                buf = buf1.ToString();
+                gotopos(currentpos() + 1);
+              }
+            } else {
+              if (kp.Key == ConsoleKey.Home) {
+                gotopos(0);
+              } else if (kp.Key == ConsoleKey.End) {
+                gotopos(buf.Length);
+              } if (kp.Key == ConsoleKey.LeftArrow && !kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
+                decpos();
+              } if (kp.Key == ConsoleKey.RightArrow && !kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
+                incpos();
+              } if (kp.Key == ConsoleKey.LeftArrow && kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
+                decpos();
+                if (Char.IsLetterOrDigit(currentchar())) {
+                  while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) decpos();
+                  if (!Char.IsLetterOrDigit(currentchar())) incpos();
+                } else {
+                  while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) decpos();
+                  if (Char.IsLetterOrDigit(currentchar())) {
+                    while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) decpos();
+                    if (!Char.IsLetterOrDigit(currentchar())) incpos();
+                  }
+                }
+              } if (kp.Key == ConsoleKey.RightArrow && kp.Modifiers.HasFlag(ConsoleModifiers.Control)) {
+                incpos();
+                if (Char.IsLetterOrDigit(currentchar())) {
+                  while (currentpos() != 0 && Char.IsLetterOrDigit(currentchar())) incpos();
+                  if (!Char.IsLetterOrDigit(currentchar())) {
+                    while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) incpos();
+                  }
+                } else {
+                  while (currentpos() != 0 && !Char.IsLetterOrDigit(currentchar())) incpos();
+                }
+              } else if (kp.Key == ConsoleKey.UpArrow) {
+                if (historypos > 0) {
+                  gotopos(0);
+                  dechistorypos();
+                  buf = currenthistory();
+                  gotopos(buf.Length);
+                }
+              } else if (kp.Key == ConsoleKey.DownArrow) {
+                if (historypos < shortList.Count) {
+                  gotopos(0);
+                  inchistorypos();
+                  buf = currenthistory();
+                  gotopos(buf.Length);
+                }
+              } else if (kp.Key == ConsoleKey.Insert || (kp.Key == ConsoleKey.V && kp.Modifiers.HasFlag(ConsoleModifiers.Control))) {
+                var text = Clipboard.GetText();
+                var buf1 = new StringBuilder();
+                if (currentpos() > 0) buf1.Append(buf.Substring(0, currentpos()));
+                buf1.Append(text);
+                if (currentpos() < buf.Length) buf1.Append(buf.Substring(currentpos(), buf.Length - currentpos()));
+                buf = buf1.ToString();
+                gotopos(currentpos() + text.Length);
+              } else if (kp.Key == ConsoleKey.Escape) {
+                gotopos(0);
+                buf = "";
+              } else if (kp.Key == ConsoleKey.Delete) {
+                var buf1 = new StringBuilder();
+                if (currentpos() > 0) buf1.Append(buf.Substring(0, currentpos()));
+                if (currentpos() < buf.Length && buf.Length > 1) buf1.Append(buf.Substring(currentpos() + 1, buf.Length - currentpos() - 1));
+                buf = buf1.ToString();
+              } else if (kp.Key == ConsoleKey.Backspace) {
+                if (currentpos() > 0) {
+                  var buf1 = new StringBuilder();
+                  if (currentpos() > 0 && buf.Length > 1) buf1.Append(buf.Substring(0, currentpos() - 1));
+                  if (currentpos() < buf.Length) buf1.Append(buf.Substring(currentpos(), buf.Length - currentpos()));
+                  buf = buf1.ToString();
+                  decpos();
+                }
+              }
+            }
+
+            log(String.Format("[result] buf = {0}, currentpos = {1}", buf, currentpos()));
+            redraw();
+            log(String.Format("[finally] pos: x = {0}, y = {1}", System.Console.CursorLeft, System.Console.CursorTop));
+          }
+
+          return buf;
+        }
+      }))();
 
       if (input == String.Empty && !String.IsNullOrEmpty(prompt)) input = @default;
       if (input == "<empty>" && !String.IsNullOrEmpty(prompt)) input = String.Empty;
