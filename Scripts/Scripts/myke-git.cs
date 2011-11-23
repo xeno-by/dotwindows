@@ -43,7 +43,7 @@ public abstract class Git : Prj {
 
   public virtual bool verifyRepo() {
     if (repo == null) {
-      Console.println("error: {0} is not under Git repository", file.FullName);
+      Console.println("error: {0} is not under Git repository", file != null ? file.FullName : dir.FullName);
       Console.print("Create the repo with the project root (y/n)? ");
       var answer = Console.readln();
       if (answer == "" || answer.ToLower() == "y" || answer.ToLower() == "yes") {
@@ -60,19 +60,19 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode commit() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit commit \"{0}\"", repo.FullName));
+    return Console.ui(String.Format("tgit commit \"{0}\"", repo.GetSymlinkTarget().FullName));
   }
 
   [Action]
   public virtual ExitCode logall() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit log \"{0}\"", repo.FullName));
+    return Console.ui(String.Format("tgit log \"{0}\"", repo.GetSymlinkTarget().FullName));
   }
 
   [Action]
   public virtual ExitCode logthis() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit log \"{0}\"", file.FullName));
+    return Console.ui(String.Format("tgit log \"{0}\"", file.GetSymlinkTarget().FullName));
   }
 
   [Action]
@@ -83,12 +83,12 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git push", home: repo);
+    return Console.interactive("git push", home: repo.GetSymlinkTarget());
   }
 
   [Action]
   public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git pull", home: repo);
+    return Console.interactive("git pull", home: repo.GetSymlinkTarget());
   }
 }
