@@ -7,6 +7,10 @@ copy "%SCRIPTS_HOME%\macros.installer" "%DROPBOX%\Software\Windows\Scripts\Macro
 rd "%DROPBOX%\Software\Windows\Scripts\Scripts" /S /Q > NUL
 xcopy "%SCRIPTS_HOME%" "%DROPBOX%\Software\Windows\Scripts\Scripts" /H /I /E
 
+regedit /s "%SCRIPTS_HOME%\myke-far.reg"
+copy "%SCRIPTS_HOME%\myke-backend.el" "%HOME%\.emacs.d\solutions\myke-backend.el" /Y
+copy "%SCRIPTS_HOME%\myke-frontend.el" "%HOME%\.emacs.d\solutions\myke-frontend.el" /Y
+
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\console.reg" "HKEY_CURRENT_USER\Console"
 call "%~dp0\save-settings-privacy-enable.bat"
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\settings-public.reg" "HKEY_CURRENT_USER\Software\Far2"
