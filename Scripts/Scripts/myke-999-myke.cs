@@ -22,8 +22,8 @@ public class Myke : Csc {
 
   [Action]
   public override ExitCode compile() {
-    var mykerun = @"%TMP%\myke-self-compile.bat".Expand();
-    File.WriteAllText(mykerun, "@echo off\r\n" + String.Format(@"
+    var mykecompile = @"%TMP%\myke-self-compile.bat".Expand();
+    File.WriteAllText(mykecompile, "@echo off\r\n" + String.Format(@"
       rem Wait for self to exit
       sleep 100
 
@@ -41,7 +41,10 @@ public class Myke : Csc {
 
       exit /b %status%
     ", "%SCRIPTS_HOME%".Expand(), compiler));
-    Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", mykerun);
+
+    if (Config.dryrun) println("cont: " + mykecompile);
+    else Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", mykecompile);
+
     return 0;
   }
 
@@ -83,7 +86,9 @@ public class Myke : Csc {
       exit /b %status%
     ", "%SCRIPTS_HOME%".Expand(), compiler, Config.target, arguments));
 
-    Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", mykerun);
+    if (Config.dryrun) println("cont: " + mykerun);
+    else Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", mykerun);
+
     return 0;
   }
 

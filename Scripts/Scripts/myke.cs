@@ -67,14 +67,7 @@ public class App {
         var accepts = conn != null && conn.accept();
         if (Config.verbose) {
           if (accepts) Console.println("[A]");
-          else {
-            if (!Connectors.lastBindArgsOk) {
-              // [R] is logged directly at bindArgs
-            } else {
-              Console.println("[R]");
-              Console.println("reason: {0}.accept() has returned false", t_conn.name());
-            };
-          }
+          else Console.println("[R]");
         }
 
         if (accepts) {
@@ -424,14 +417,19 @@ public static class Console {
       Console.println();
     }
 
-    var p = new Process();
-    p.StartInfo = psi;
-
-    if (p.Start()) {
-      p.WaitForExit();
-      return p.ExitCode;
-    } else {
+    if (Config.dryrun) {
+      println("exec: {0} {1} at {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
       return -1;
+    } else {
+      var p = new Process();
+      p.StartInfo = psi;
+
+      if (p.Start()) {
+        p.WaitForExit();
+        return p.ExitCode;
+      } else {
+        return -1;
+      }
     }
   }
 
@@ -495,13 +493,18 @@ public static class Console {
       Console.println();
     }
 
-    var p = new Process();
-    p.StartInfo = psi;
-
-    if (p.Start()) {
-      return 0;
-    } else {
+    if (Config.dryrun) {
+      println("shellexec: {0} {1} at {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
       return -1;
+    } else {
+      var p = new Process();
+      p.StartInfo = psi;
+
+      if (p.Start()) {
+        return 0;
+      } else {
+        return -1;
+      }
     }
   }
 
@@ -765,6 +768,7 @@ public static class Config {
   public static ExitCode parse(String[] args) {
     var flags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
     args = args.SkipWhile(arg => arg.StartsWith("/")).ToArray();
+    Config.dryrun = flags.Contains("/D");
     Config.verbose = flags.Contains("/V");
 
     if (flags.Where(flag => flag == "/?").Count() > 0) {
@@ -805,7 +809,7 @@ public static class Help {
   public static void printUsage(String action = null) {
     if (action == null) {
       Console.println();
-      Console.println("myke [/X] [/V] [action] [target] [args...]");
+      Console.println("myke [/D] [/V] [action] [target] [args...]");
       Console.println("  action :  one of \"compile\", \"rebuild\", \"run\", \"repl\", \"test\"; defaults to \"compile\"");
       Console.println("            also supports \"commit\", \"logall\", \"logthis\", \"log\", \"push\", \"pull\"");
       Console.println("  target :  a single file or directory name that will hint what to do next; defaults to \".\"");
@@ -816,7 +820,7 @@ public static class Help {
       Console.println("  args   :  custom data that will be passed to the handler of the command; defaults to \"\"");
       Console.println();
       Console.println("flags:");
-      Console.println("  /X     :  execute the command provided by the command-line; enabled by default");
+      Console.println("  /D     :  dry run, only resolve the connector, but don't do anything; disabled by default");
       Console.println("  /V     :  enables verbose mode of execution; disabled by default");
       Console.println();
       Console.println("see https://raw.github.com/xeno-by/dotwindows/master/Scripts/Scripts for more information");
@@ -970,10 +974,8 @@ public static class Connectors {
     return connector.actions()[action]();
   }
 
-  public static bool lastBindArgsOk = false;
   private static Object[] bindArgs(this MethodBase method) {
     try {
-      lastBindArgsOk = true;
       return method.GetParameters().Select<ParameterInfo, Object>(p => {
         if (p.ParameterType == typeof(FileInfo)) {
           var file = new FileInfo(Config.target);
@@ -993,13 +995,7 @@ public static class Connectors {
           throw new NotSupportedException(String.Format("cannot bind parameter {0} of type {1}", p.Name, p.ParameterType.FullName));
         }
       }).ToArray();
-    } catch (Exception ex) {
-      if (Config.verbose) {
-        Console.println("[R]");
-        Console.println("reason: {0} ({1})", ex.GetType().Name, ex.Message);
-      }
-
-      lastBindArgsOk = false;
+    } catch (Exception) {
       return null;
     }
   }
@@ -1232,7 +1228,7 @@ public class Git : Prj {
   }
 
   public override bool accept() {
-    if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
+    if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand()) && repo.IsEquivalentTo(project)) {
       // oh, I feel uneasy about that, but what else can I do?!
       return true;
     }
