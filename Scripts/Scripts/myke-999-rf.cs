@@ -6,15 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "rf", description =
+[Connector(name = "rf", priority = 999, description =
   "Wraps the development workflow of project Reflection.\r\n" +
   "Uses sbt for everything, but doesn't support tests by design.")]
 
 public class Rf : Sbt {
   public override String project { get { return @"%PROJECTS%\Reflection".Expand(); } }
 
-  public Rf(DirectoryInfo dir = null) : base(dir) {
-  }
+  public Rf() : base() {}
+  public Rf(FileInfo file) : base(file) {}
+  public Rf(DirectoryInfo dir) : base(dir) {}
 
   [Action]
   public override ExitCode test() {

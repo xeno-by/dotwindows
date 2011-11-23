@@ -8,16 +8,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
-[Connector(name = "myke", description =
+[Connector(name = "myke", priority = 999, description =
   "Self-compiler of myke.\r\n" +
   "Is actually capable of replacing itself after being compiled.")]
 
-public class Myke : Ubi {
+public class Myke : Csc {
   public Myke(FileInfo file, Lines lines) : base(file, lines) {
   }
 
   public override bool accept() {
-    return base.accept() && file.Name.StartsWith("myke");
+    return base.accept() && dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand()) && file.Name.StartsWith("myke");
   }
 
   [Action]

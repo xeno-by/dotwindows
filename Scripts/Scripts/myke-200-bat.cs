@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "bat", priority = -1, description =
+[Connector(name = "bat", priority = 200, description =
   "Simply runs Windows batch files (*.bat, *.cmd extensions)")]
 
 public class Bat : Git {

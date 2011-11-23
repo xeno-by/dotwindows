@@ -540,6 +540,106 @@ public static class Env {
   public static String Expand(this String s) {
     return new Regex("%(?<envvar>.*?)%").Replace(s, m => Environment.GetEnvironmentVariable(m.Result("${envvar}")));
   }
+}
+
+public static class Shell {
+  public static String ShellEscape(this String s) {
+    return s.Contains(" ") ? "\"" + s + "\"" : s;
+  }
+}
+
+public static class FileSystem {
+  public static bool IsEquivalentTo(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
+    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
+    return fsi1.GetRealPath().FullName.ToUpper() == fsi2.GetRealPath().FullName.ToUpper();
+  }
+
+  public static bool IsEquivalentTo(this FileSystemInfo fsi1, String fsi2) {
+    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
+    return fsi1.GetRealPath().FullName.ToUpper() == fsi2.GetRealPath().ToUpper();
+  }
+
+  public static bool IsEquivalentTo(this String fsi1, FileSystemInfo fsi2) {
+    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
+    return fsi1.GetRealPath().ToUpper() == fsi2.FullName.GetRealPath().ToUpper();
+  }
+
+  public static bool IsEquivalentTo(this String fsi1, String fsi2) {
+    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
+    return fsi1.GetRealPath().ToUpper() == fsi2.GetRealPath().ToUpper();
+  }
+
+  public static bool IsParentOf(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
+    if (fsi1 == null || fsi2 == null) return false;
+    return fsi2.GetRealPath().FullName.ToUpper().StartsWith(fsi1.GetRealPath().FullName.ToUpper());
+  }
+
+  public static bool IsParentOf(this FileSystemInfo fsi1, String fsi2) {
+    if (fsi1 == null || fsi2 == null) return false;
+    return fsi2.GetRealPath().ToUpper().StartsWith(fsi1.GetRealPath().FullName.ToUpper());
+  }
+
+  public static bool IsParentOf(this String fsi1, FileSystemInfo fsi2) {
+    if (fsi1 == null || fsi2 == null) return false;
+    return fsi2.GetRealPath().FullName.ToUpper().StartsWith(fsi1.GetRealPath().ToUpper());
+  }
+
+  public static bool IsParentOf(this String fsi1, String fsi2) {
+    if (fsi1 == null || fsi2 == null) return false;
+    return fsi2.GetRealPath().ToUpper().StartsWith(fsi1.GetRealPath().ToUpper());
+  }
+
+  public static bool IsParentOrEquivalentTo(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
+    return fsi1.IsParentOf(fsi2) || fsi1.IsEquivalentTo(fsi2);
+  }
+
+  public static bool IsParentOrEquivalentTo(this FileSystemInfo fsi1, String fsi2) {
+    return fsi1.IsParentOf(fsi2) || fsi1.IsEquivalentTo(fsi2);
+  }
+
+  public static bool IsParentOrEquivalentTo(this String fsi1, FileSystemInfo fsi2) {
+    return fsi1.IsParentOf(fsi2) || fsi1.IsEquivalentTo(fsi2);
+  }
+
+  public static bool IsParentOrEquivalentTo(this String fsi1, String fsi2) {
+    return fsi1.IsParentOf(fsi2) || fsi1.IsEquivalentTo(fsi2);
+  }
+
+  public static bool IsChildOf(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
+    if (fsi1 == null || fsi2 == null) return false;
+    return fsi2.IsParentOf(fsi1);
+  }
+
+  public static bool IsChildOf(this FileSystemInfo fsi1, String fsi2) {
+    if (fsi1 == null || fsi2 == null) return false;
+    return fsi2.IsParentOf(fsi1);
+  }
+
+  public static bool IsChildOf(this String fsi1, FileSystemInfo fsi2) {
+    if (fsi1 == null || fsi2 == null) return false;
+    return fsi2.IsParentOf(fsi1);
+  }
+
+  public static bool IsChildOf(this String fsi1, String fsi2) {
+    if (fsi1 == null || fsi2 == null) return false;
+    return fsi2.IsParentOf(fsi1);
+  }
+
+  public static bool IsChildOrEquivalentTo(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
+    return fsi1.IsChildOf(fsi2) || fsi1.IsEquivalentTo(fsi2);
+  }
+
+  public static bool IsChildOrEquivalentTo(this FileSystemInfo fsi1, String fsi2) {
+    return fsi1.IsChildOf(fsi2) || fsi1.IsEquivalentTo(fsi2);
+  }
+
+  public static bool IsChildOrEquivalentTo(this String fsi1, FileSystemInfo fsi2) {
+    return fsi1.IsChildOf(fsi2) || fsi1.IsEquivalentTo(fsi2);
+  }
+
+  public static bool IsChildOrEquivalentTo(this String fsi1, String fsi2) {
+    return fsi1.IsChildOf(fsi2) || fsi1.IsEquivalentTo(fsi2);
+  }
 
   [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
   private static extern int GetShortPathName([MarshalAs(UnmanagedType.LPTStr)] String path, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder shortPath, int shortPathLength);
@@ -651,34 +751,6 @@ public static class Env {
     if (buf[0] == '\\' && buf[1] == '\\' && buf[2] == '?' && buf[3] == '\\')
     return buf.ToString().Substring(4);
     else return buf.ToString();
-  }
-}
-
-public static class Shell {
-  public static String ShellEscape(this String s) {
-    return s.Contains(" ") ? "\"" + s + "\"" : s;
-  }
-}
-
-public static class FileSystem {
-  public static bool EquivalentTo(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
-    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
-    return fsi1.GetRealPath().FullName.ToUpper() == fsi2.GetRealPath().FullName.ToUpper();
-  }
-
-  public static bool EquivalentTo(this FileSystemInfo fsi1, String fsi2) {
-    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
-    return fsi1.GetRealPath().FullName.ToUpper() == fsi2.GetRealPath().ToUpper();
-  }
-
-  public static bool EquivalentTo(this String fsi1, FileSystemInfo fsi2) {
-    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
-    return fsi1.GetRealPath().ToUpper() == fsi2.FullName.GetRealPath().ToUpper();
-  }
-
-  public static bool EquivalentTo(this String fsi1, String fsi2) {
-    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
-    return fsi1.GetRealPath().ToUpper() == fsi2.GetRealPath().ToUpper();
   }
 }
 
@@ -880,8 +952,11 @@ public static class Connectors {
   }
 
   public static Object instantiate(this Type connector) {
-    var ctor = connector.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(ctor1 => ctor1.GetParameters().Length > 0).Single();
-    var args = ctor.bindArgs();
+    var ctors = connector.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(ctor1 => ctor1.GetParameters().Length > 0).ToList();
+    var binds = ctors.ToDictionary(ctor1 => ctor1, ctor1 => ctor1.bindArgs());
+    var bind = binds.Where(kvp => kvp.Value != null).SingleOrDefault();
+    var ctor = bind.Key;
+    var args = bind.Value;
     return args == null ? null : ctor.Invoke(args);
   }
 
@@ -1025,5 +1100,183 @@ public class Arguments : BaseList<String> {
 
   public override String ToString() {
     return String.Join(", ", arguments.Select(arg => arg.ShellEscape()));
+  }
+}
+
+
+public abstract class Prj {
+  public FileInfo file;
+  public DirectoryInfo dir;
+
+  public Prj() : this((DirectoryInfo)null) {
+  }
+
+  public Prj(FileInfo file) {
+    this.file = file;
+    this.dir = file == null ? null : file.Directory;
+  }
+
+  public Prj(DirectoryInfo dir) {
+    this.file = null;
+    this.dir = dir ?? (project == null ? null : new DirectoryInfo(project));
+  }
+
+  public virtual String project { get { return null; } }
+
+  public virtual DirectoryInfo root { get {
+    if (project != null) {
+      return new DirectoryInfo(project);
+    }
+
+    return new DirectoryInfo(".");
+  } }
+
+  public virtual bool accept() {
+    if (project != null) {
+      return dir.IsChildOrEquivalentTo(project);
+    }
+
+    return false;
+  }
+
+  protected static ExitCode print(String format, params Object[] objs) {
+    Console.print(format, objs);
+    return 0;
+  }
+
+  protected static ExitCode print(String obj) {
+    Console.print(obj);
+    return 0;
+  }
+
+  protected static ExitCode print(Object obj) {
+    Console.print(obj);
+    return 0;
+  }
+
+  protected static ExitCode println(String format, params Object[] objs) {
+    Console.println(format, objs);
+    return 0;
+  }
+
+  protected static ExitCode println(String obj) {
+    Console.println(obj);
+    return 0;
+  }
+
+  protected static ExitCode println(Object obj) {
+    Console.println(obj);
+    return 0;
+  }
+
+  protected static ExitCode println() {
+    Console.println();
+    return 0;
+  }
+}
+
+[Connector(name = "git", priority = 100, description =
+  "Provides basic version control services for files/directories under Git source control")]
+
+public class Git : Prj {
+  public override String project { get { return repo == null ? null : repo.FullName; } }
+
+  public Git() : base((DirectoryInfo)null) {}
+  public Git(FileInfo file) : base(file) {}
+  public Git(DirectoryInfo dir) : base(dir) {}
+
+  public override DirectoryInfo root { get {
+    if (project != null) {
+      return new DirectoryInfo(project);
+    }
+
+    if (repo != null) {
+      return repo;
+    }
+
+    return new DirectoryInfo(".");
+  } }
+
+  public DirectoryInfo repo { get {
+    // todo. do we need to cache this?
+    return detectRepo();
+  } }
+
+  public virtual DirectoryInfo detectRepo() {
+    var wannabe = file != null ? file.Directory : dir;
+    if (wannabe.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) return new DirectoryInfo(@"%SOFTWARE%".Expand());
+
+    while (wannabe != null) {
+      var gitIndex = wannabe.GetDirectories().FirstOrDefault(child => child.Name == ".git");
+      if (gitIndex != null) return wannabe;
+      wannabe = wannabe.Parent;
+    }
+
+    return null;
+  }
+
+  public virtual bool verifyRepo() {
+    if (repo == null) {
+      Console.println("error: {0} is not under Git repository", file != null ? file.FullName : dir.FullName);
+      Console.print("Create the repo with the project root (y/n)? ");
+      var answer = Console.readln();
+      if (answer == "" || answer.ToLower() == "y" || answer.ToLower() == "yes") {
+        Console.batch("git init", home: root);
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  }
+
+  public override bool accept() {
+    if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
+      // oh, I feel uneasy about that, but what else can I do?!
+      return true;
+    }
+
+    return base.accept();
+  }
+
+  [Action]
+  public virtual ExitCode commit() {
+    if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
+      var status = Console.batch("save-settings.bat");
+      if (status != 0) return -1;
+    }
+
+    if (!verifyRepo()) return -1;
+    return Console.ui(String.Format("tgit commit \"{0}\"", repo.GetRealPath().FullName));
+  }
+
+  [Action]
+  public virtual ExitCode logall() {
+    if (!verifyRepo()) return -1;
+    return Console.ui(String.Format("tgit log \"{0}\"", repo.GetRealPath().FullName));
+  }
+
+  [Action]
+  public virtual ExitCode logthis() {
+    if (!verifyRepo()) return -1;
+    return Console.ui(String.Format("tgit log \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
+  }
+
+  [Action]
+  public virtual ExitCode log() {
+    return logall();
+  }
+
+  [Action]
+  public virtual ExitCode push() {
+    if (!verifyRepo()) return -1;
+    return Console.interactive("git push", home: repo.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode pull() {
+    if (!verifyRepo()) return -1;
+    return Console.interactive("git pull", home: repo.GetRealPath());
   }
 }

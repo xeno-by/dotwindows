@@ -10,15 +10,16 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-[Connector(name = "kep", description =
+[Connector(name = "kep", priority = 999, description =
   "Wraps the development workflow of project Kepler.\r\n" +
   "Uses ant for building, itself for a repl, runs Reflection and doesn't support tests yet.")]
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
 
-  public Kep(DirectoryInfo dir = null) : base(dir) {
-  }
+  public Kep() : base() {}
+  public Kep(FileInfo file) : base(file) {}
+  public Kep(DirectoryInfo dir) : base(dir) {}
 
   [Action]
   public virtual ExitCode rebuild() {

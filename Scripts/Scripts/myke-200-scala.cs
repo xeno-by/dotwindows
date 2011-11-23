@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "scala", priority = -1, description =
+[Connector(name = "scala", priority = 200, description =
   "Builds a scala program using the command-line provided in the first line of the target file.\r\n" +
   "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using sbt.")]
 
@@ -21,7 +21,7 @@ public class Scala : Git {
     var shebang = lines.ElementAtOrDefault(0) ?? "";
     var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
     var m = r.Match(shebang);
-    return m.Success ? m.Result("${commandline}") : null;
+    return m.Success ? m.Result("${commandline}") : ("scalac -deprecation " + file.FullName);
   } }
 
   public override bool accept() {
