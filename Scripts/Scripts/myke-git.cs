@@ -60,19 +60,19 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode commit() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit commit \"{0}\"", repo.GetSymlinkTarget().FullName));
+    return Console.ui(String.Format("tgit commit \"{0}\"", repo.GetRealPath().FullName));
   }
 
   [Action]
   public virtual ExitCode logall() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit log \"{0}\"", repo.GetSymlinkTarget().FullName));
+    return Console.ui(String.Format("tgit log \"{0}\"", repo.GetRealPath().FullName));
   }
 
   [Action]
   public virtual ExitCode logthis() {
     if (!verifyRepo()) return -1;
-    return Console.ui(String.Format("tgit log \"{0}\"", file.GetSymlinkTarget().FullName));
+    return Console.ui(String.Format("tgit log \"{0}\"", file.GetRealPath().FullName));
   }
 
   [Action]
@@ -83,12 +83,12 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git push", home: repo.GetSymlinkTarget());
+    return Console.interactive("git push", home: repo.GetRealPath());
   }
 
   [Action]
   public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git pull", home: repo.GetSymlinkTarget());
+    return Console.interactive("git pull", home: repo.GetRealPath());
   }
 }

@@ -561,6 +561,34 @@ public static class Env {
     return buf.ToString();
   }
 
+  public static bool IsSymlink(this FileSystemInfo fsi) {
+    if (fsi == null) return false;
+    if (fsi is FileInfo) return ((FileInfo)fsi).IsSymlink();
+    if (fsi is DirectoryInfo) return ((DirectoryInfo)fsi).IsSymlink();
+    throw new NotSupportedException(String.Format("File system object {0} is not supported", fsi.GetType()));
+  }
+
+  public static bool IsSymlink(this FileInfo file) {
+    if (file == null) return false;
+    return file.Attributes.HasFlag(FileAttributes.ReparsePoint);
+  }
+
+  public static bool IsSymlink(this DirectoryInfo dir) {
+    if (dir == null) return false;
+    return dir.Attributes.HasFlag(FileAttributes.ReparsePoint);
+  }
+
+  public static bool IsSymlink(this String path) {
+    if (path == null) return false;
+    var file = new FileInfo(path);
+    if (file.Exists) return file.IsSymlink();
+
+    var dir = new DirectoryInfo(path);
+    if (dir.Exists) return dir.IsSymlink();
+
+    return false;
+  }
+
   // copy/pasted from http://chrisbensen.blogspot.com/2010/06/getfinalpathnamebyhandle.html
   private const int FILE_SHARE_READ = 1;
   private const int FILE_SHARE_WRITE = 2;
@@ -575,40 +603,54 @@ public static class Env {
   [DllImport("kernel32.dll", EntryPoint = "CreateFileW", CharSet = CharSet.Unicode, SetLastError = true)]
   private static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, int dwShareMode, IntPtr SecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
 
-  public static FileInfo GetSymlinkTarget(this FileInfo symlink)
-  {
-    if (!symlink.Attributes.HasFlag(FileAttributes.ReparsePoint)) return symlink;
-
-    SafeFileHandle directoryHandle = CreateFile(symlink.FullName, 0, 2, System.IntPtr.Zero, CREATION_DISPOSITION_OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, System.IntPtr.Zero);
-    if(directoryHandle.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
-
-    StringBuilder path = new StringBuilder(512);
-    int size = GetFinalPathNameByHandle(directoryHandle.DangerousGetHandle(), path, path.Capacity, 0);
-    if (size<0) throw new Win32Exception(Marshal.GetLastWin32Error());
-
-    // The remarks section of GetFinalPathNameByHandle mentions the return being prefixed with "\\?\"
-    // More information about "\\?\" here -> http://msdn.microsoft.com/en-us/library/aa365247(v=VS.85).aspx
-    if (path[0] == '\\' && path[1] == '\\' && path[2] == '?' && path[3] == '\\')
-    return new FileInfo(path.ToString().Substring(4));
-    else return new FileInfo(path.ToString());
+  public static FileSystemInfo GetRealPath(this FileSystemInfo fsi) {
+    if (fsi == null) return null;
+    if (fsi is FileInfo) return ((FileInfo)fsi).GetRealPath();
+    if (fsi is DirectoryInfo) return ((DirectoryInfo)fsi).GetRealPath();
+    throw new NotSupportedException(String.Format("File system object {0} is not supported", fsi.GetType()));
   }
 
-  public static DirectoryInfo GetSymlinkTarget(this DirectoryInfo symlink)
-  {
-    if (!symlink.Attributes.HasFlag(FileAttributes.ReparsePoint)) return symlink;
+  public static FileInfo GetRealPath(this FileInfo file) {
+    if (file == null) return null;
+    return new FileInfo(file.FullName.GetRealPath());
+  }
 
-    SafeFileHandle directoryHandle = CreateFile(symlink.FullName, 0, 2, System.IntPtr.Zero, CREATION_DISPOSITION_OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, System.IntPtr.Zero);
-    if(directoryHandle.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
+  public static DirectoryInfo GetRealPath(this DirectoryInfo dir) {
+    if (dir == null) return null;
+    return new DirectoryInfo(dir.FullName.GetRealPath());
+  }
 
-    StringBuilder path = new StringBuilder(512);
-    int size = GetFinalPathNameByHandle(directoryHandle.DangerousGetHandle(), path, path.Capacity, 0);
-    if (size<0) throw new Win32Exception(Marshal.GetLastWin32Error());
+  public static String GetRealPath(this String path) {
+    if (path == null) return null;
+    path = Path.GetFullPath(path);
+
+    for (var parent = Path.GetDirectoryName(path); parent != null; parent = Path.GetDirectoryName(parent)) {
+      if (parent.IsSymlink()) {
+        var realParent = parent.GetRealPath();
+        if (!realParent.EndsWith("\\")) realParent += "\\";
+        if (!parent.EndsWith("\\")) parent += "\\";
+        var relPath = path.Substring(parent.Length);
+        return (realParent + relPath).GetRealPath();
+      }
+    }
+
+    var file = new FileInfo(path);
+    if (file.Exists && !file.Attributes.HasFlag(FileAttributes.ReparsePoint)) return path;
+    var dir = new DirectoryInfo(path);
+    if (dir.Exists && !dir.Attributes.HasFlag(FileAttributes.ReparsePoint)) return path;
+
+    var directoryHandle = CreateFile(path, 0, 2, IntPtr.Zero, CREATION_DISPOSITION_OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, IntPtr.Zero);
+    if (directoryHandle.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
+
+    var buf = new StringBuilder(512);
+    int size = GetFinalPathNameByHandle(directoryHandle.DangerousGetHandle(), buf, buf.Capacity, 0);
+    if (size < 0) throw new Win32Exception(Marshal.GetLastWin32Error());
 
     // The remarks section of GetFinalPathNameByHandle mentions the return being prefixed with "\\?\"
     // More information about "\\?\" here -> http://msdn.microsoft.com/en-us/library/aa365247(v=VS.85).aspx
-    if (path[0] == '\\' && path[1] == '\\' && path[2] == '?' && path[3] == '\\')
-    return new DirectoryInfo(path.ToString().Substring(4));
-    else return new DirectoryInfo(path.ToString());
+    if (buf[0] == '\\' && buf[1] == '\\' && buf[2] == '?' && buf[3] == '\\')
+    return buf.ToString().Substring(4);
+    else return buf.ToString();
   }
 }
 
@@ -621,17 +663,22 @@ public static class Shell {
 public static class FileSystem {
   public static bool EquivalentTo(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
     if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
-    return Path.GetFullPath(fsi1.FullName).ToUpper() == Path.GetFullPath(fsi2.FullName).ToUpper();
+    return fsi1.GetRealPath().FullName.ToUpper() == fsi2.GetRealPath().FullName.ToUpper();
   }
 
   public static bool EquivalentTo(this FileSystemInfo fsi1, String fsi2) {
     if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
-    return Path.GetFullPath(fsi1.FullName).ToUpper() == Path.GetFullPath(fsi2).ToUpper();
+    return fsi1.GetRealPath().FullName.ToUpper() == fsi2.GetRealPath().ToUpper();
   }
 
   public static bool EquivalentTo(this String fsi1, FileSystemInfo fsi2) {
     if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
-    return Path.GetFullPath(fsi1).ToUpper() == Path.GetFullPath(fsi2.FullName).ToUpper();
+    return fsi1.GetRealPath().ToUpper() == fsi2.FullName.GetRealPath().ToUpper();
+  }
+
+  public static bool EquivalentTo(this String fsi1, String fsi2) {
+    if (fsi1 == null || fsi2 == null) return fsi1 == null && fsi2 == null;
+    return fsi1.GetRealPath().ToUpper() == fsi2.GetRealPath().ToUpper();
   }
 }
 
