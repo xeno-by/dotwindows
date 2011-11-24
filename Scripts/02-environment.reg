@@ -13,7 +13,7 @@ Windows Registry Editor Version 5.00
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment]
 "ANT_HOME"="C:\\PROGRA~2\\ant\\"
-"ANT_OPTS"="-Xss128m -Xms2048m -Xmx2048m -XX:+UseParallelGC -XX:PermSize=256M -XX:MaxPermSize=512M"
+"ANT_OPTS"="-Xss128m -Xms2048m -Xmx2048m -XX:+UseParallelGC -XX:MaxPermSize=256M"
 "CLASSPATH"=".;C:\\PROGRA~2\\QUICKT~1\\QTSystem\\QTJava.zip;c:\\PROGRA~1\\Java\\JDK16~1.0_2\\lib\\tools.jar;C:\\Program Files (x86)\\QuickTime\\QTSystem\\QTJava.zip"
 "ComSpec"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,\
   74,00,25,00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,63,\
