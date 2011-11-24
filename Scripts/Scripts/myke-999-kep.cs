@@ -23,7 +23,7 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode rebuild() {
-    var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
+    var status = Console.batch("ant clean -buildfile build.xml", home: root);
     return status && println() && compile();
   }
 
@@ -40,8 +40,15 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    var status = compile();
-    return status && println() && new Rf().run(arguments);
+    var status = compile() && println();
+    if (status != 0) return -1;
+
+    var options = new List<String>();
+    options.Add("-deprecation");
+    options.Add("-Yreify-copypaste");
+    Func<String> readArguments = () => Console.readln(prompt: "Lift", history: String.Format("lift {0}", root.FullName));
+    options.Add("-e \"scala.reflect.Code.lift{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
+    return Console.batch("scala " + String.Join(" ", options.ToArray()));
   }
 
   [Action]

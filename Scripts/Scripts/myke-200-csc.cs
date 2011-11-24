@@ -37,7 +37,7 @@ public class Csc : Git {
   } }
 
   public override bool accept() {
-    return base.accept() && file.Extension == ".cs" && compiler != null;
+    return file.Extension == ".cs" && compiler != null;
   }
 
   [Action]

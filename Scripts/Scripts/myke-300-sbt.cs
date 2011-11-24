@@ -137,6 +137,7 @@ public class Sbt : Git {
 
     var scala = (info.scalahome + "\\bin\\scala.bat").GetShortPath();
     var options = new List<String>();
+    options.Add("-deprecation");
     options.Add("-classpath " + String.Join(";", info.classpath.Select(path => path.GetShortPath())));
     options.Add(mainclass);
     Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", sbtroot.FullName));

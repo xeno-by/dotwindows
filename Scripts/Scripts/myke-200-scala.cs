@@ -25,7 +25,7 @@ public class Scala : Git {
   } }
 
   public override bool accept() {
-    return base.accept() && file.Extension == ".scala" && compiler != null;
+    return file.Extension == ".scala" && compiler != null;
   }
 
   [Action]

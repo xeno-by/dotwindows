@@ -16,7 +16,7 @@ public class Tex : Git {
   public Tex(DirectoryInfo dir) : base(dir) {}
 
   public override bool accept() {
-    return base.accept() && input != null;
+    return input != null;
   }
 
   public virtual FileInfo input { get {
