@@ -411,14 +411,21 @@ public static class Console {
   }
 
   private static ExitCode cmd(String command, DirectoryInfo home = null) {
+    var script = Path.GetTempFileName() + ".bat";
+    if (!Config.verbose) File.AppendAllText(script, "@echo off" + "\r\n");
+    File.AppendAllText(script, "cd /D \"" + (home ?? new DirectoryInfo(".")).FullName + "\"" + "\r\n");
+    File.AppendAllText(script, command + "\r\n");
+    File.AppendAllText(script, "exit /b %errorlevel%");
+
     var psi = new ProcessStartInfo();
-    psi.FileName = "cmd.exe";
-    psi.Arguments = "/C " + command;
+    psi.FileName = script;
     psi.WorkingDirectory = (home ?? new DirectoryInfo(".")).FullName;
     psi.UseShellExecute = false;
 
     if (Config.verbose) {
       Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
+      Console.println("script at {0} is:", script);
+      Console.println(File.ReadAllText(script));
       Console.println();
       Console.println("========================================");
       Console.println("The command will now be executed by cmd.exe");
