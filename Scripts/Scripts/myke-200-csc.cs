@@ -18,14 +18,14 @@ public class Csc : Git {
   }
 
   public virtual bool isconsole { get {
-    return lines.Any(line => line.Contains("[STAThread]"));
+    return !lines.Any(line => line.Contains("[STAThread]"));
   } }
 
   public virtual String compiler { get {
     var shebang = lines.ElementAtOrDefault(0) ?? "";
     var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
     var m = r.Match(shebang);
-    return m.Success ? m.Result("${commandline}") : ("csc " + (isconsole ? "/t:exe" : "/t:winexe") + file.FullName);
+    return m.Success ? m.Result("${commandline}") : ("csc " + (isconsole ? "/t:exe " : "/t:winexe ") + file.Name);
   } }
 
   public virtual FileInfo exe { get {

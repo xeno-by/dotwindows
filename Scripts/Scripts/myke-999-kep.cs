@@ -49,7 +49,7 @@ public class Kep : Git {
     if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
       var scala = new Scala(file, lines);
-      return scala.run();
+      return scala.run(arguments);
     } else {
       var status = compile() && println();
       if (status != 0) return -1;
