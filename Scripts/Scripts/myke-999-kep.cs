@@ -29,7 +29,13 @@ public class Kep : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    return Console.batch("ant build -buildfile build.xml", home: root);
+    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
+      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
+      var scala = new Scala(file, lines);
+      return scala.compile();
+    } else {
+      return Console.batch("ant build -buildfile build.xml", home: root);
+    }
   }
 
   [Action]
@@ -40,15 +46,21 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    var status = compile() && println();
-    if (status != 0) return -1;
+    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
+      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
+      var scala = new Scala(file, lines);
+      return scala.run();
+    } else {
+      var status = compile() && println();
+      if (status != 0) return -1;
 
-    var options = new List<String>();
-    options.Add("-deprecation");
-    options.Add("-Yreify-copypaste");
-    Func<String> readArguments = () => Console.readln(prompt: "Lift", history: String.Format("lift {0}", root.FullName));
-    options.Add("-e \"scala.reflect.Code.lift{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
-    return Console.batch("scala " + String.Join(" ", options.ToArray()));
+      var options = new List<String>();
+      options.Add("-deprecation");
+      options.Add("-Yreify-copypaste");
+      Func<String> readArguments = () => Console.readln(prompt: "Lift", history: String.Format("lift {0}", root.FullName));
+      options.Add("-e \"scala.reflect.Code.lift{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
+      return Console.batch("scala " + String.Join(" ", options.ToArray()));
+    }
   }
 
   [Action]
