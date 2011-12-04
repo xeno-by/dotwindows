@@ -41,8 +41,8 @@ public class Scala : Git {
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    var status = compile();
-    if (status != 0) return status;
+    //var status = compile();
+    //if (status != 0) return status;
 
     Func<String> readMainclass = () => Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", file.FullName));
     Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
