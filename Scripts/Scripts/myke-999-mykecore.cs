@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
-[Connector(name = "myke-core", priority = 999, description =
+[Connector(name = "myke-core", priority = 999.1, description =
   "Self-compiler of myke.\r\n" +
   "Is actually capable of replacing itself after being compiled.")]
 

@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.Win32;
 
-[Connector(name = "myke-plugins", priority = 999, description =
+[Connector(name = "myke-plugins", priority = 999.1, description =
   "Deploys myke plugins (Far Manager, Emacs).")]
 
 public class MykePlugins : Git {

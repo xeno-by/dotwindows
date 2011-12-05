@@ -83,7 +83,15 @@ public class Kep : Git {
   }
 
   [Action]
-  public virtual ExitCode test() {
+  public virtual ExitCode compileTest() {
+    if (current == null) return -1;
+    var lines = new Lines(current, File.ReadAllLines(current.FullName).ToList());
+    var scala = new Scala(current, lines);
+    return scala.compile();
+  }
+
+  [Action]
+  public virtual ExitCode runTest() {
     if (current == null) return -1;
     var lines = new Lines(current, File.ReadAllLines(current.FullName).ToList());
     var scala = new Scala(current, lines);

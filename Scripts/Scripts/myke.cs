@@ -923,7 +923,23 @@ public static class Connectors {
 
   public static String name(this MethodInfo meth) {
     var attr = meth.GetCustomAttributes(typeof(ActionAttribute), true).Cast<ActionAttribute>().Single();
-    return attr.name ?? meth.Name;
+    if (attr.name != null) return attr.name;
+
+    var name = meth.Name;
+    var buf = new StringBuilder();
+    for (var i = 0; i < name.Length; ++i) {
+      var prev = i == 0 ? '\0' : name[i - 1];
+      var curr = name[i];
+      var next = i == name.Length - 1 ? '\0' : name[i + 1];
+      if (Char.IsLower(prev) && Char.IsUpper(curr) && !Char.IsUpper(next)) {
+        buf.Append("-");
+        buf.Append(Char.ToLower(curr));
+      } else {
+        buf.Append(curr);
+      }
+    }
+
+    return buf.ToString();
   }
 
   public static String description(this Object connector) {
@@ -948,11 +964,7 @@ public static class Connectors {
 
   public static Dictionary<String, MethodInfo> actions(this Type connector) {
     var methods = connector.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.IsDefined(typeof(ActionAttribute), true)).ToList();
-
-    var map = methods.ToDictionary(meth => {
-      var attr = meth.GetCustomAttributes(typeof(ActionAttribute), true).Cast<ActionAttribute>().Single();
-      return attr.name ?? meth.Name;
-    }, meth => meth);
+    var map = methods.ToDictionary(meth => meth.name(), meth => meth);
 
     methods.ForEach(meth => {
       var attr = meth.GetCustomAttributes(typeof(DefaultAttribute), true).Cast<DefaultAttribute>().SingleOrDefault();

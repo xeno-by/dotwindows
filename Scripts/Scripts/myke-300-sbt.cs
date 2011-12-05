@@ -146,7 +146,13 @@ public class Sbt : Git {
   }
 
   [Action]
-  public virtual ExitCode test() {
+  public virtual ExitCode compileTest() {
+    println("error: compilation of tests without running them is not supported");
+    return -1;
+  }
+
+  [Action]
+  public virtual ExitCode runTest() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
     return Console.batch(String.Format("{0} test", preamble), home: root);
   }
