@@ -52,6 +52,7 @@ public class Kep : Git {
     }
 
     var f_current = File.ReadAllLines(dotcurrent.FullName).FirstOrDefault();
+    if (f_current != null) f_current = project + "\\" + f_current;
     if (f_current == null || !File.Exists(f_current)) {
       println("error: file referenced by .current does not exist");
       return null;
