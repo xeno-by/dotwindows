@@ -23,3 +23,6 @@ del "%TMP%\PanelLeft.reg"
 
 regedit /s "%TMP%\PanelRight.reg"
 del "%TMP%\PanelRight.reg"
+
+regedit /s "%TMP%\RegEditor.reg"
+del "%TMP%\RegEditor.reg"

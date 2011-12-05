@@ -8,4 +8,5 @@ regedit /e "%TMP%\SavedDialogHistory.reg" "HKEY_CURRENT_USER\Software\Far2\Saved
 regedit /e "%TMP%\SavedFolderHistory.reg" "HKEY_CURRENT_USER\Software\Far2\SavedFolderHistory"
 regedit /e "%TMP%\PanelLeft.reg" "HKEY_CURRENT_USER\Software\Far2\Panel\Left"
 regedit /e "%TMP%\PanelRight.reg" "HKEY_CURRENT_USER\Software\Far2\Panel\Right"
+regedit /e "%TMP%\RegEditor.reg" "HKEY_CURRENT_USER\Software\Far2\Plugins\RegEditor"
 regedit /s "%~dp0\save-settings-privacy.reg"
