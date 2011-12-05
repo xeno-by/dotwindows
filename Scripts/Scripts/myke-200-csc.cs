@@ -47,15 +47,15 @@ public class Csc : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    return Console.batch(compiler);
+    return Console.batch(compiler, home: root);
   }
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    //var status = compile() && (exe != null && exe.Exists);
-    //if (status != 0) return status;
+    var status = compile();
+    if (status != 0) return -1;
 
     Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", exe.FullName));
-    return Console.interactive(exe.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()));
+    return Console.interactive(exe.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()), home: root);
   }
 }

@@ -32,11 +32,11 @@ public class Tex : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    return Console.batch("pdflatex " + input);
+    return Console.batch("pdflatex " + input, home: root);
   }
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    return compile() && Console.ui("\"" + output.FullName + "\"");
+    return compile() && Console.ui("\"" + output.FullName + "\"", home: root);
   }
 }

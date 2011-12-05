@@ -43,13 +43,13 @@ public class Sbt : Git {
   [Action]
   public virtual ExitCode rebuild() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} clean compile", preamble), home: sbtroot);
+    return Console.batch(String.Format("{0} clean compile", preamble), home: root);
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} compile", preamble), home: sbtroot);
+    return Console.batch(String.Format("{0} compile", preamble), home: root);
   }
 
   private class ProjectInfo {
@@ -63,7 +63,7 @@ public class Sbt : Git {
     if (log.Exists) log.Delete();
 
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    Console.batch(String.Format("{0} compile \"show runtime:scala-home\" \"show runtime:dependency-classpath\" \"show discovered-main-classes\" | tee {1}", preamble, log.FullName), home: sbtroot);
+    Console.batch(String.Format("{0} compile \"show runtime:scala-home\" \"show runtime:dependency-classpath\" \"show discovered-main-classes\" | tee {1}", preamble, log.FullName), home: root);
 
     if (!log.Exists) return null;
     var lines = File.ReadAllLines(log.FullName);
@@ -127,7 +127,7 @@ public class Sbt : Git {
       mainclass = info.mainclasses[0];
     } else {
       Console.println("Please, select one of the detected mainclasses: {0} or {1}", String.Join(", ", info.mainclasses.Take(info.mainclasses.Count() - 1)), info.mainclasses[info.mainclasses.Count() - 1]);
-      Func<String> readMainclass = () => Console.readln(prompt: "Mainclass", history: String.Format("mainclass {0}", sbtroot.FullName));
+      Func<String> readMainclass = () => Console.readln(prompt: "Mainclass", history: String.Format("mainclass {0}", root.FullName));
       mainclass = readMainclass();
       if (mainclass == String.Empty) {
         Console.println("error: mainclass cannot be empty");
@@ -140,7 +140,7 @@ public class Sbt : Git {
     options.Add("-deprecation");
     options.Add("-classpath " + String.Join(";", info.classpath.Select(path => path.GetShortPath())));
     options.Add(mainclass);
-    Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", sbtroot.FullName));
+    Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", root.FullName));
     options.Add(arguments.Count > 0 ? arguments.ToString() : readArguments());
     return Console.interactive(scala + " " + String.Join(" ", options.ToArray()));
   }
@@ -148,6 +148,6 @@ public class Sbt : Git {
   [Action]
   public virtual ExitCode test() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} test", preamble), home: sbtroot);
+    return Console.batch(String.Format("{0} test", preamble), home: root);
   }
 }

@@ -44,41 +44,48 @@ public class Kep : Git {
     return status && println() && Console.interactive(@"build\pack\bin\scala.bat -deprecation", home: root);
   }
 
+  public virtual FileInfo current { get {
+    var dotcurrent = new FileInfo(root + "\\.current");
+    if (!dotcurrent.Exists) {
+      println("error: .current file not found");
+      return null;
+    }
+
+    var f_current = File.ReadAllLines(dotcurrent.FullName).FirstOrDefault();
+    if (f_current == null || !File.Exists(f_current)) {
+      println("error: file referenced by .current does not exist");
+      return null;
+    }
+
+    return new FileInfo(f_current);
+  } }
+
   [Action]
   public virtual ExitCode run(Arguments arguments) {
     if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
       var scala = new Scala(file, lines);
-      return scala.run(arguments);
+      return scala.run("Test", "");
     } else {
-      //var status = compile() && println();
-      //if (status != 0) return -1;
+      //var options = new List<String>();
+      //options.Add("-deprecation");
+      //options.Add("-Yreify-copypaste");
+      //Func<String> readArguments = () => Console.readln(prompt: "Lift", history: String.Format("lift {0}", root.FullName));
+      //options.Add("-e \"scala.reflect.Code.lift{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
+      //return Console.batch("scala " + String.Join(" ", options.ToArray()));
 
-      var options = new List<String>();
-      options.Add("-deprecation");
-      options.Add("-Yreify-copypaste");
-      Func<String> readArguments = () => Console.readln(prompt: "Lift", history: String.Format("lift {0}", root.FullName));
-      options.Add("-e \"scala.reflect.Code.lift{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
-      return Console.batch("scala " + String.Join(" ", options.ToArray()));
+      if (current == null) return -1;
+      var lines = new Lines(current, File.ReadAllLines(current.FullName).ToList());
+      var scala = new Scala(current, lines);
+      return scala.run("Test", "");
     }
   }
 
   [Action]
   public virtual ExitCode test() {
-    var project = new FileInfo(root + "\\.project");
-    if (!project.Exists) {
-      println("error: project file not found");
-      return -1;
-    }
-
-    var doc = XDocument.Load(@"C:\Projects\Kepler\.project");
-    if (doc == null) {
-      println("error: project file has unexpected format");
-      return -1;
-    }
-
-    var tests = ((IEnumerable<Object>)doc.XPathEvaluate("//linkedResources//locationURI[starts-with(text(), 'PROJECT_LOC/test/files') and substring(text(), string-length(text()) - 5) = '.scala']/text()")).Cast<XText>().Select(text => text.Value).ToList();
-    var home = new DirectoryInfo(root.FullName + "\\test");
-    return Console.batch("partest " + String.Join(" ", tests.Select(test => test.Substring(17))), home: home);
+    if (current == null) return -1;
+    var lines = new Lines(current, File.ReadAllLines(current.FullName).ToList());
+    var scala = new Scala(current, lines);
+    return scala.compile() && scala.run("Test", "");
   }
 }

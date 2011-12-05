@@ -36,16 +36,17 @@ public class Scala : Git {
   [Default, Action]
   public virtual ExitCode compile() {
     if (Config.verbose) Console.println(compiler);
-    return Console.batch(compiler);
+    return Console.batch(compiler, home: root);
   }
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    //var status = compile();
-    //if (status != 0) return status;
-
     Func<String> readMainclass = () => Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", file.FullName));
     Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
-    return Console.interactive("scala " + " " + readMainclass() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()));
+    return run(readMainclass(), (arguments.Count > 0 ? arguments.ToString() : readArguments()));
+  }
+
+  public virtual ExitCode run(String mainclass, String arguments) {
+    return Console.interactive("scala " + " " + mainclass + " " + arguments, home: root);
   }
 }

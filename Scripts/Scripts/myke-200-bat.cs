@@ -20,6 +20,6 @@ public class Bat : Git {
   [Action]
   public virtual ExitCode run(Arguments arguments) {
     Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
-    return Console.interactive(file.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()));
+    return Console.interactive(file.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()), home: root);
   }
 }

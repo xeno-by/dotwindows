@@ -1140,7 +1140,7 @@ public abstract class Prj {
       return new DirectoryInfo(project);
     }
 
-    return new DirectoryInfo(".");
+    return dir;
   } }
 
   public virtual bool accept() {
@@ -1191,8 +1191,6 @@ public abstract class Prj {
   "Provides basic version control services for files/directories under Git source control")]
 
 public class Git : Prj {
-  public override String project { get { return repo == null ? null : repo.FullName; } }
-
   public Git() : base((DirectoryInfo)null) {}
   public Git(FileInfo file) : base(file) {}
   public Git(DirectoryInfo dir) : base(dir) {}
@@ -1202,11 +1200,12 @@ public class Git : Prj {
       return new DirectoryInfo(project);
     }
 
-    if (repo != null) {
-      return repo;
-    }
+    // note. this leads to dubious results. don't put it here
+    //if (repo != null) {
+    //  return repo;
+    //}
 
-    return new DirectoryInfo(".");
+    return dir;
   } }
 
   public DirectoryInfo repo { get {
@@ -1244,12 +1243,16 @@ public class Git : Prj {
   }
 
   public override bool accept() {
-    if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand()) && repo.IsEquivalentTo(project)) {
+    if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
       // oh, I feel uneasy about that, but what else can I do?!
       return true;
     }
 
-    return base.accept();
+    if (repo != null) {
+      return dir.IsChildOrEquivalentTo(repo);
+    }
+
+    return false;
   }
 
   [Action]

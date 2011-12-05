@@ -95,6 +95,6 @@ public class MykeCore : Csc {
   [Action]
   public virtual ExitCode runWithoutCompile(Arguments arguments) {
     Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", exe.FullName));
-    return Console.interactive(exe.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()));
+    return Console.interactive(exe.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()), home: root);
   }
 }
