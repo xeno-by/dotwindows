@@ -1260,6 +1260,10 @@ public class Git : Prj {
       return true;
     }
 
+    if (project != null) {
+      return dir.IsChildOrEquivalentTo(project);
+    }
+
     if (repo != null) {
       return dir.IsChildOrEquivalentTo(repo);
     }
