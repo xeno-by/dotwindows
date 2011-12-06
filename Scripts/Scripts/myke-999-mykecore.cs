@@ -72,7 +72,7 @@ public class MykeCore : Csc {
       regedit /s %TMP%\mykestatus.reg
       if not %status% == 0 exit /b %status%
 
-      myke runWithoutCompile ""{2}"" {3}
+      myke run-without-compile ""{2}"" {3}
       set status=%errorlevel%
 
       echo Windows Registry Editor Version 5.00 > %TMP%\mykestatus.reg

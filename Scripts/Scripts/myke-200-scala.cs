@@ -39,10 +39,23 @@ public class Scala : Git {
     return Console.batch(compiler, home: root);
   }
 
+  public virtual String inferMainclass() {
+    var mains = lines.Select(line => {
+      var m = Regex.Match(line, @"object\s+(?<name>.*?)\s+extends\s+App");
+      return m.Success ? m.Result("${name}") : null;
+    }).Where(main => main != null).ToList();
+
+    return mains.Count() == 1 ? mains.Single() : null;
+  }
+
+  public virtual String inferArguments() {
+    return lines.Any(line => line.Contains("args")) ? null : "";
+  }
+
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    Func<String> readMainclass = () => Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", file.FullName));
-    Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
+    Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", file.FullName));
+    Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
     return run(readMainclass(), (arguments.Count > 0 ? arguments.ToString() : readArguments()));
   }
 
