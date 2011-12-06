@@ -1,29 +1,32 @@
-(defun my-compile-project (buffer)
-  (myke-invoke "compile" buffer))
+(defun my-compile-project (buffer &optional callback)
+  (myke-invoke "compile" buffer &optional callback))
 
-(defun my-rebuild-project (buffer)
-  (myke-invoke "rebuild" buffer))
+(defun my-rebuild-project (buffer &optional callback)
+  (myke-invoke "rebuild" buffer &optional callback))
 
-(defun my-run-project (buffer)
-  (myke-invoke "run" buffer))
+(defun my-run-project (buffer &optional callback)
+  (myke-invoke "run" buffer &optional callback))
 
-(defun my-repl-project (buffer)
-  (myke-invoke "repl" buffer))
+(defun my-repl-project (buffer &optional callback)
+  (myke-invoke "repl" buffer &optional callback))
 
-(defun my-test-project (buffer)
-  (myke-invoke "test" buffer))
+(defun my-compile-test-project (buffer &optional callback)
+  (myke-invoke "compile-test" buffer &optional callback))
 
-(defun my-commit-project (buffer)
-  (myke-invoke "commit" buffer))
+(defun my-run-test-project (buffer &optional callback)
+  (myke-invoke "run-test" buffer &optional callback))
 
-(defun my-logall-project (buffer)
-  (myke-invoke "logall" buffer))
+(defun my-commit-project (buffer &optional callback)
+  (myke-invoke "commit" buffer &optional callback))
 
-(defun my-logthis-project (buffer)
-  (myke-invoke "logthis" buffer))
+(defun my-logall-project (buffer &optional callback)
+  (myke-invoke "logall" buffer &optional callback))
 
-(defun my-pull-project (buffer)
-  (myke-invoke "pull" buffer))
+(defun my-logthis-project (buffer &optional callback)
+  (myke-invoke "logthis" buffer &optional callback))
 
-(defun my-push-project (buffer)
-  (myke-invoke "push" buffer))
+(defun my-pull-project (buffer &optional callback)
+  (myke-invoke "pull" buffer &optional callback))
+
+(defun my-push-project (buffer &optional callback)
+  (myke-invoke "push" buffer &optional callback))
