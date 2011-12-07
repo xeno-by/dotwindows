@@ -1,6 +1,9 @@
 (defun my-compile-project (buffer &optional callback)
   (myke-invoke "compile" buffer &optional callback))
 
+(defun my-clean-project (buffer &optional callback)
+  (myke-invoke "clean" buffer &optional callback))
+
 (defun my-rebuild-project (buffer &optional callback)
   (myke-invoke "rebuild" buffer &optional callback))
 

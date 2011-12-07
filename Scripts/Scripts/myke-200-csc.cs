@@ -41,8 +41,14 @@ public class Csc : Git {
   }
 
   [Action]
+  public virtual ExitCode clean() {
+    println("not yet implemented");
+    return -1;
+  }
+
+  [Action]
   public virtual ExitCode rebuild() {
-    return compile();
+    return clean() && compile();
   }
 
   [Default, Action]

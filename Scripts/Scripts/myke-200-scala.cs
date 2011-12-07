@@ -29,13 +29,19 @@ public class Scala : Git {
   }
 
   [Action]
+  public virtual ExitCode clean() {
+    dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
+    dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
+    return 0;
+  }
+
+  [Action]
   public virtual ExitCode rebuild() {
-    return compile();
+    return clean() && compile();
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
-    if (Config.verbose) Console.println(compiler);
     return Console.batch(compiler, home: root);
   }
 
@@ -56,10 +62,6 @@ public class Scala : Git {
   public virtual ExitCode run(Arguments arguments) {
     Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", file.FullName));
     Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
-    return run(readMainclass(), (arguments.Count > 0 ? arguments.ToString() : readArguments()));
-  }
-
-  public virtual ExitCode run(String mainclass, String arguments) {
-    return Console.interactive("scala " + " " + mainclass + " " + arguments, home: root);
+    return compile() && Console.interactive("scala " + " " + readMainclass() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()), home: root);
   }
 }

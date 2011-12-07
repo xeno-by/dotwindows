@@ -30,6 +30,22 @@ public class Tex : Git {
     return input != null ? new FileInfo(Path.ChangeExtension(input.FullName, "pdf")) : null;
   } }
 
+  [Action]
+  public virtual ExitCode clean() {
+    dir.GetFiles("*.aux").ToList().ForEach(file => file.Delete());
+    dir.GetFiles("*.log").ToList().ForEach(file => file.Delete());
+    dir.GetFiles("*.nav").ToList().ForEach(file => file.Delete());
+    dir.GetFiles("*.out").ToList().ForEach(file => file.Delete());
+    dir.GetFiles("*.snm").ToList().ForEach(file => file.Delete());
+    dir.GetFiles("*.toc").ToList().ForEach(file => file.Delete());
+    return 0;
+  }
+
+  [Action]
+  public virtual ExitCode rebuild() {
+    return clean() && compile();
+  }
+
   [Default, Action]
   public virtual ExitCode compile() {
     return Console.batch("pdflatex " + input, home: root);

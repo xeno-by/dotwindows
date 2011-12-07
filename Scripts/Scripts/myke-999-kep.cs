@@ -22,9 +22,31 @@ public class Kep : Git {
   public Kep(DirectoryInfo dir) : base(dir) {}
 
   [Action]
+  public virtual ExitCode clean() {
+    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
+      dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
+      dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
+      return 0;
+    } else if (dir != null && dir.FullName.Replace("\\", "/").Contains("/test/")) {
+      dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
+      dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
+      return 0;
+    } else {
+      //return Console.batch("ant clean -buildfile build.xml", home: root);
+      println("error: clean for kepler is disabled to prevent occasional loss of work");
+      return -1;
+    }
+  }
+
+  [Action]
   public virtual ExitCode rebuild() {
-    var status = Console.batch("ant clean -buildfile build.xml", home: root);
-    return status && println() && compile();
+    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
+      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
+      var scala = new Scala(file, lines);
+      return scala.rebuild();
+    } else {
+      return Console.batch("ant clean build -buildfile build.xml", home: root);
+    }
   }
 
   [Default, Action]
@@ -44,21 +66,21 @@ public class Kep : Git {
     return status && println() && Console.interactive(@"build\pack\bin\scala.bat -deprecation", home: root);
   }
 
-  public virtual FileInfo current { get {
-    var dotcurrent = new FileInfo(root + "\\.current");
-    if (!dotcurrent.Exists) {
-      println("error: .current file not found");
+  public virtual FileInfo toRun { get {
+    var dotRun = new FileInfo(root + "\\.run");
+    if (!dotRun.Exists) {
+      println("error: .run file not found");
       return null;
     }
 
-    var f_current = File.ReadAllLines(dotcurrent.FullName).FirstOrDefault();
-    if (f_current != null) f_current = project + "\\" + f_current;
-    if (f_current == null || !File.Exists(f_current)) {
-      println("error: file referenced by .current does not exist");
+    var f_toRun = File.ReadAllLines(dotRun.FullName).FirstOrDefault();
+    if (f_toRun != null) f_toRun = project + "\\" + f_toRun;
+    if (f_toRun == null || !File.Exists(f_toRun)) {
+      println("error: {0}, file referenced by .run does not exist", f_toRun);
       return null;
     }
 
-    return new FileInfo(f_current);
+    return new FileInfo(f_toRun);
   } }
 
   [Action]
@@ -66,7 +88,7 @@ public class Kep : Git {
     if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
       var scala = new Scala(file, lines);
-      return scala.run("Test", "");
+      return scala.run(arguments);
     } else {
       //var options = new List<String>();
       //options.Add("-deprecation");
@@ -75,26 +97,38 @@ public class Kep : Git {
       //options.Add("-e \"scala.reflect.Code.lift{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
       //return Console.batch("scala " + String.Join(" ", options.ToArray()));
 
-      if (current == null) return -1;
-      var lines = new Lines(current, File.ReadAllLines(current.FullName).ToList());
-      var scala = new Scala(current, lines);
-      return scala.run("Test", "");
+      if (toRun == null) return -1;
+      var lines = new Lines(toRun, File.ReadAllLines(toRun.FullName).ToList());
+      var scala = new Scala(toRun, lines);
+      return scala.run(arguments);
     }
   }
 
-  [Action]
-  public virtual ExitCode compileTest() {
-    if (current == null) return -1;
-    var lines = new Lines(current, File.ReadAllLines(current.FullName).ToList());
-    var scala = new Scala(current, lines);
-    return scala.compile();
-  }
+  public virtual List<FileInfo> toTest { get {
+    var dotTest = new FileInfo(root + "\\.test");
+    if (!dotTest.Exists) {
+      println("error: .test file not found");
+      return null;
+    }
+
+    var fs_toTest = File.ReadAllLines(dotTest.FullName).ToList();
+    fs_toTest = fs_toTest.Select(f_toTest => project + "\\" + f_toTest).ToList();
+    foreach (var f_toTest in fs_toTest) {
+      if (f_toTest == null || !File.Exists(f_toTest)) {
+        println("error: {0}, file referenced by .test does not exist", f_toTest);
+        return null;
+      }
+    }
+
+    return fs_toTest.Select(f_toTest => new FileInfo(f_toTest)).ToList();
+  } }
 
   [Action]
   public virtual ExitCode runTest() {
-    if (current == null) return -1;
-    var lines = new Lines(current, File.ReadAllLines(current.FullName).ToList());
-    var scala = new Scala(current, lines);
-    return scala.compile() && scala.run("Test", "");
+    var prefix = project;
+    prefix = prefix.Replace("/", "\\");
+    if (!prefix.EndsWith("\\")) prefix += "\\";
+    var tests = toTest.Select(f => f.FullName.Substring(prefix.Length)).ToList();
+    return Console.batch("partest " + String.Join(" ", tests.ToArray()));
   }
 }

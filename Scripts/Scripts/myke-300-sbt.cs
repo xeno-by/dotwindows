@@ -41,6 +41,12 @@ public class Sbt : Git {
   }
 
   [Action]
+  public virtual ExitCode clean() {
+    var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
+    return Console.batch(String.Format("{0} clean", preamble), home: root);
+  }
+
+  [Action]
   public virtual ExitCode rebuild() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
     return Console.batch(String.Format("{0} clean compile", preamble), home: root);
@@ -143,12 +149,6 @@ public class Sbt : Git {
     Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", root.FullName));
     options.Add(arguments.Count > 0 ? arguments.ToString() : readArguments());
     return Console.interactive(scala + " " + String.Join(" ", options.ToArray()));
-  }
-
-  [Action]
-  public virtual ExitCode compileTest() {
-    println("error: compilation of tests without running them is not supported");
-    return -1;
   }
 
   [Action]
