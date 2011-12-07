@@ -10,9 +10,6 @@
 (defun my-repl-project (buffer &optional callback)
   (myke-invoke "repl" buffer &optional callback))
 
-(defun my-compile-test-project (buffer &optional callback)
-  (myke-invoke "compile-test" buffer &optional callback))
-
 (defun my-run-test-project (buffer &optional callback)
   (myke-invoke "run-test" buffer &optional callback))
 
