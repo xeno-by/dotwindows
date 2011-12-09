@@ -105,6 +105,10 @@ public class App {
 public class ExitCode {
   public int value;
 
+  public static ExitCode operator !(ExitCode c) {
+    return c.value == 0 ? new ExitCode{value = -1} : new ExitCode{value = 0};
+  }
+
   public static bool operator ==(ExitCode c1, ExitCode c2) {
     return Equals(c1, c2);
   }
@@ -410,6 +414,53 @@ public static class Console {
     }
   }
 
+  private static List<String> internalEval(String command, DirectoryInfo home = null) {
+    var script = Path.GetTempFileName() + ".bat";
+    File.AppendAllText(script, "@echo off" + "\r\n"); // always @echo off, so that eval works correctly
+    File.AppendAllText(script, "cd /D \"" + (home ?? new DirectoryInfo(".")).FullName + "\"" + "\r\n");
+    File.AppendAllText(script, command + "\r\n");
+    File.AppendAllText(script, "exit /b %errorlevel%");
+
+    var psi = new ProcessStartInfo();
+    psi.FileName = script;
+    psi.WorkingDirectory = (home ?? new DirectoryInfo(".")).FullName;
+    psi.UseShellExecute = false;
+    psi.RedirectStandardOutput = true;
+    psi.RedirectStandardError = true;
+
+    if (Config.verbose) {
+      Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
+      Console.println("script at {0} is:", script);
+      Console.println(File.ReadAllText(script));
+      Console.println();
+      Console.println("========================================");
+      Console.println("The command will now be executed by cmd.exe");
+      Console.println("========================================");
+      Console.println();
+    }
+
+    if (Config.dryrun) {
+      println("eval: {0} {1} at {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
+      return null;
+    } else {
+      var p = new Process();
+      p.StartInfo = psi;
+
+      var buf = new StringBuilder();
+      p.OutputDataReceived += (sender, args) => { if (args.Data != null) buf.Append(args.Data + "\r\n"); };
+      p.ErrorDataReceived += (sender, args) => { if (args.Data != null) buf.Append(args.Data + "\r\n  "); };
+
+      if (p.Start()) {
+        p.BeginOutputReadLine();
+        p.BeginErrorReadLine();
+        p.WaitForExit();
+        return p.ExitCode == 0 ? buf.ToString().Split(new []{"\r\n"}, StringSplitOptions.None).ToList() : null;
+      } else {
+        return null;
+      }
+    }
+  }
+
   private static ExitCode cmd(String command, DirectoryInfo home = null) {
     var script = Path.GetTempFileName() + ".bat";
     if (!Config.verbose) File.AppendAllText(script, "@echo off" + "\r\n");
@@ -524,6 +575,32 @@ public static class Console {
     }
   }
 
+  public static List<String> eval(String command) {
+    return eval(command, null as DirectoryInfo);
+  }
+
+  public static List<String> eval(String command, String home = null) {
+    return eval(command, home == null ? null as DirectoryInfo : new DirectoryInfo(home));
+  }
+
+  public static List<String> eval(String command, DirectoryInfo home = null) {
+    if (home == null) {
+      home = new DirectoryInfo(".");
+      if (Directory.Exists(Config.target)) home = new DirectoryInfo(Config.target);
+      if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
+    }
+
+    return internalEval(command, home);
+  }
+
+  public static ExitCode batch(String command) {
+    return batch(command, null as DirectoryInfo);
+  }
+
+  public static ExitCode batch(String command, String home = null) {
+    return batch(command, home == null ? null as DirectoryInfo : new DirectoryInfo(home));
+  }
+
   public static ExitCode batch(String command, DirectoryInfo home = null) {
     if (home == null) {
       home = new DirectoryInfo(".");
@@ -534,6 +611,14 @@ public static class Console {
     return cmd(command, home);
   }
 
+  public static ExitCode interactive(String command) {
+    return interactive(command, null as DirectoryInfo);
+  }
+
+  public static ExitCode interactive(String command, String home = null) {
+    return interactive(command, home == null ? null as DirectoryInfo : new DirectoryInfo(home));
+  }
+
   public static ExitCode interactive(String command, DirectoryInfo home = null) {
     if (home == null) {
       home = new DirectoryInfo(".");
@@ -542,6 +627,14 @@ public static class Console {
     }
 
     return cmd(command, home);
+  }
+
+  public static ExitCode ui(String command) {
+    return ui(command, null as DirectoryInfo);
+  }
+
+  public static ExitCode ui(String command, String home = null) {
+    return ui(command, home == null ? null as DirectoryInfo : new DirectoryInfo(home));
   }
 
   public static ExitCode ui(String command, DirectoryInfo home = null) {
