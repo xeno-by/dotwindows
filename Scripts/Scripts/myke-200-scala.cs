@@ -24,7 +24,7 @@ public class Scala : Git {
     var shebang = lines.ElementAtOrDefault(0) ?? "";
     var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
     var m = r.Match(shebang);
-    return m.Success ? m.Result("${commandline}") : ("scalac -deprecation -Yreify-copypaste -Xprint:parser -Yshow-trees " + file.FullName);
+    return m.Success ? m.Result("${commandline}") : ("scalac -deprecation -Yreify-copypaste " + file.FullName);
   } }
 
   public override bool accept() {
@@ -101,9 +101,10 @@ public class Scala : Git {
       if (File.Exists(libVerFile)) File.Delete(libVerFile);
     }
 
-    var history = "compile " + file.FullName;
-    var key = @"Software\Myke\" + history.Replace("\\", "$slash$");
-    var reg = Registry.CurrentUser.OpenSubKey(key, true) ?? Registry.CurrentUser.CreateSubKey(key);
+    var parent_key = "Software\\Myke";
+    var short_key = ("compile " + file.FullName).Replace("\\", "$slash$");
+    var full_key = parent_key + "\\" + short_key;
+    var reg = Registry.CurrentUser.OpenSubKey(full_key, true) ?? Registry.CurrentUser.CreateSubKey(full_key);
     var prev_status = reg.GetValue("status") == null ? new ExitCode{value = 0} : new ExitCode{value = (int)reg.GetValue("status")};
     var prev_compiler = reg.GetValue("compiler") as String;
     var prev_scalaHome = reg.GetValue("scalaHome") as String;
@@ -159,6 +160,12 @@ public class Scala : Git {
 
         return status;
       }
+    } else {
+      if (Config.verbose) {
+        println("VERDICT: not going to cache previous compilation results");
+        println("=========================");
+        println();
+      }
     }
 
     using (var watcher = new FileSystemWatcher(root.FullName)) {
@@ -173,6 +180,10 @@ public class Scala : Git {
       watcher.EnableRaisingEvents = true;
 
       status = Console.batch(compiler, home: root);
+
+      var parent_reg = Registry.CurrentUser.OpenSubKey(parent_key, true) ?? Registry.CurrentUser.CreateSubKey(parent_key);
+      parent_reg.DeleteSubKey(short_key);
+      reg = Registry.CurrentUser.OpenSubKey(full_key, true) ?? Registry.CurrentUser.CreateSubKey(full_key);
       reg.SetValue("compiler", compiler);
       reg.SetValue("scalaHome", scalaHome);
       reg.SetValue("compVer", compVer);
