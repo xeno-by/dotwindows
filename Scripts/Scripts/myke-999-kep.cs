@@ -21,13 +21,18 @@ public class Kep : Git {
   public Kep(FileInfo file) : base(file) {}
   public Kep(DirectoryInfo dir) : base(dir) {}
 
+  public virtual bool inPlayground { get {
+    var names = new [] {
+      file == null ? null : file.FullName.Replace("\\", "/"),
+      dir == null ? null : dir.FullName.Replace("\\", "/"),
+    };
+
+    return names.Any(name => name != null && (name.Contains("/test") || name.Contains("/sandbox")));
+  } }
+
   [Action]
   public virtual ExitCode clean() {
-    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
-      dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
-      dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
-      return 0;
-    } else if (dir != null && dir.FullName.Replace("\\", "/").Contains("/test/")) {
+    if (inPlayground) {
       dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
       dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
       return 0;
@@ -40,7 +45,7 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode rebuild() {
-    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
+    if (inPlayground && file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
       var scala = new Scala(file, lines);
       return scala.rebuild();
@@ -51,7 +56,7 @@ public class Kep : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
+    if (inPlayground && file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
       var scala = new Scala(file, lines);
       return scala.compile();
@@ -85,7 +90,7 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
-    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) {
+    if (inPlayground && file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
       var scala = new Scala(file, lines);
       return scala.run(arguments);
@@ -98,6 +103,7 @@ public class Kep : Git {
       //return Console.batch("scala " + String.Join(" ", options.ToArray()));
 
       if (toRun == null) return -1;
+      println("running {0}", toRun.FullName);
       var lines = new Lines(toRun, File.ReadAllLines(toRun.FullName).ToList());
       var scala = new Scala(toRun, lines);
       return scala.run(arguments);
@@ -113,13 +119,6 @@ public class Kep : Git {
 
     var fs_toTest = File.ReadAllLines(dotTest.FullName).ToList();
     fs_toTest = fs_toTest.Select(f_toTest => project + "\\" + f_toTest).ToList();
-    foreach (var f_toTest in fs_toTest) {
-      if (f_toTest == null || !File.Exists(f_toTest)) {
-        println("error: {0}, file referenced by .test does not exist", f_toTest);
-        return null;
-      }
-    }
-
     return fs_toTest.Select(f_toTest => new FileInfo(f_toTest)).ToList();
   } }
 
@@ -128,6 +127,7 @@ public class Kep : Git {
     var prefix = project;
     prefix = prefix.Replace("/", "\\");
     if (!prefix.EndsWith("\\")) prefix += "\\";
+    prefix += "test\\";
     var tests = toTest.Select(f => f.FullName.Substring(prefix.Length)).ToList();
     return Console.batch("partest " + String.Join(" ", tests.ToArray()));
   }
