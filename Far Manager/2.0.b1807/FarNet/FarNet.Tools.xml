@@ -1,0 +1,740 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FarNet.Tools</name>
+    </assembly>
+    <members>
+        <member name="T:FarNet.Tools.SuperFile">
+            <summary>
+            Super explorer/panel file.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.SuperFile.#ctor(FarNet.Explorer,FarNet.FarFile)">
+            <summary>
+            New explorer file.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SuperFile.Explorer">
+            <summary>
+            Gets the source explorer.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SuperFile.Owner">
+            <summary>
+            Gets the source explorer location.
+            </summary>
+        </member>
+        <member name="T:FarNet.Tools.Form">
+            <summary>
+            Base class of utility forms.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.Form.#ctor">
+            <summary>
+            Creates the <see cref="P:FarNet.Tools.Form.Dialog"/> instance.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.Form.SetSize(System.Int32,System.Int32)">
+            <summary>
+            Sets the form size.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.Form.Show">
+            <summary>
+            Shows the form.
+            </summary>
+            <returns>False if the form was canceled.</returns>
+        </member>
+        <member name="M:FarNet.Tools.Form.Close">
+            <summary>
+            Closes the form.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.Form.Dialog">
+            <summary>
+            The dialog used by form.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.Form.Title">
+            <summary>
+            Gets or sets the form title.
+            </summary>
+        </member>
+        <member name="T:FarNet.Tools.IProgress">
+            <summary>
+            Used to update the progress information.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.IProgress.SetProgressValue(System.Double,System.Double)">
+            <summary>
+            Sets the current progress information.
+            </summary>
+            <param name="currentValue">Progress current value, from 0 to the maximum.</param>
+            <param name="maximumValue">Progress maximum value, positive or 0.</param>
+        </member>
+        <member name="M:FarNet.Tools.IProgress.ShowProgress">
+            <summary>
+            Shows the current progress information.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.IProgress.Activity">
+            <summary>
+            Gets or sets the current activity description.
+            </summary>
+        </member>
+        <member name="T:FarNet.Tools.ProgressBox">
+            <summary>
+            Not modal progress message box.
+            </summary>
+            <remarks>
+            <para>
+            Always call <see cref="M:FarNet.Tools.ProgressBox.Dispose"/> in order to hide the box, restore the original screen, and release internal data.
+            If restoring of the original screen is not enough, e.g. some changes are expected, then consider to redraw the
+            context. <see cref="M:FarNet.IUserInterface.Redraw"/> will do but this is not always the most effective way.
+            </para>
+            <para>
+            Create the box, set its <see cref="P:FarNet.Tools.ProgressBox.Activity"/>, call <see cref="M:FarNet.Tools.ProgressBox.SetProgressValue(System.Double,System.Double)"/> and <see cref="M:FarNet.Tools.ProgressBox.ShowProgress"/>.
+            Use the <see cref="M:FarNet.IUserInterface.ReadKeys(System.Int32[])"/> method to check for some keys that should break the job.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.ProgressBox.#ctor">
+            <summary>
+            New progress box.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.ProgressBox.#ctor(System.String)">
+            <summary>
+            New progress box with the title.
+            </summary>
+            <param name="title">The progress box title.</param>
+        </member>
+        <member name="M:FarNet.Tools.ProgressBox.Dispose">
+            <summary>
+            Disposes the resources and hides the message box after use.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.ProgressBox.SetProgressValue(System.Double,System.Double)">
+            <summary>
+            Sets the current progress information.
+            </summary>
+            <param name="currentValue">Progress current value, from 0 to the maximum.</param>
+            <param name="maximumValue">Progress maximum value, positive or 0.</param>
+        </member>
+        <member name="M:FarNet.Tools.ProgressBox.ShowProgress">
+            <summary>
+            Tells to update the progress.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.ProgressBox.Title">
+            <summary>
+            Gets or sets the progress box title.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.ProgressBox.LineCount">
+            <summary>
+            Gets or sets text line count.
+            </summary>
+            <remarks>
+            It should be set before the show.
+            The default is 0 (automatic line count).
+            </remarks>
+        </member>
+        <member name="P:FarNet.Tools.ProgressBox.Activity">
+            <summary>
+            Gets or sets the current activity description.
+            </summary>
+            <remarks>
+            The first line is also used to update the window title.
+            </remarks>
+        </member>
+        <member name="P:FarNet.Tools.ProgressBox.ElapsedFromShow">
+            <summary>
+            Gets the time elapsed from the last show.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.ProgressBox.ElapsedFromStart">
+            <summary>
+            Gets the time elapsed from the start.
+            </summary>
+        </member>
+        <member name="T:FarNet.Tools.ProgressForm">
+            <summary>
+            Andvanced form to show progress of potentially long background jobs.
+            </summary>
+            <remarks>
+            <para>
+            Consider to use much simpler <see cref="T:FarNet.Tools.ProgressBox"/>.
+            This form is useful in cases that allow job thread abortion.
+            </para>
+            <para>
+            This form should be created and shown in the main thread.
+            Some members are designed for use in other threads, for example:
+            normal cases: <see cref="P:FarNet.Tools.ProgressForm.Activity"/>, <see cref="M:FarNet.Tools.ProgressForm.SetProgressValue(System.Double,System.Double)"/>, <see cref="M:FarNet.Tools.ProgressForm.Complete"/>;
+            cancellation cases: <see cref="M:FarNet.Tools.ProgressForm.Close"/>, <see cref="P:FarNet.Tools.ProgressForm.IsClosed"/>, <see cref="E:FarNet.Tools.ProgressForm.Canceled"/>.
+            </para>
+            <para>
+            The form can be shown once and cannot be reused after closing.
+            </para>
+            <para>
+            The standard scenario:
+            <ul>
+            <li>create a progress form but do not show yet;</li>
+            <li>start a job in another thread and give it this form;</li>
+            <li>let the main thread to sleep a bit: a fast job may complete;</li>
+            <li>show the form; the progress form is shown if a job is not yet done.</li>
+            </ul>
+            </para>
+            There is yet another simpler scenario using the <see cref="M:FarNet.Tools.ProgressForm.Invoke(System.Threading.ThreadStart)"/>, see remarks there.
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.ProgressForm.#ctor">
+            <summary>
+            New progress form.
+            </summary>
+            <remarks>
+            It should be created and then shown in the main thread.
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.ProgressForm.Close">
+            <summary>
+            Closes the form and triggers the <see cref="E:FarNet.Tools.ProgressForm.Canceled"/> event.
+            </summary>
+            <remarks>
+            This method is thread safe and can be called from jobs.
+            But normally jobs should call <see cref="M:FarNet.Tools.ProgressForm.Complete"/> when they are done.
+            <para>
+            The <see cref="M:FarNet.Tools.ProgressForm.Show"/> returns false if the form is closed by this method.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.ProgressForm.Complete">
+            <summary>
+            Closes the form when the job is complete.
+            </summary>
+            <remarks>
+            This method is thread safe and designed for jobs.
+            Normally when a job is done it calls this method.
+            The <see cref="M:FarNet.Tools.ProgressForm.Show"/> returns true if the form is closed by this method.
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.ProgressForm.Show">
+            <summary>
+            Shows the progress form or returns the result if the job is already done.
+            </summary>
+            <returns>True if the <see cref="M:FarNet.Tools.ProgressForm.Complete"/> has been called and false in all other cases.</returns>
+            <remarks>
+            This method should be called in the main thread after starting a job in another thread.
+            Normally it shows the modal dialog and blocks the main thread.
+            <para>
+            The form is closed when a job calls the <see cref="M:FarNet.Tools.ProgressForm.Complete"/> or <see cref="M:FarNet.Tools.ProgressForm.Close"/> or
+            a user cancels the form when <see cref="P:FarNet.Tools.ProgressForm.CanCancel"/> is true.
+            </para>
+            <para>
+            If a job is fast and has already closed the form this methods returns immediately without showing a dialog.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.ProgressForm.Invoke(System.Threading.ThreadStart)">
+            <summary>
+            Invokes the job in a new thread (simplified scenario with optional job thread abortion by a user).
+            </summary>
+            <param name="job">The job action delegate to be invoked in a new thread. It should either complete or throw any exception.</param>
+            <returns>Null if the job has completed or an exception thrown by the job or the <see cref="T:System.OperationCanceledException"/>.</returns>
+            <remarks>
+            This way is much simpler than the standard 4-steps scenario and it is recommended for not abortable jobs.
+            <para>
+            If the <see cref="P:FarNet.Tools.ProgressForm.CanCancel"/> is true then on user cancellation the job thread is aborted.
+            It many cases this seems to be fine but the job has to be carefully designed for that.
+            In particular the <see cref="T:System.Threading.ThreadAbortException"/> can be thrown at any moment.
+            If there are potential unwanted effects of job abortion then do not use this way.
+            </para>
+            <para>
+            This way is not suitable for PowerShell scripts in any case.
+            Scripts should use the standard 4-steps scenario with standard PowerShell or simple PowerShellFar background jobs.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.ProgressForm.SetProgressValue(System.Double,System.Double)">
+            <summary>
+            Sets the current progress information.
+            </summary>
+            <param name="currentValue">Progress current value, from 0 to the maximum.</param>
+            <param name="maximumValue">Progress maximum value, positive or 0.</param>
+            <remarks>
+            This method is thread safe and designed for jobs.
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.ProgressForm.ShowProgress">
+            <summary>
+            It is not used directly.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.ProgressForm.LineCount">
+            <summary>
+            Gets or sets text line count.
+            </summary>
+            <remarks>
+            It should be set before the show.
+            The default is 1.
+            </remarks>
+        </member>
+        <member name="P:FarNet.Tools.ProgressForm.CanCancel">
+            <summary>
+            Tells to show the <b>Cancel</b> button.
+            </summary>
+            <remarks>
+            False: a user cannot cancel the progress form and jobs in progress.
+            The form is opened until <see cref="M:FarNet.Tools.ProgressForm.Complete"/> or <see cref="M:FarNet.Tools.ProgressForm.Close"/> is called.
+            <para>
+            True: a user can cancel the progress form.
+            A job has to support this: it should check the <see cref="P:FarNet.Tools.ProgressForm.IsClosed"/> periodically
+            or listen to the <see cref="E:FarNet.Tools.ProgressForm.Canceled"/> event; if any of these happens the job
+            has to exit as soon as possible.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:FarNet.Tools.ProgressForm.Canceled">
+            <summary>
+            Called when the form is canceled by a user or closed by the <see cref="M:FarNet.Tools.ProgressForm.Close"/>.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.ProgressForm.IsClosed">
+            <summary>
+            Gets true if a closing method has been called or a user has canceled the form.
+            </summary>
+            <remarks>
+            Jobs may check this property periodically and exit as soon as it is true.
+            Alternatively, they may listen to the <see cref="E:FarNet.Tools.ProgressForm.Canceled"/> event.
+            </remarks>
+        </member>
+        <member name="P:FarNet.Tools.ProgressForm.IsCompleted">
+            <summary>
+            Gets true if the <see cref="M:FarNet.Tools.ProgressForm.Complete"/> has been called.
+            </summary>
+            <remarks>
+            If it is true then <see cref="P:FarNet.Tools.ProgressForm.IsClosed"/> is also true.
+            </remarks>
+        </member>
+        <member name="P:FarNet.Tools.ProgressForm.Activity">
+            <summary>
+            Gets or sets the current activity description.
+            </summary>
+        </member>
+        <member name="T:Pfz.Threading.SafeAbort">
+            <summary>
+            Class that allows thread-aborts to be done in a relativelly safe manner.
+            </summary>
+        </member>
+        <member name="M:Pfz.Threading.SafeAbort.AbortIfSafe(System.Threading.Thread,Pfz.Threading.SafeAbortMode,System.Object)">
+            <summary>
+            Aborts a thread only if it is safe to do so, taking the abort mode into account (which may
+            range from only guaranteeing that IDisposable objects will be fully constructed, up to 
+            guaranteeing all "using" blocks to work and even doing some user validations).
+            Returns if the Thread.Abort() was called or not.
+            </summary>
+        </member>
+        <member name="M:Pfz.Threading.SafeAbort.Abort(System.Threading.Thread,System.Int32,System.Int32,System.Int32,System.Boolean,System.Object)">
+            <summary>
+            Aborts a thread, trying to use the safest abort mode, until the unsafest one.
+            The number of retries is also the expected number of milliseconds trying to abort.
+            </summary>
+        </member>
+        <member name="E:Pfz.Threading.SafeAbort.Validating">
+            <summary>
+            Event invoked by AbortIfSafe if user validations are valid and when it is unsure if the thread
+            is in a safe situation or not.
+            </summary>
+        </member>
+        <member name="T:Pfz.Threading.SafeAbortMode">
+            <summary>
+            Determines how SafeAbort.AbortIfSafe method will verify for safety.
+            </summary>
+        </member>
+        <member name="F:Pfz.Threading.SafeAbortMode.RunAllValidations">
+            <summary>
+            All validations, including user-registered validations, will be used.
+            This has all the guarantees over using keyword and IDisposable objects, and also runs
+            the SafeAbort.Validating event, to check for some user function that is not returning
+            an IDisposable object but may be changing global data, which must be reverted.
+            </summary>
+        </member>
+        <member name="F:Pfz.Threading.SafeAbortMode.IgnoreUserValidations">
+            <summary>
+            Only user validations will be ignored. This will guarantee that all "using" blocks will work,
+            or any code that creates a disposable object, does a try, and finalizes it.
+            </summary>
+        </member>
+        <member name="F:Pfz.Threading.SafeAbortMode.AllowUsingsToFail">
+            <summary>
+            This will only guarantee that IDisposable objects will be fully created, but even an using block may fail,
+            as the abort can happen between the object construction and its store to a local variable.
+            </summary>
+        </member>
+        <member name="T:Pfz.Threading.SafeAbortEventArgs">
+            <summary>
+            Argument passed to SafeAbort.Verifying when AbortIfSafe is still unsure if it is safe
+            to abort the thread and is able to run user validations.
+            </summary>
+        </member>
+        <member name="P:Pfz.Threading.SafeAbortEventArgs.CanAbort">
+            <summary>
+            Tells that the thread can be aborted.
+            </summary>
+        </member>
+        <member name="T:FarNet.Tools.ExplorerFilePredicate">
+            <summary>
+            Search file method.
+            </summary>
+            <param name="explorer">The explorer providing the file.</param>
+            <param name="file">The file to be processed.</param>
+        </member>
+        <member name="T:FarNet.Tools.SearchFileCommand">
+            <summary>
+            File search command.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.SearchFileCommand.#ctor(FarNet.Explorer)">
+            <summary>
+            New command with the search root.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.SearchFileCommand.Invoke(FarNet.Panel)">
+            <summary>
+            Starts search and when it is done opens the panel with results.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.SearchFileCommand.InvokeAsync(FarNet.Panel)">
+            <summary>
+            Starts search in the background and opens the panel for results immediately.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.SearchFileCommand.Invoke">
+            <summary>
+            Invokes the command.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SearchFileCommand.Depth">
+            <summary>
+            Search depth. 0: ignored; negative: unlimited.
+            Ignored in XPath searches.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SearchFileCommand.Directory">
+            <summary>
+            Tells to include directories into the search process and results.
+            Ignored in XPath searches with no filter.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SearchFileCommand.Recurse">
+            <summary>
+            Tells to search through all directories and sub-directories.
+            Ignored in XPath searches.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SearchFileCommand.Filter">
+            <summary>
+            Gets or sets the search filter.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SearchFileCommand.XFile">
+            <summary>
+            XPath expression file.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SearchFileCommand.XPath">
+            <summary>
+            XPath expression text.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SearchFileCommand.XVariables">
+            <summary>
+            XPath variables.
+            </summary>
+        </member>
+        <member name="T:FarNet.Tools.SubsetForm">
+            <summary>
+            A form to select an ordered subset from a set of input items.
+            </summary>
+            <remarks>
+            Create the form, set its <see cref="P:FarNet.Tools.SubsetForm.Items"/> and initial <see cref="P:FarNet.Tools.SubsetForm.Indexes"/>,
+            call <see cref="M:FarNet.Tools.SubsetForm.Show"/>, get result <see cref="P:FarNet.Tools.SubsetForm.Indexes"/>.
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.SubsetForm.#ctor">
+            <summary>
+            New subset form.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.SubsetForm.Show">
+            <summary>
+            Shows the subset form.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SubsetForm.Indexes">
+            <summary>
+            Gets or sets indexes of the selected items.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SubsetForm.Items">
+            <summary>
+            Gets or sets the items to select from.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.SubsetForm.ItemToString">
+            <summary>
+            Gets or sets an optional converter of items to strings.
+            </summary>
+        </member>
+        <member name="T:FarNet.Tools.SuperExplorer">
+            <summary>
+            Explorer of other explorers files.
+            </summary>
+        </member>
+        <member name="F:FarNet.Tools.SuperExplorer.TypeIdString">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.#ctor">
+            <summary>
+            New search explorer with the search root.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.AddFiles(System.Collections.Generic.IEnumerable{FarNet.FarFile})">
+            <summary>
+            Adds <see cref="T:FarNet.Tools.SuperFile"/> files.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.CreatePanel">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.GetFiles(FarNet.GetFilesEventArgs)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.ExploreDirectory(FarNet.ExploreDirectoryEventArgs)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.OpenFile(FarNet.OpenFileEventArgs)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.AcceptFiles(FarNet.AcceptFilesEventArgs)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.GetContent(FarNet.GetContentEventArgs)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.SetFile(FarNet.SetFileEventArgs)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.SetText(FarNet.SetTextEventArgs)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.CommitFiles(FarNet.Tools.SuperPanel,FarNet.Panel,System.Collections.Generic.IList{FarNet.FarFile},System.Boolean)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.DeleteFiles(FarNet.DeleteFilesEventArgs)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperExplorer.ExportFiles(FarNet.ExportFilesEventArgs)">
+            
+        </member>
+        <member name="P:FarNet.Tools.SuperExplorer.Cache">
+            <summary>
+            Gets the cache of files.
+            </summary>
+        </member>
+        <member name="T:FarNet.Tools.SuperPanel">
+            <summary>
+            Panel of other explorer files, analogue of the temporary panel.
+            </summary>
+            <remarks>
+            Unlike the temporary panel the super panel deals with files from module panels, including mixed.
+            It knows how to view / edit / copy / move / delete and etc. its files because any super file
+            keeps the reference to its source explorer that actually performs that operations on files,
+            the super panel simply dispatches operations and files.
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.SuperPanel.#ctor(FarNet.Tools.SuperExplorer)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperPanel.#ctor">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperPanel.UICopyMove(System.Boolean)">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperPanel.UIIdle">
+            
+        </member>
+        <member name="M:FarNet.Tools.SuperPanel.AddFilesAsync(System.Collections.Generic.IEnumerable{FarNet.FarFile})">
+            <summary>
+            Adds <see cref="T:FarNet.Tools.SuperFile"/> files asynchronously.
+            </summary>
+            <remarks>
+            It is thread safe and can be called from background threads.
+            The added files will be shown later when the panel is idle.
+            </remarks>
+        </member>
+        <member name="M:FarNet.Tools.SuperPanel.UIKeyPressed(System.Int32,FarNet.KeyStates)">
+            
+        </member>
+        <member name="P:FarNet.Tools.SuperPanel.Explorer">
+            
+        </member>
+        <member name="T:FarNet.Tools.XPathObjectNavigator">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.#ctor(System.Object,FarNet.Tools.XPathObjectContext)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.#ctor(System.Object)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.Clone">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.GetAttribute(System.String,System.String)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.GetNamespace(System.String)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.IsDescendant(System.Xml.XPath.XPathNavigator)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.IsSamePosition(System.Xml.XPath.XPathNavigator)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveTo(System.Xml.XPath.XPathNavigator)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToAttribute(System.String,System.String)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToFirst">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToFirstAttribute">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToFirstChild">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToFirstNamespace(System.Xml.XPath.XPathNamespaceScope)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToId(System.String)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToNamespace(System.String)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToNext">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToNextAttribute">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToNextNamespace(System.Xml.XPath.XPathNamespaceScope)">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToParent">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToPrevious">
+            
+        </member>
+        <member name="M:FarNet.Tools.XPathObjectNavigator.MoveToRoot">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.UnderlyingObject">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.BaseURI">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.HasAttributes">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.HasChildren">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.IsEmptyElement">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.LocalName">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.Name">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.NamespaceURI">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.NodeType">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.NameTable">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.Prefix">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.Value">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectNavigator.XmlLang">
+            
+        </member>
+        <member name="T:FarNet.Tools.XsltContextVariable">
+            <summary>
+            Represents a variable during dynamic expression execution.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.XsltContextVariable.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of the class.
+            </summary>
+            <param name="value">The value of the variable.</param>
+        </member>
+        <member name="T:FarNet.Tools.XPathObjectContext">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectContext.NameTable">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectContext.Filter">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectContext.Stopping">
+            
+        </member>
+        <member name="P:FarNet.Tools.XPathObjectContext.IncrementDirectoryCount">
+            
+        </member>
+        <member name="T:FarNet.Tools.XPathInput">
+            <summary>
+            XPath input helper.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.XPathInput.ParseFile(System.String)">
+            <summary>
+            Parses the XPath file.
+            </summary>
+        </member>
+        <member name="M:FarNet.Tools.XPathInput.ParseText(System.String)">
+            <summary>
+            Parses the XPath text.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.XPathInput.Expression">
+            <summary>
+            Gets the XPath expression.
+            </summary>
+        </member>
+        <member name="P:FarNet.Tools.XPathInput.Variables">
+            <summary>
+            Gets the XPath variables.
+            </summary>
+        </member>
+    </members>
+</doc>

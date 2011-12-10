@@ -1,0 +1,603 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<helpItems xmlns="http://msh" schema="maml">
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+<command:details>
+<command:name>New-FarMacro</command:name>
+<maml:description>
+<maml:para>Creates a new macro. Use Set-FarMacro or $Far.Macro.Install() to save it.</maml:para>
+</maml:description>
+<command:verb>New</command:verb>
+<command:noun>FarMacro</command:noun>
+</command:details>
+<maml:description>
+<maml:para>Creates a new macro. Use Set-FarMacro or $Far.Macro.Install() to save it.</maml:para>
+</maml:description>
+<command:syntax>
+<command:syntaxItem>
+<maml:name>New-FarMacro</maml:name>
+<command:parameter required="true" position="1" >
+<maml:name>Area</maml:name>
+<command:parameterValue required="true">MacroArea</command:parameterValue>
+</command:parameter>
+<command:parameter required="true" position="2" >
+<maml:name>Name</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="3" >
+<maml:name>Sequence</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="4" >
+<maml:name>Description</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>CommandLine</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedText</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>DisablePlugins</maml:name>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>EnableOutput</maml:name>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>RunAfterFarStart</maml:name>
+</command:parameter>
+</command:syntaxItem>
+</command:syntax>
+<command:parameters>
+<command:parameter required="true" position="1" >
+<maml:name>Area</maml:name>
+<maml:description>
+<maml:para>See Macro.Area</maml:para>
+<maml:para>Values : None, Other, Shell, Viewer, Editor, Dialog, Search, Disks, MainMenu, Menu, Help, Info, QView, Tree, FindFolder, UserMenu, AutoCompletion, Vars, Consts, Common</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="true" position="2" >
+<maml:name>Name</maml:name>
+<maml:description>
+<maml:para>See Macro.Name</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="3" >
+<maml:name>Sequence</maml:name>
+<maml:description>
+<maml:para>See Macro.Sequence</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="4" >
+<maml:name>Description</maml:name>
+<maml:description>
+<maml:para>See Macro.Description</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>CommandLine</maml:name>
+<maml:description>
+<maml:para>See Macro.CommandLine</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>DisablePlugins</maml:name>
+<maml:description>
+<maml:para>See Macro.DisablePlugins</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>EnableOutput</maml:name>
+<maml:description>
+<maml:para>See Macro.EnableOutput</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory</maml:name>
+<maml:description>
+<maml:para>See Macro.ItemIsDirectory</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory2</maml:name>
+<maml:description>
+<maml:para>See Macro.ItemIsDirectory2</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin</maml:name>
+<maml:description>
+<maml:para>See Macro.PanelIsPlugin</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin2</maml:name>
+<maml:description>
+<maml:para>See Macro.PanelIsPlugin2</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>RunAfterFarStart</maml:name>
+<maml:description>
+<maml:para>See Macro.RunAfterFarStart</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems</maml:name>
+<maml:description>
+<maml:para>See Macro.SelectedItems</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems2</maml:name>
+<maml:description>
+<maml:para>See Macro.SelectedItems2</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedText</maml:name>
+<maml:description>
+<maml:para>See Macro.SelectedText</maml:para>
+</maml:description>
+</command:parameter>
+</command:parameters>
+<command:inputTypes>
+<command:inputType>
+<dev:type>
+<maml:name>None</maml:name>
+</dev:type>
+</command:inputType>
+</command:inputTypes>
+<command:returnValues>
+<command:returnValue>
+<dev:type>
+<maml:name>None</maml:name>
+</dev:type>
+</command:returnValue>
+</command:returnValues>
+</command:command>
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+<command:details>
+<command:name>Set-FarMacro</command:name>
+<maml:description>
+<maml:para>Installs one (using properties) or more (using properties or macro object(s)) macros.</maml:para>
+</maml:description>
+<command:verb>Set</command:verb>
+<command:noun>FarMacro</command:noun>
+</command:details>
+<maml:description>
+<maml:para>Installs one (using properties) or more (using properties or macro object(s)) macros.</maml:para>
+</maml:description>
+<command:syntax>
+<command:syntaxItem>
+<maml:name>Set-FarMacro</maml:name>
+<command:parameter required="true" position="1" >
+<maml:name>InputObject</maml:name>
+<command:parameterValue required="true">Macro</command:parameterValue>
+</command:parameter>
+<command:parameter required="true" position="2" >
+<maml:name>Name</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="3" >
+<maml:name>Sequence</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="4" >
+<maml:name>Description</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>CommandLine</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedText</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>DisablePlugins</maml:name>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>EnableOutput</maml:name>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>RunAfterFarStart</maml:name>
+</command:parameter>
+</command:syntaxItem>
+<command:syntaxItem>
+<maml:name>Set-FarMacro</maml:name>
+<command:parameter required="true" position="1" >
+<maml:name>Area</maml:name>
+<command:parameterValue required="true">MacroArea</command:parameterValue>
+</command:parameter>
+<command:parameter required="true" position="2" >
+<maml:name>Name</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="3" >
+<maml:name>Sequence</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="4" >
+<maml:name>Description</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>CommandLine</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems2</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedText</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>DisablePlugins</maml:name>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>EnableOutput</maml:name>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>RunAfterFarStart</maml:name>
+</command:parameter>
+</command:syntaxItem>
+</command:syntax>
+<command:parameters>
+<command:parameter required="true" position="1" >
+<maml:name>Area</maml:name>
+<maml:description>
+<maml:para>See Macro.Area</maml:para>
+<maml:para>Values : None, Other, Shell, Viewer, Editor, Dialog, Search, Disks, MainMenu, Menu, Help, Info, QView, Tree, FindFolder, UserMenu, AutoCompletion, Vars, Consts, Common</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="true" pipelineInput="true (ByValue)" position="1" >
+<maml:name>InputObject</maml:name>
+<maml:description>
+<maml:para>Input macro instances.</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="true" position="2" >
+<maml:name>Name</maml:name>
+<maml:description>
+<maml:para>See Macro.Name</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="3" >
+<maml:name>Sequence</maml:name>
+<maml:description>
+<maml:para>See Macro.Sequence</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="4" >
+<maml:name>Description</maml:name>
+<maml:description>
+<maml:para>See Macro.Description</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>CommandLine</maml:name>
+<maml:description>
+<maml:para>See Macro.CommandLine</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>DisablePlugins</maml:name>
+<maml:description>
+<maml:para>See Macro.DisablePlugins</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>EnableOutput</maml:name>
+<maml:description>
+<maml:para>See Macro.EnableOutput</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory</maml:name>
+<maml:description>
+<maml:para>See Macro.ItemIsDirectory</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>ItemIsDirectory2</maml:name>
+<maml:description>
+<maml:para>See Macro.ItemIsDirectory2</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin</maml:name>
+<maml:description>
+<maml:para>See Macro.PanelIsPlugin</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>PanelIsPlugin2</maml:name>
+<maml:description>
+<maml:para>See Macro.PanelIsPlugin2</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>RunAfterFarStart</maml:name>
+<maml:description>
+<maml:para>See Macro.RunAfterFarStart</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems</maml:name>
+<maml:description>
+<maml:para>See Macro.SelectedItems</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedItems2</maml:name>
+<maml:description>
+<maml:para>See Macro.SelectedItems2</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>SelectedText</maml:name>
+<maml:description>
+<maml:para>See Macro.SelectedText</maml:para>
+</maml:description>
+</command:parameter>
+</command:parameters>
+<command:inputTypes>
+<command:inputType>
+<dev:type>
+<maml:name>[FarNet.FarMacro]</maml:name>
+</dev:type>
+<maml:description>
+<maml:para>Macro instances.</maml:para>
+</maml:description>
+</command:inputType>
+</command:inputTypes>
+<command:returnValues>
+<command:returnValue>
+<dev:type>
+<maml:name>None</maml:name>
+</dev:type>
+</command:returnValue>
+</command:returnValues>
+</command:command>
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+<command:details>
+<command:name>Edit-FarMacro</command:name>
+<maml:description>
+<maml:para>Opens the editor with the macro sequence and install the macro on saving if its syntax is correct.</maml:para>
+</maml:description>
+<command:verb>Edit</command:verb>
+<command:noun>FarMacro</command:noun>
+</command:details>
+<maml:description>
+<maml:para>Opens the editor with the macro sequence. Syntax highlighting should work if the Colorer plugin is used. On saving, if syntax is valid, the macro is installed and ready to use. On syntax errors an error message is shown and the cursor is set to the error position. On exit, if syntax is not valid, you are prompted to continue or discard the changes. NOTE: in this way you only edit the sequence, other macro options remains default for a new macro and not changed for an existing.
+
+There are three modes depending on parameter sets:</maml:para>
+<maml:para></maml:para>
+<maml:para>&gt; Edit-FarMacro [-FilePath] [-Panel]</maml:para>
+<maml:para>Based on an existing or a new macro file. It simply edits the file and checks syntax on saving.</maml:para>
+<maml:para></maml:para>
+<maml:para>&gt; Edit-FarMacro [-Macro] [-Panel]</maml:para>
+<maml:para>Based on a macro object.</maml:para>
+<maml:para></maml:para>
+<maml:para>&gt; Edit-FarMacro -Name [-Area] [-Panel]</maml:para>
+<maml:para>Based on an existing or a new macro specified by names.</maml:para>
+</maml:description>
+<command:syntax>
+<command:syntaxItem>
+<maml:name>Edit-FarMacro</maml:name>
+<command:parameter required="false" position="named" >
+<maml:name>FilePath</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>Panel</maml:name>
+<command:parameterValue required="true">Panel</command:parameterValue>
+</command:parameter>
+</command:syntaxItem>
+<command:syntaxItem>
+<maml:name>Edit-FarMacro</maml:name>
+<command:parameter required="false" position="named" >
+<maml:name>Macro</maml:name>
+<command:parameterValue required="true">Macro</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>Panel</maml:name>
+<command:parameterValue required="true">Panel</command:parameterValue>
+</command:parameter>
+</command:syntaxItem>
+<command:syntaxItem>
+<maml:name>Edit-FarMacro</maml:name>
+<command:parameter required="true" position="1" >
+<maml:name>InputObject</maml:name>
+<command:parameterValue required="true">Macro</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>Panel</maml:name>
+<command:parameterValue required="true">Panel</command:parameterValue>
+</command:parameter>
+</command:syntaxItem>
+<command:syntaxItem>
+<maml:name>Edit-FarMacro</maml:name>
+<command:parameter required="true" position="1" >
+<maml:name>Name</maml:name>
+<command:parameterValue required="true">String</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="2" >
+<maml:name>Area</maml:name>
+<command:parameterValue required="true">MacroArea</command:parameterValue>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>Panel</maml:name>
+<command:parameterValue required="true">Panel</command:parameterValue>
+</command:parameter>
+</command:syntaxItem>
+</command:syntax>
+<command:parameters>
+<command:parameter required="true" pipelineInput="true (ByValue)" position="1" >
+<maml:name>InputObject</maml:name>
+<maml:description>
+<maml:para>Input macro instances.</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="true" position="1" >
+<maml:name>Name</maml:name>
+<maml:description>
+<maml:para>The key name. It is corrected to the standard form.</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="2" >
+<maml:name>Area</maml:name>
+<maml:description>
+<maml:para>The macro area. If it is not set then the current Dialog, Editor, Shell, or Viewer area is assumed.</maml:para>
+<maml:para>Values : None, Other, Shell, Viewer, Editor, Dialog, Search, Disks, MainMenu, Menu, Help, Info, QView, Tree, FindFolder, UserMenu, AutoCompletion, Vars, Consts, Common</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>FilePath</maml:name>
+<maml:description>
+<maml:para>The path of a file with a macro sequence to edit.</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>Macro</maml:name>
+<maml:description>
+<maml:para>The macro instance which sequence is edited.</maml:para>
+</maml:description>
+</command:parameter>
+<command:parameter required="false" position="named" >
+<maml:name>Panel</maml:name>
+<maml:description>
+<maml:para>A panel to be updated on saving.</maml:para>
+</maml:description>
+</command:parameter>
+</command:parameters>
+<command:inputTypes>
+<command:inputType>
+<dev:type>
+<maml:name>[FarNet.FarMacro]</maml:name>
+</dev:type>
+<maml:description>
+<maml:para>Macro instances.</maml:para>
+</maml:description>
+</command:inputType>
+</command:inputTypes>
+<command:returnValues>
+<command:returnValue>
+<dev:type>
+<maml:name>None</maml:name>
+</dev:type>
+</command:returnValue>
+</command:returnValues>
+</command:command>
+<providerHelp>
+<Name>FarMacro</Name>
+<Drives>
+<Para>FarMacro:</Para>
+</Drives>
+<Synopsis>Far Manager macros provider.</Synopsis>
+<DetailedDescription>
+<para>The FarMacro provider lets you view the macros in PowerShell as though they were on a file system drive.</para>
+</DetailedDescription>
+<Capabilities>
+<para>ShouldProcess</para>
+</Capabilities>
+<Tasks>
+<Task>
+<Title>Go to the FarMacro drive and get its items</Title>
+<Examples>
+<Example>
+<Title>-------------------------- EXAMPLE 1 --------------------------</Title>
+<Code>Set-Location FarMacro:
+Get-ChildItem</Code>
+</Example>
+</Examples>
+</Task>
+<Task>
+<Title>Get macros in an area</Title>
+<Description>
+<para>Type the drive name and the area name.</para>
+</Description>
+<Examples>
+<Example>
+<Title>-------------------------- EXAMPLE 1 --------------------------</Title>
+<Code>Get-ChildItem FarMacro:\Shell</Code>
+</Example>
+</Examples>
+</Task>
+</Tasks>
+</providerHelp>
+</helpItems>
