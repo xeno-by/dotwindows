@@ -115,21 +115,24 @@ public class Scala : Git {
       println();
       println("===considering caching===");
       println("status: previous value is {0}", prev_status.value);
-      println("compiler");
-      println("  expected = {0}", prev_compiler);
-      println("  actual   = {0}", compiler);
-      println("scalaHome");
-      println("  expected = {0}", prev_scalaHome);
-      println("  actual   = {0}", scalaHome);
-      println("compVer");
-      println("  expected = {0}", prev_compVer);
-      println("  actual   = {0}", compVer);
-      println("libVer");
-      println("  expected = {0}", prev_libVer);
-      println("  actual   = {0}", libVer);
+
+      if (prev_status) {
+        println("compiler");
+        println("  expected = {0}", prev_compiler);
+        println("  actual   = {0}", compiler);
+        println("scalaHome");
+        println("  expected = {0}", prev_scalaHome);
+        println("  actual   = {0}", scalaHome);
+        println("compVer");
+        println("  expected = {0}", prev_compVer);
+        println("  actual   = {0}", compVer);
+        println("libVer");
+        println("  expected = {0}", prev_libVer);
+        println("  actual   = {0}", libVer);
+      }
     }
 
-    if (status && prev_compiler == compiler && prev_scalaHome == scalaHome && prev_compVer == compVer && prev_libVer == libVer) {
+    if (prev_status && prev_compiler == compiler && prev_scalaHome == scalaHome && prev_compVer == compVer && prev_libVer == libVer) {
       var filenames = reg.GetValueNames().Except(new []{"compiler", "scalaHome", "compVer", "libVer", "status"}).ToList();
       var nocache = filenames.Any(filename => {
         var prev_modtime = reg.GetValue(filename) as String;
@@ -189,6 +192,7 @@ public class Scala : Git {
       reg.SetValue("compVer", compVer);
       reg.SetValue("libVer", libVer);
       reg.SetValue("status", status.value);
+      reg.SetValue(file.FullName.Replace("\\", "$slash$"), file.LastWriteTime.ToString("o"));
 
       files = files.Distinct().ToList();
       files.Where(file1 => file1.Exists).ToList().ForEach(file1 => {

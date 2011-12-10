@@ -1,2 +1,2 @@
 @echo off
-"%PROJECTS%\KeplerMaster\build\pack\bin\scalac.bat" %*
+"%PROJECTS%\Scala\build\pack\bin\scalac.bat" %*

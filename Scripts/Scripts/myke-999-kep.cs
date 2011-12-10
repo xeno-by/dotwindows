@@ -110,7 +110,7 @@ public class Kep : Git {
     }
   }
 
-  public virtual List<FileInfo> toTest { get {
+  public virtual List<String> toTest { get {
     var dotTest = new FileInfo(root + "\\.test");
     if (!dotTest.Exists) {
       println("error: .test file not found");
@@ -118,8 +118,7 @@ public class Kep : Git {
     }
 
     var fs_toTest = File.ReadAllLines(dotTest.FullName).ToList();
-    fs_toTest = fs_toTest.Select(f_toTest => project + "\\" + f_toTest).ToList();
-    return fs_toTest.Select(f_toTest => new FileInfo(f_toTest)).ToList();
+    return fs_toTest.Select(f_toTest => project + "\\" + f_toTest).ToList();
   } }
 
   [Action]
@@ -128,7 +127,7 @@ public class Kep : Git {
     prefix = prefix.Replace("/", "\\");
     if (!prefix.EndsWith("\\")) prefix += "\\";
     prefix += "test\\";
-    var tests = toTest.Select(f => f.FullName.Substring(prefix.Length)).ToList();
+    var tests = toTest.Select(f => f.Substring(prefix.Length)).ToList();
     return Console.batch("partest " + String.Join(" ", tests.ToArray()));
   }
 }
