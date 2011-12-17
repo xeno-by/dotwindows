@@ -56,12 +56,16 @@ public class Csc : Git {
     return Console.batch(compiler, home: root);
   }
 
+  public virtual String inferArguments() {
+    return lines.Any(line => line.Contains("args") && !line.Contains("String[] args")) ? null : "";
+  }
+
   [Action]
   public virtual ExitCode run(Arguments arguments) {
     var status = compile();
     if (status != 0) return -1;
 
-    Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", exe.FullName));
+    Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
     return Console.interactive(exe.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()), home: root);
   }
 }
