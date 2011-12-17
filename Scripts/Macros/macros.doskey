@@ -5,6 +5,8 @@
 ;= goto end
 
 ;= Favorite directories
+time="%SCRIPTS_HOME%\time.exe" $*
+echo="%CYGROOT%\bin\echo.exe" $*
 hm=cd /D "%HOME%"
 tmp=cd /D "%HOME%\AppData\Local\Temp"
 cyg=cd /D "%CYGROOT%"
@@ -27,12 +29,13 @@ prj=cd /D "%PROJECTS%"
 dlt=cd /D "%PROJECTS%\Delite\Delite"
 pages=cd /D "%PROJECTS%\Delite\Delite Pages"
 lms=cd /D "%PROJECTS%\Delite\virtualization-lms-core"
-fos=cd /D "%DROPBOX%\Projects\Foundations of Software"
-aa=cd /D "%DROPBOX%\Projects\Advanced Algorithms\Homeworks\09"
+fos=cd /D "%DROPBOX%\Projects\Foundations of Software\Documents"
+aa=cd /D "%DROPBOX%\Projects\Advanced Algorithms\Documents"
 nem=cd /D "%PROJECTS%\Nemerle"
 slk=cd /D "%DROPBOX%\SLICK"
 slik=cd /D "%DROPBOX%\SLICK"
 pg=cd /D "%DROPBOX%\Scratchpad\Scala"
+ens=cd /D "%PROJECTS%\Ensime"
 sb=cd /D "%PROJECTS%\Kepler\sandbox"
 kep=cd /D "%PROJECTS%\Kepler"
 ktr=cd /D "%PROJECTS%\Kepler\test\files\run"
