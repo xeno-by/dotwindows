@@ -1,13 +1,14 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-public class Reify {
+public class Parse {
   public static void Main(String[] args) {
     String code = null;
     if (args.Length == 0) {
-      Console.Write("Lift: ");
+      Console.Write("Parse: ");
       code = Console.ReadLine();
     } else {
       if (args.Length == 1 && File.Exists(args[0])) {
@@ -17,10 +18,14 @@ public class Reify {
       }
     }
 
+    var file = Path.GetTempFileName();
+    if (!code.Contains("class") && !code.Contains("object")) code = "object wrapper { " + code + " }";
+    File.WriteAllText(file, code);
+
     var process = new Process();
-    var scala = @"%SCALA_HOME%\bin\scala.bat".Expand();
+    var scala = @"%SCALA_HOME%\bin\scalac.bat".Expand();
     process.StartInfo.FileName = scala;
-    process.StartInfo.Arguments = "-Yreify-copypaste -e \"scala.reflect.Code.lift{" + code + "}\"";
+    process.StartInfo.Arguments = "-Xprint:parser -Yshow-trees -Ystop-after:parser \"" + file + "\"";
     process.StartInfo.UseShellExecute = false;
     process.Start();
     process.WaitForExit();
