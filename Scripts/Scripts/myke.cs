@@ -1248,13 +1248,7 @@ public abstract class Prj {
     return dir;
   } }
 
-  public virtual bool accept() {
-    if (project != null) {
-      return dir.IsChildOrEquivalentTo(project);
-    }
-
-    return false;
-  }
+  public abstract bool accept();
 
   protected static ExitCode print(String format, params Object[] objs) {
     Console.print(format, objs);
@@ -1292,10 +1286,7 @@ public abstract class Prj {
   }
 }
 
-[Connector(name = "git", priority = 100, description =
-  "Provides basic version control services for files/directories under Git source control")]
-
-public class Git : Prj {
+public abstract class Git : Prj {
   public Git() : base((DirectoryInfo)null) {}
   public Git(FileInfo file) : base(file) {}
   public Git(DirectoryInfo dir) : base(dir) {}
@@ -1345,23 +1336,6 @@ public class Git : Prj {
     } else {
       return true;
     }
-  }
-
-  public override bool accept() {
-    if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
-      // oh, I feel uneasy about that, but what else can I do?!
-      return true;
-    }
-
-    if (project != null) {
-      return dir.IsChildOrEquivalentTo(project);
-    }
-
-    if (repo != null) {
-      return dir.IsChildOrEquivalentTo(repo);
-    }
-
-    return false;
   }
 
   [Action]

@@ -45,16 +45,20 @@ public class Scala : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    var scalaHome = Console.eval("where scalac.bat").FirstOrDefault();
+    ExitCode status = null;
+
+    var eval = Console.eval("scalahome");
+    var scalaHome = eval == null ? null : eval.FirstOrDefault();
     if (scalaHome == null) {
-      println("scalac not found");
+      println("scala home not found");
       return -1;
-    } else {
-      scalaHome = Path.GetDirectoryName(scalaHome) + "\\..";
     }
 
-    var status = Console.batch(String.Format("unzip -o -q \"{0}\\lib\\scala-compiler.jar\" compiler.properties", scalaHome), home: (scalaHome + "\\lib"));
-    var compVerFile = scalaHome + "\\lib\\compiler.properties";
+    var classes = scalaHome.EndsWith("classes");
+    classes = classes || scalaHome.EndsWith("classes\\");
+
+    status = classes ? 0 : Console.batch(String.Format("unzip -o -q \"{0}\\lib\\scala-compiler.jar\" compiler.properties", scalaHome), home: (scalaHome + "\\lib"));
+    var compVerFile = classes ? (scalaHome + "\\compiler\\compiler.properties") : (scalaHome + "\\lib\\compiler.properties");
     var compVer = null as String;
     try {
       if (!status || !File.Exists(compVerFile)) {
@@ -77,8 +81,8 @@ public class Scala : Git {
       if (File.Exists(compVerFile)) File.Delete(compVerFile);
     }
 
-    status = Console.batch(String.Format("unzip -o -q \"{0}\\lib\\scala-library.jar\" library.properties", scalaHome), home: (scalaHome + "\\lib"));
-    var libVerFile = scalaHome + "\\lib\\library.properties";
+    status = classes ? 0 : Console.batch(String.Format("unzip -o -q \"{0}\\lib\\scala-library.jar\" library.properties", scalaHome), home: (scalaHome + "\\lib"));
+    var libVerFile = classes ? (scalaHome + "\\library\\library.properties") : (scalaHome + "\\lib\\library.properties");
     var libVer = null as String;
     try {
       if (!status || !File.Exists(libVerFile)) {

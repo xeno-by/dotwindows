@@ -16,6 +16,12 @@ using System.Xml.XPath;
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
+  public virtual String profile { get { return "quicklocker"; } }
+
+  public override bool accept() {
+    if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
+    return dir.IsChildOrEquivalentTo(project);
+  }
 
   public Kep() : base() {}
   public Kep(FileInfo file) : base(file) {}
@@ -50,7 +56,7 @@ public class Kep : Git {
       var scala = new Scala(file, lines);
       return scala.rebuild();
     } else {
-      return Console.batch("ant clean buildlocker -buildfile build.xml", home: root);
+      return Console.batch("ant clean " + profile + " -buildfile build.xml", home: root);
     }
   }
 
@@ -61,15 +67,14 @@ public class Kep : Git {
       var scala = new Scala(file, lines);
       return scala.compile();
     } else {
-      //return Console.batch("ant build -buildfile build.xml", home: root);
-      return Console.batch("ant buildlocker -buildfile build.xml", home: root);
+      return Console.batch("ant " + profile + " -buildfile build.xml", home: root);
     }
   }
 
   [Action]
   public virtual ExitCode repl() {
     var status = compile();
-    return status && println() && Console.interactive(@"build\pack\bin\scala.bat -deprecation", home: root);
+    return status && println() && Console.interactive("scala -deprecation", home: root);
   }
 
   public virtual FileInfo toRun { get {
@@ -124,12 +129,11 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode runTest() {
-    //var prefix = project;
-    //prefix = prefix.Replace("/", "\\");
-    //if (!prefix.EndsWith("\\")) prefix += "\\";
-    //prefix += "test\\";
-    //var tests = toTest.Select(f => f.Substring(prefix.Length)).ToList();
-    var tests = toTest;
-    return Console.batch("partest " + String.Join(" ", tests.ToArray()));
+    var prefix = project;
+    prefix = prefix.Replace("/", "\\");
+    if (!prefix.EndsWith("\\")) prefix += "\\";
+    prefix += "test\\";
+    var tests = toTest.Select(f => f.Substring(prefix.Length)).ToList();
+    return Console.batch("partest " + String.Join(" ", tests.ToArray()), home: root + "\\test");
   }
 }

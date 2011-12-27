@@ -37,7 +37,8 @@ public class Sbt : Git {
   }
 
   public override bool accept() {
-    return base.accept() && dir.IsChildOrEquivalentTo(sbtroot);
+    if (Config.verbose) println("sbtroot = {0}, dir = {1}", sbtroot, dir.FullName);
+    return dir.IsChildOrEquivalentTo(sbtroot);
   }
 
   [Action]

@@ -5,6 +5,7 @@
 ;= goto end
 
 ;= Favorite directories
+pt=cd /D "C:\Projects\ScalaUpstream\src\partest\scala\tools\partest"
 time="%SCRIPTS_HOME%\time.exe" $*
 echo="%CYGROOT%\bin\echo.exe" $*
 hm=cd /D "%HOME%"

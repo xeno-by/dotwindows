@@ -18,7 +18,8 @@ public class MykePlugins : Git {
   }
 
   public override bool accept() {
-    return base.accept() && dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand()) && file.Name.StartsWith("myke") && file.Extension != ".cs";
+    if (Config.verbose) println("scripts_home = {0}, dir = {1}", "%SCRIPTS_HOME%".Expand(), dir.FullName);
+    return dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand()) && file.Name.StartsWith("myke") && file.Extension != ".cs";
   }
 
   [Action]

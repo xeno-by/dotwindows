@@ -15,6 +15,7 @@ public class Scratchpad : Git {
   public Scratchpad(DirectoryInfo dir) : base(dir) {}
 
   public override bool accept() {
+    if (Config.verbose) println("scratchpad = {0}, dir = {1}", @"%DROPBOX%\Scratchpad\Scala".Expand(), dir.FullName);
     return dir.IsChildOrEquivalentTo(@"%DROPBOX%\Scratchpad\Scala".Expand());
   }
 
