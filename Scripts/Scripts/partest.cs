@@ -132,13 +132,13 @@ public static class Console {
 
     var buf = new StringBuilder();
     p.OutputDataReceived += (sender, args) => { if (args.Data != null) buf.Append(args.Data + "\r\n"); };
-    p.ErrorDataReceived += (sender, args) => { if (args.Data != null) buf.Append(args.Data + "\r\n  "); };
+    p.ErrorDataReceived += (sender, args) => { if (args.Data != null) buf.Append(args.Data + "\r\n"); };
 
     if (p.Start()) {
       p.BeginOutputReadLine();
       p.BeginErrorReadLine();
       p.WaitForExit();
-      return p.ExitCode == 0 ? buf.ToString().Split(new []{"\r\n"}, StringSplitOptions.None).ToList() : null;
+      return buf.ToString().Split(new []{"\r\n"}, StringSplitOptions.None).ToList();
     } else {
       return null;
     }
@@ -385,15 +385,81 @@ public static class Scala {
 
 public static class Handlers {
   public static Result run(FileInfo file) {
-    return new Result{file = file, passed = false};
+    var dir = Path.GetTempFileName() + file.Name + "-obj";
+    if (Directory.Exists(dir)) Directory.Delete(dir, true);
+    Directory.CreateDirectory(dir);
+
+    var home = Path.GetDirectoryName(file.FullName);
+    var log_compile = Console.eval(String.Format("\"{0}\" -d \"{1}\" \"{2}\"", Scala.compiler, dir, file.Name), home);
+    while (log_compile.Count > 0 && log_compile[log_compile.Count - 1].Trim() == String.Empty) log_compile.RemoveAt(log_compile.Count - 1);
+    if (log_compile.Count() == 0) {
+      var log_run = Console.eval(String.Format("\"{0}\" -cp {1};{2}\\scala-library.jar;{2}\\scala-compiler.jar Test", Scala.runner, dir, Scala.home), home);
+      while (log_run.Count > 0 && log_run[log_run.Count - 1].Trim() == String.Empty) log_run.RemoveAt(log_run.Count - 1);
+      var f_check = Path.ChangeExtension(file.FullName, "check");
+      var check = File.Exists(f_check) ? File.ReadAllLines(f_check).ToList() : new List<String>();
+      var ok = compare(log_run, check);
+      if (!ok) {
+        return new Result{file = file, passed = false, log = "  check has failed"};
+      } else {
+        return new Result{file = file, passed = true, log = String.Join("\r\n", log_run.ToArray())};
+      }
+    } else {
+      return new Result{file = file, passed = false, log = String.Join("\r\n", log_compile.ToArray())};
+    }
   }
 
   public static Result pos(FileInfo file) {
-    return new Result{file = file, passed = false};
+    var dir = Path.GetTempFileName() + file.Name + "-obj";
+    if (Directory.Exists(dir)) Directory.Delete(dir, true);
+    Directory.CreateDirectory(dir);
+
+    var home = Path.GetDirectoryName(file.FullName);
+    var log_compile = Console.eval(String.Format("\"{0}\" -d \"{1}\" \"{2}\"", Scala.compiler, dir, file.Name), home);
+    while (log_compile.Count > 0 && log_compile[log_compile.Count - 1].Trim() == String.Empty) log_compile.RemoveAt(log_compile.Count - 1);
+    if (log_compile.Count() == 0) {
+      var f_check = Path.ChangeExtension(file.FullName, "check");
+      var check = File.Exists(f_check) ? File.ReadAllLines(f_check).ToList() : new List<String>();
+      var ok = compare(log_compile, check);
+      if (!ok) {
+        return new Result{file = file, passed = false, log = "  check has failed"};
+      } else {
+        return new Result{file = file, passed = true, log = String.Join("\r\n", log_compile.ToArray())};
+      }
+    } else {
+      return new Result{file = file, passed = false, log = String.Join("\r\n", log_compile.ToArray())};
+    }
   }
 
   public static Result neg(FileInfo file) {
-    return new Result{file = file, passed = false};
+    var dir = Path.GetTempFileName() + file.Name + "-obj";
+    if (Directory.Exists(dir)) Directory.Delete(dir, true);
+    Directory.CreateDirectory(dir);
+
+    var home = Path.GetDirectoryName(file.FullName);
+    var log_compile = Console.eval(String.Format("\"{0}\" -d \"{1}\" \"{2}\"", Scala.compiler, dir, file.Name), home);
+    while (log_compile.Count > 0 && log_compile[log_compile.Count - 1].Trim() == String.Empty) log_compile.RemoveAt(log_compile.Count - 1);
+    if (log_compile.Count() == 0) {
+      return new Result{file = file, passed = false, log = " should not compile"};
+    } else {
+      var f_check = Path.ChangeExtension(file.FullName, "check");
+      var check = File.Exists(f_check) ? File.ReadAllLines(f_check).ToList() : new List<String>();
+      var ok = compare(log_compile, check);
+      if (!ok) {
+        return new Result{file = file, passed = false, log = "  check has failed"};
+      } else {
+        return new Result{file = file, passed = true, log = String.Join("\r\n", log_compile.ToArray())};
+      }
+    }
+  }
+
+  private static bool compare(List<String> expected, List<String> actual) {
+    while (expected.Count > 0 && expected[expected.Count - 1].Trim() == String.Empty) expected.RemoveAt(expected.Count - 1);
+    while (actual.Count > 0 && actual[actual.Count - 1].Trim() == String.Empty) actual.RemoveAt(actual.Count - 1);
+    if (expected.Count != actual.Count) return false;
+    for (var i = 0; i < expected.Count; ++i) {
+      if (expected[i] != actual[i]) return false;
+    }
+    return true;
   }
 }
 
@@ -416,6 +482,7 @@ public class Partest {
         var log = result.log;
         if (log != null) {
           var lines = log.Split(new []{"\r\n"}, StringSplitOptions.None).Take(3).ToList();
+          while (lines.Count > 0 && lines[lines.Count - 1].Trim() == String.Empty) lines.RemoveAt(lines.Count - 1);
           Console.println(String.Join("\r\n", lines));
         }
       }
@@ -431,7 +498,7 @@ public class Partest {
     sw.Stop();
 
     Console.println();
-    Console.println(String.Format("{0} of {1} {2} were successful (elapsed time: {3})", failed == 0 ? "All" : ok.ToString(), ok + failed, files.Count() == 1 ? "test" : "tests", sw.Elapsed));
+    Console.println(String.Format("{0} of {1} {2} were successful (elapsed time: {3})", failed == 0 ? "All" : ok.ToString(), ok + failed, ok == 1 ? "test" : "tests", sw.Elapsed));
   }
 
   public static Result Invoke(FileInfo file) {
@@ -453,7 +520,7 @@ public class Partest {
       }
     }))();
 
-    var log = Path.ChangeExtension(file.FullName, "log");
+    var log = Path.GetDirectoryName(file.FullName) + "\\" + Path.GetFileNameWithoutExtension(file.FullName) + "-run.log";
     if (file.Exists) File.WriteAllText(log, result.log ?? String.Empty);
 
     return result;

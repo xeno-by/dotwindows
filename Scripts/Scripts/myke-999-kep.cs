@@ -124,11 +124,12 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode runTest() {
-    var prefix = project;
-    prefix = prefix.Replace("/", "\\");
-    if (!prefix.EndsWith("\\")) prefix += "\\";
-    prefix += "test\\";
-    var tests = toTest.Select(f => f.Substring(prefix.Length)).ToList();
+    //var prefix = project;
+    //prefix = prefix.Replace("/", "\\");
+    //if (!prefix.EndsWith("\\")) prefix += "\\";
+    //prefix += "test\\";
+    //var tests = toTest.Select(f => f.Substring(prefix.Length)).ToList();
+    var tests = toTest;
     return Console.batch("partest " + String.Join(" ", tests.ToArray()));
   }
 }
