@@ -50,7 +50,7 @@ public class Kep : Git {
       var scala = new Scala(file, lines);
       return scala.rebuild();
     } else {
-      return Console.batch("ant clean build -buildfile build.xml", home: root);
+      return Console.batch("ant clean buildlocker -buildfile build.xml", home: root);
     }
   }
 
@@ -61,7 +61,8 @@ public class Kep : Git {
       var scala = new Scala(file, lines);
       return scala.compile();
     } else {
-      return Console.batch("ant build -buildfile build.xml", home: root);
+      //return Console.batch("ant build -buildfile build.xml", home: root);
+      return Console.batch("ant buildlocker -buildfile build.xml", home: root);
     }
   }
 
@@ -78,7 +79,7 @@ public class Kep : Git {
       return null;
     }
 
-    var f_toRun = File.ReadAllLines(dotRun.FullName).FirstOrDefault();
+    var f_toRun = File.ReadAllLines(dotRun.FullName).Where(f_toTest => !f_toTest.StartsWith("#")).FirstOrDefault();
     if (f_toRun != null) f_toRun = project + "\\" + f_toRun;
     if (f_toRun == null || !File.Exists(f_toRun)) {
       println("error: {0}, file referenced by .run does not exist", f_toRun);
@@ -118,7 +119,7 @@ public class Kep : Git {
     }
 
     var fs_toTest = File.ReadAllLines(dotTest.FullName).ToList();
-    return fs_toTest.Select(f_toTest => project + "\\" + f_toTest).ToList();
+    return fs_toTest.Where(f_toTest => !f_toTest.StartsWith("#")).Select(f_toTest => project + "\\" + f_toTest).ToList();
   } }
 
   [Action]

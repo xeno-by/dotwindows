@@ -14,7 +14,7 @@ public class Bat : Git {
   }
 
   public override bool accept() {
-    return base.accept() && (file.Extension == ".bat" || file.Extension == ".cmd");
+    return file.Extension == ".bat" || file.Extension == ".cmd";
   }
 
   [Action]
