@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 
@@ -476,25 +477,45 @@ public class Partest {
     sw.Start();
     var ok = 0;
     var failed = 0;
-    files.ForEach(file => {
-      var result = Invoke(file);
-      if (!result) {
-        var log = result.log;
-        if (log != null) {
-          var lines = log.Split(new []{"\r\n"}, StringSplitOptions.None).Take(3).ToList();
-          while (lines.Count > 0 && lines[lines.Count - 1].Trim() == String.Empty) lines.RemoveAt(lines.Count - 1);
-          Console.println(String.Join("\r\n", lines));
+    var next = 0;
+    var workers = new List<Thread>();
+    var done = 0;
+    var finished = new ManualResetEvent(false);
+    for (var i = 0; i < Environment.ProcessorCount; ++i) workers.Add(new Thread(() => {
+      while (next < files.Count) {
+        FileInfo file = null;
+        lock (files) {
+          if (next == files.Count) return;
+          file = files[next++];
+        }
+
+        var result = Invoke(file);
+        if (!result) {
+          var log = result.log;
+          if (log != null) {
+            var lines = log.Split(new []{"\r\n"}, StringSplitOptions.None).Take(3).ToList();
+            while (lines.Count > 0 && lines[lines.Count - 1].Trim() == String.Empty) lines.RemoveAt(lines.Count - 1);
+            Console.println(String.Join("\r\n", lines));
+          }
+        }
+
+        var iof = file.FullName.LastIndexOf("\\");
+        iof = iof <= 0 ? iof : file.FullName.LastIndexOf("\\", iof - 1);
+        iof = iof <= 0 ? iof : file.FullName.LastIndexOf("\\", iof - 1);
+        var shortened = file.FullName.Substring(iof).PadRight(55);
+        var status = result ? "[  OK  ]" : "[FAILED]";
+        if (result) ok++; else failed++;
+        var msg = String.Format("testing: [...]{0}{1}", shortened, status);
+
+        lock (files) {
+          Console.println(msg);
+          done++;
+          if (done == files.Count()) finished.Set();
         }
       }
-
-      var iof = file.FullName.LastIndexOf("\\");
-      iof = iof <= 0 ? iof : file.FullName.LastIndexOf("\\", iof - 1);
-      iof = iof <= 0 ? iof : file.FullName.LastIndexOf("\\", iof - 1);
-      var shortened = file.FullName.Substring(iof).PadRight(55);
-      var status = result ? "[  OK  ]" : "[FAILED]";
-      if (result) ok++; else failed++;
-      Console.println("testing: [...]{0}{1}", shortened, status);
-    });
+    }));
+    workers.ForEach(thread => thread.Start());
+    finished.WaitOne();
     sw.Stop();
 
     Console.println();
