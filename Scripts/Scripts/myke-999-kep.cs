@@ -134,6 +134,7 @@ public class Kep : Git {
     if (!prefix.EndsWith("\\")) prefix += "\\";
     prefix += "test\\";
     var tests = toTest.Select(f => f.Substring(prefix.Length)).ToList();
-    return Console.batch("partest " + String.Join(" ", tests.ToArray()), home: root + "\\test");
+    var partest = @"%SCRIPTS_HOME%\partest.bat";
+    return Console.batch("\"" + partest + "\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
   }
 }

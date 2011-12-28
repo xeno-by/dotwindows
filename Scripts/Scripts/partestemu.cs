@@ -1,4 +1,4 @@
-// build this with "csc /t:exe /out:partest.exe /debug+ partest.cs"
+// build this with "csc /t:exe /out:partestemu.exe /debug+ partestemu.cs"
 
 using System;
 using System.Collections.Generic;
@@ -464,7 +464,7 @@ public static class Handlers {
   }
 }
 
-public class Partest {
+public class PartestEmu {
   public static void Main(String[] args) {
     var files = args.Select(arg => new FileInfo(Path.GetFullPath(arg.Replace("/", "\\")))).ToList();
     if (files.Count() == 0) return;
