@@ -16,7 +16,7 @@ using System.Xml.XPath;
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
-  public virtual String profile { get { return "quicklocker"; } }
+  public virtual String profile { get { return "fastlocker"; } }
 
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);

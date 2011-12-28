@@ -5,7 +5,6 @@
 ;= goto end
 
 ;= Favorite directories
-pt=cd /D "C:\Projects\ScalaUpstream\src\partest\scala\tools\partest"
 time="%SCRIPTS_HOME%\time.exe" $*
 echo="%CYGROOT%\bin\echo.exe" $*
 hm=cd /D "%HOME%"
@@ -37,8 +36,9 @@ slk=cd /D "%DROPBOX%\SLICK"
 slik=cd /D "%DROPBOX%\SLICK"
 pg=cd /D "%DROPBOX%\Scratchpad\Scala"
 ens=cd /D "%PROJECTS%\Ensime"
-sb=cd /D "%PROJECTS%\Kepler\sandbox"
+don=cd /D "%PROJECTS%\Donor"
 kep=cd /D "%PROJECTS%\Kepler"
+sb=cd /D "%PROJECTS%\Kepler\sandbox"
 ktr=cd /D "%PROJECTS%\Kepler\test\files\run"
 ktp=cd /D "%PROJECTS%\Kepler\test\files\pos"
 ktn=cd /D "%PROJECTS%\Kepler\test\files\neg"
