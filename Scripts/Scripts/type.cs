@@ -23,7 +23,7 @@ public class Type {
     File.WriteAllText(file, code);
 
     var process = new Process();
-    var scala = @"%SCALA_HOME%\bin\scalac.bat".Expand();
+    var scala = @"%SCRIPTS_HOME%\scalac.bat".Expand();
     process.StartInfo.FileName = scala;
     process.StartInfo.Arguments = "-Xprint:typer -Yshow-trees -Xprint-types -Ystop-after:typer \"" + file + "\"";
     process.StartInfo.UseShellExecute = false;

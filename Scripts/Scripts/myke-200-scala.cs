@@ -24,7 +24,7 @@ public class Scala : Git {
     var shebang = lines.ElementAtOrDefault(0) ?? "";
     var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
     var m = r.Match(shebang);
-    return m.Success ? m.Result("${commandline}") : ("scalac -deprecation -Yreify-copypaste -Xexperimental -g:vars " + file.FullName);
+    return m.Success ? m.Result("${commandline}") : ("scalac -deprecation -Yreify-copypaste -Yreify-debug -Yshow-trees -g:vars " + file.FullName);
   } }
 
   public override bool accept() {
@@ -78,7 +78,7 @@ public class Scala : Git {
         }
       }
     } finally {
-      if (File.Exists(compVerFile)) File.Delete(compVerFile);
+      if (!classes && File.Exists(compVerFile)) File.Delete(compVerFile);
     }
 
     status = classes ? 0 : Console.batch(String.Format("unzip -o -q \"{0}\\lib\\scala-library.jar\" library.properties", scalaHome), home: (scalaHome + "\\lib"));
@@ -102,7 +102,7 @@ public class Scala : Git {
         }
       }
     } finally {
-      if (File.Exists(libVerFile)) File.Delete(libVerFile);
+      if (!classes && File.Exists(libVerFile)) File.Delete(libVerFile);
     }
 
     var parent_key = "Software\\Myke";

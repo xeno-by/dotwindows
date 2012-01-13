@@ -19,7 +19,7 @@ public class Reify {
     }
 
     var process = new Process();
-    var scala = @"%SCALA_HOME%\bin\scala.bat".Expand();
+    var scala = @"%SCRIPTS_HOME%\scala.bat".Expand();
     process.StartInfo.FileName = scala;
     process.StartInfo.Arguments = "-Yreify-copypaste -e \"scala.reflect.Code.lift{" + code + "}\"";
     process.StartInfo.UseShellExecute = false;
