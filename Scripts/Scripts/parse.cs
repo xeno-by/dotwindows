@@ -25,7 +25,7 @@ public class Parse {
     var process = new Process();
     var scala = @"%SCRIPTS_HOME%\scalac.bat".Expand();
     process.StartInfo.FileName = scala;
-    process.StartInfo.Arguments = "-Xprint:parser -Yshow-trees -Ystop-after:parser \"" + file + "\"";
+    process.StartInfo.Arguments = "-Xmacros -Xprint:parser -Yshow-trees -Ystop-after:parser \"" + file + "\"";
     process.StartInfo.UseShellExecute = false;
     process.Start();
     process.WaitForExit();
