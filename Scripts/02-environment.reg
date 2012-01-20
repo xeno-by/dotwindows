@@ -1,52 +1,22 @@
 Windows Registry Editor Version 5.00
 
 [HKEY_CURRENT_USER\Environment]
-"DEFAULT_CA_NR"="CA100"
-"HOME"="C:\\Users\\xeno.by"
-"Path"="C:\\Users\\xeno.by\\AppData\\Roaming\\MiKTeX\\2.9\\miktex/bin\\"
 "TEMP"=hex(2):25,00,55,00,53,00,45,00,52,00,50,00,52,00,4f,00,46,00,49,00,4c,\
   00,45,00,25,00,5c,00,41,00,70,00,70,00,44,00,61,00,74,00,61,00,5c,00,4c,00,\
   6f,00,63,00,61,00,6c,00,5c,00,54,00,65,00,6d,00,70,00,00,00
 "TMP"=hex(2):25,00,55,00,53,00,45,00,52,00,50,00,52,00,4f,00,46,00,49,00,4c,00,\
   45,00,25,00,5c,00,41,00,70,00,70,00,44,00,61,00,74,00,61,00,5c,00,4c,00,6f,\
   00,63,00,61,00,6c,00,5c,00,54,00,65,00,6d,00,70,00,00,00
+"HOME"="C:\\Users\\xeno.by"
+"DEFAULT_CA_NR"="CA100"
+"Path"="C:\\Users\\xeno.by\\AppData\\Roaming\\MiKTeX\\2.9\\miktex/bin\\"
 "ULTRAMON_LANGDIR"="C:\\Program Files\\UltraMon\\Resources\\en"
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment]
-"ANT_HOME"="C:\\PROGRA~2\\ant\\"
-"ANT_OPTS"="-Xss128m -Xms2048m -Xmx2048m -XX:+UseParallelGC -XX:MaxPermSize=256M"
-"CLASSPATH"=".;C:\\Projects\\Nailgun\\nailgun-0.7.1.jar;C:\\PROGRA~2\\QUICKT~1\\QTSystem\\QTJava.zip;c:\\PROGRA~1\\Java\\JDK16~1.0_2\\lib\\tools.jar;C:\\Program Files (x86)\\QuickTime\\QTSystem\\QTJava.zip"
 "ComSpec"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,\
   74,00,25,00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,63,\
   00,6d,00,64,00,2e,00,65,00,78,00,65,00,00,00
-"CYGHOME"="c:\\cygwin\\home\\xeno_by"
-"CYGROOT"="c:\\cygwin"
-"CYGWIN"="nodosfilewarning"
-"DROPBOX"="d:\\Dropbox"
-"ECLIPSE_HOME"="C:\\Program Files (x86)\\eclipse"
-"EMACS_HOME"="C:\\PROGRA~2\\emacs\\23.2"
-"ENSIME_HOME"=hex(2):43,00,3a,00,5c,00,50,00,72,00,6f,00,6a,00,65,00,63,00,74,\
-  00,73,00,5c,00,45,00,6e,00,73,00,69,00,6d,00,65,00,5c,00,64,00,69,00,73,00,\
-  74,00,5f,00,32,00,2e,00,39,00,2e,00,32,00,2d,00,53,00,4e,00,41,00,50,00,53,\
-  00,48,00,4f,00,54,00,5c,00,00,00
-"FAR_HOME"="C:\\Program Files (x86)\\Far Manager"
-"FLAC_HOME"="C:\\Program Files (x86)\\flac"
 "FP_NO_HOST_CHECK"="NO"
-"FTP_PASSIVE"="1"
-"GRAPHVIZ_HOME"="C:\\Program Files (x86)\\Graphviz2.26"
-"GS_HOME"=hex(2):43,00,3a,00,5c,00,50,00,52,00,4f,00,47,00,52,00,41,00,7e,00,\
-  32,00,5c,00,47,00,50,00,4c,00,47,00,53,00,00,00
-"ILMERGE_HOME"="C:\\Program Files (x86)\\Microsoft\\ILMerge"
-"JAVA_HOME"=hex(2):63,00,3a,00,5c,00,50,00,52,00,4f,00,47,00,52,00,41,00,7e,00,\
-  31,00,5c,00,4a,00,61,00,76,00,61,00,5c,00,4a,00,44,00,4b,00,31,00,36,00,7e,\
-  00,31,00,2e,00,30,00,5f,00,32,00,00,00
-"JD_HOME"="C:\\Program Files (x86)\\jd"
-"JEDIT_HOME"="c:\\Program Files\\jEdit"
-"LANG"="C.UTF-8"
-"LC_ALL"="C.UTF-8"
-"LINQPAD_HOME"="C:\\Program Files (x86)\\LINQPad\\.NET Framework 4.0"
-"MOBIDRIVE"="e:"
-"NUMBER_OF_PROCESSORS"="2"
 "OS"="Windows_NT"
 "Path"=hex(2):22,00,43,00,3a,00,5c,00,50,00,72,00,6f,00,67,00,72,00,61,00,6d,\
   00,20,00,46,00,69,00,6c,00,65,00,73,00,20,00,28,00,78,00,38,00,36,00,29,00,\
@@ -180,13 +150,14 @@ Windows Registry Editor Version 5.00
   4a,00,53,00,45,00,3b,00,2e,00,57,00,53,00,46,00,3b,00,2e,00,57,00,53,00,48,\
   00,3b,00,2e,00,4d,00,53,00,43,00,3b,00,2e,00,52,00,42,00,3b,00,2e,00,52,00,\
   42,00,57,00,00,00
-"PERL_JSON_BACKEND"="JSON::XS"
-"PERL_YAML_BACKEND"="YAML"
 "PROCESSOR_ARCHITECTURE"="AMD64"
-"PROCESSOR_IDENTIFIER"="Intel64 Family 6 Model 37 Stepping 5, GenuineIntel"
-"PROCESSOR_LEVEL"="6"
-"PROCESSOR_REVISION"="2505"
-"PROJECTS"="c:\\Projects"
+"TEMP"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,\
+  00,25,00,5c,00,54,00,45,00,4d,00,50,00,00,00
+"TMP"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,\
+  25,00,5c,00,54,00,45,00,4d,00,50,00,00,00
+"USERNAME"="SYSTEM"
+"windir"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,\
+  00,25,00,00,00
 "PSModulePath"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,\
   00,74,00,25,00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,\
   57,00,69,00,6e,00,64,00,6f,00,77,00,73,00,50,00,6f,00,77,00,65,00,72,00,53,\
@@ -198,24 +169,53 @@ Windows Registry Editor Version 5.00
   5c,00,31,00,31,00,30,00,5c,00,54,00,6f,00,6f,00,6c,00,73,00,5c,00,50,00,6f,\
   00,77,00,65,00,72,00,53,00,68,00,65,00,6c,00,6c,00,5c,00,4d,00,6f,00,64,00,\
   75,00,6c,00,65,00,73,00,5c,00,00,00
+"NUMBER_OF_PROCESSORS"="4"
+"PROCESSOR_LEVEL"="6"
+"PROCESSOR_IDENTIFIER"="Intel64 Family 6 Model 42 Stepping 7, GenuineIntel"
+"PROCESSOR_REVISION"="2a07"
+"TERM"="dumb"
+"FTP_PASSIVE"="1"
+"PERL_YAML_BACKEND"="YAML"
+"PERL_JSON_BACKEND"="JSON::XS"
+"SCRIPTS_HOME"="C:\\Program Files (x86)\\scripts"
+"CYGROOT"="c:\\cygwin"
+"SHELL"="c:\\cygwin\\bin\\bash.exe"
+"LANG"="C.UTF-8"
+"LC_ALL"="C.UTF-8"
+"CYGWIN"="nodosfilewarning"
+"CYGHOME"="c:\\cygwin\\home\\xeno_by"
+"ANT_HOME"="C:\\PROGRA~2\\ant\\"
+"ANT_OPTS"="-Xss128m -Xms2048m -Xmx2048m -XX:+UseParallelGC -XX:MaxPermSize=256M"
+"CLASSPATH"=".;C:\\Projects\\Nailgun\\nailgun-0.7.1.jar;C:\\PROGRA~2\\QUICKT~1\\QTSystem\\QTJava.zip;c:\\PROGRA~1\\Java\\JDK16~1.0_2\\lib\\tools.jar;C:\\Program Files (x86)\\QuickTime\\QTSystem\\QTJava.zip"
+"DROPBOX"="d:\\Dropbox"
+"ECLIPSE_HOME"="C:\\Program Files (x86)\\eclipse"
+"EMACS_HOME"="C:\\PROGRA~2\\emacs\\23.2"
+"ENSIME_HOME"=hex(2):43,00,3a,00,5c,00,50,00,72,00,6f,00,6a,00,65,00,63,00,74,\
+  00,73,00,5c,00,45,00,6e,00,73,00,69,00,6d,00,65,00,5c,00,64,00,69,00,73,00,\
+  74,00,5f,00,32,00,2e,00,39,00,2e,00,32,00,2d,00,53,00,4e,00,41,00,50,00,53,\
+  00,48,00,4f,00,54,00,5c,00,00,00
+"FAR_HOME"="C:\\Program Files (x86)\\Far Manager"
+"FLAC_HOME"="C:\\Program Files (x86)\\flac"
+"GRAPHVIZ_HOME"="C:\\Program Files (x86)\\Graphviz2.26"
+"GS_HOME"=hex(2):43,00,3a,00,5c,00,50,00,52,00,4f,00,47,00,52,00,41,00,7e,00,\
+  32,00,5c,00,47,00,50,00,4c,00,47,00,53,00,00,00
+"ILMERGE_HOME"="C:\\Program Files (x86)\\Microsoft\\ILMerge"
+"JAVA_HOME"=hex(2):63,00,3a,00,5c,00,50,00,52,00,4f,00,47,00,52,00,41,00,7e,00,\
+  31,00,5c,00,4a,00,61,00,76,00,61,00,5c,00,4a,00,44,00,4b,00,31,00,36,00,7e,\
+  00,31,00,2e,00,30,00,5f,00,32,00,00,00
+"JD_HOME"="C:\\Program Files (x86)\\jd"
+"JEDIT_HOME"="c:\\Program Files\\jEdit"
+"LINQPAD_HOME"="C:\\Program Files (x86)\\LINQPad\\.NET Framework 4.0"
+"MOBIDRIVE"="e:"
+"PROJECTS"="c:\\Projects"
 "QTJAVA"="C:\\Program Files (x86)\\QuickTime\\QTSystem\\QTJava.zip"
 "REFLECTOR_HOME"="C:\\Program Files (x86)\\Reflector\\"
 "SBT_HOME"="C:\\Program Files (x86)\\sbt\\"
-"SCRIPTS_HOME"="C:\\Program Files (x86)\\scripts"
-"SHELL"="c:\\cygwin\\bin\\bash.exe"
 "SOFTWARE"="d:\\Dropbox\\Software\\Windows"
-"TEMP"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,\
-  00,25,00,5c,00,54,00,45,00,4d,00,50,00,00,00
-"TERM"="dumb"
-"TMP"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,\
-  25,00,5c,00,54,00,45,00,4d,00,50,00,00,00
-"USERNAME"="SYSTEM"
 "VBOX_INSTALL_PATH"="C:\\Program Files\\Oracle\\VirtualBox\\"
 "VS100COMNTOOLS"="c:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools\\"
 "VS110COMNTOOLS"="C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\Common7\\Tools\\"
 "VSSDK110Install"="C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\VSSDK\\"
-"windir"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,\
-  00,25,00,00,00
 "XENODRIVE"="d:"
 "XPS2IMG_HOME"="C:\\Program Files (x86)\\xps2img"
 "asl.log"="Destination=file"
