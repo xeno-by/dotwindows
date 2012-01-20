@@ -67,7 +67,16 @@ public class Kep : Git {
       var scala = new Scala(file, lines);
       return scala.compile();
     } else {
-      return Console.batch("ant " + profile + " -buildfile build.xml", home: root);
+      var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);
+      if (!status) return status;
+
+      var partest = project + @"\build\locker\classes\partest";
+      if (!Directory.Exists(partest)) {
+        var donor = new Donor(new DirectoryInfo(new Donor().project));
+        return donor.compile();
+      } else {
+        return 0;
+      }
     }
   }
 
@@ -129,6 +138,7 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode runTest() {
+    if (toTest == null || toTest.Count() == 0) return -1;
     var prefix = project;
     prefix = prefix.Replace("/", "\\");
     if (!prefix.EndsWith("\\")) prefix += "\\";
