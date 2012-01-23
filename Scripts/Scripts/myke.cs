@@ -1,4 +1,4 @@
-// build this with "csc /t:exe /out:myke.exe /debug+ myke*.cs"
+// build this with "csc /r:ZetaLongPaths.dll /t:exe /out:myke.exe /debug+ myke*.cs"
 
 using System;
 using System.Collections;

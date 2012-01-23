@@ -1,4 +1,4 @@
-// build this with "csc /t:exe /out:myke.exe /debug+ /r:System.Xml.Linq.dll myke*.cs"
+// build this with "csc /r:ZetaLongPaths.dll /t:exe /out:myke.exe /debug+ myke*.cs"
 
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using ZetaLongPaths;
 
 [Connector(name = "donor", priority = 999, description =
   "Wraps the development workflow of donor scalacheck for Kepler")]
@@ -38,21 +39,21 @@ public class Donor : Kep {
         sourceFolder = temp + "\\" + insideArchive;
       }
 
-      if (!Directory.Exists(destFolder))
-        Directory.CreateDirectory(destFolder);
+      if (ZlpIOHelper.DirectoryExists(destFolder)) ZlpIOHelper.DeleteDirectory(destFolder, true);
+      if (!ZlpIOHelper.DirectoryExists(destFolder)) ZlpIOHelper.CreateDirectory(destFolder);
 
-      var files = Directory.GetFiles(sourceFolder);
+      var files = new ZlpDirectoryInfo(sourceFolder).GetFiles();
       foreach (var file in files) {
-        var name = Path.GetFileName(file);
-        var dest = Path.Combine(destFolder, name);
-        File.Copy(file, dest);
+        var name = ZlpPathHelper.GetFileNameFromFilePath(file.FullName);
+        var dest = ZlpPathHelper.Combine(destFolder, name);
+        file.CopyTo(dest, true);
       }
 
-      var folders = Directory.GetDirectories(sourceFolder);
+      var folders = new ZlpDirectoryInfo(sourceFolder).GetDirectories();
       foreach (var folder in folders) {
-        var name = Path.GetFileName(folder);
-        var dest = Path.Combine(destFolder, name);
-        var status = CopyDirectory(folder, dest);
+        var name = ZlpPathHelper.GetFileNameFromFilePath(folder.FullName);
+        var dest = ZlpPathHelper.Combine(destFolder, name);
+        var status = CopyDirectory(folder.FullName, dest);
         if (!status) { println("[FAILED]"); return status; }
       }
 
@@ -77,6 +78,7 @@ public class Donor : Kep {
       status = status && transplant("build/quick/classes/partest", "build/locker/classes/partest");
       status = status && transplant("build/quick/classes/library/scala/actors", "build/locker/classes/partest/scala/actors");
       status = status && transplant("build/quick/classes/scalap/scala/tools/scalap", "build/locker/classes/partest/scala/tools/scalap");
+      status = status && transplant("build/quick/classes/scalacheck/org/scalacheck", "build/locker/classes/partest/org/scalacheck");
       status = status && transplant("lib/forkjoin.jar/scala/concurrent/forkjoin", "build/locker/classes/partest/scala/concurrent/forkjoin");
       status = status && transplant("lib/fjbg.jar/ch/epfl/lamp/fjbg", "build/locker/classes/partest/ch/epfl/lamp/fjbg");
       status = status && transplant("lib/fjbg.jar/ch/epfl/lamp/util", "build/locker/classes/partest/ch/epfl/lamp/util");
@@ -93,7 +95,6 @@ public class Donor : Kep {
     print("  * Copying {0} to {1}... ", from, to);
 
     try {
-      if (Directory.Exists(to)) Directory.Delete(to, true);
       var status = CopyDirectory(from, to);
       if (status) println("[  OK  ]");
       return status;

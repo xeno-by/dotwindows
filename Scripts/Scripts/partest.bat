@@ -1,5 +1,5 @@
 @echo off
-set CLASSPATH="C:\Projects\Kepler\build\locker\classes\compiler;C:\Projects\Kepler\build\locker\classes\library;C:\Projects\Kepler\build\locker\classes\partest"
+set CLASSPATH="%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library;%PROJECTS%\Kepler\build\locker\classes\partest"
 cd /D "%PROJECTS%\Kepler\test"
 java >con ^
 -Xmx1024M >con ^
