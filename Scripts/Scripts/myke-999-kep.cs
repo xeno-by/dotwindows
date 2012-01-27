@@ -83,7 +83,7 @@ public class Kep : Git {
   [Action]
   public virtual ExitCode repl() {
     var status = compile();
-    return status && println() && Console.interactive("scala -deprecation", home: root);
+    return status && println() && Console.interactive("scala -deprecation -Xexperimental -Xmacros", home: root);
   }
 
   public virtual FileInfo toRun { get {

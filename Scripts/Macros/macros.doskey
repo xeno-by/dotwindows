@@ -6,6 +6,7 @@
 
 ;= Favorite directories
 time="%SCRIPTS_HOME%\time.exe" $*
+type="%SCRIPTS_HOME%\type.exe" $*
 echo="%CYGROOT%\bin\echo.exe" $*
 hm=cd /D "%HOME%"
 tmp=cd /D "%HOME%\AppData\Local\Temp"
@@ -25,6 +26,7 @@ dl2=cd /D "%HOME%\Downloads2"
 vid=cd /D "%XENODRIVE%\Video"
 doc=cd /D "%HOME%\Documents\Scratchpad"
 dem=cd /D "%HOME%\.emacs.d"
+des=cd /D "%APPDATA%\Sublime Text 2"
 far=cd /D "%FAR_HOME%"
 prj=cd /D "%PROJECTS%"
 fos=cd /D "%DROPBOX%\Projects\Foundations of Software\Documents"
