@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,8 +11,11 @@ public class App {
   public static int Main(String[] args) {
     String test = null;
     if (args.Length == 0) {
-      Console.Write("Test: ");
-      test = Console.ReadLine();
+      var dottest = new FileInfo(@"%PROJECTS%\Kepler\.test".Expand());
+      var tested = dottest.Exists ? File.ReadAllLines(dottest.FullName).ToList() : new List<String>();
+      Console.WriteLine("{0} file{1} tested", tested.Count, tested.Count != 1 ? "s" : "");
+      tested.ForEach(test1 => Console.WriteLine("    " + test1));
+      return 0;
     } else {
       test = String.Join(" ", args);
     }

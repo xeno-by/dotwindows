@@ -10,8 +10,8 @@ public class App {
   public static int Main(String[] args) {
     String test = null;
     if (args.Length == 0) {
-      Console.Write("Test: ");
-      test = Console.ReadLine();
+      Console.WriteLine("usage: untest <mask>");
+      return -1;
     } else {
       test = String.Join(" ", args);
     }

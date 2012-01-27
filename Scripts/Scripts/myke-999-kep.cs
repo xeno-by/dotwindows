@@ -86,23 +86,6 @@ public class Kep : Git {
     return status && println() && Console.interactive("scala -deprecation -Xexperimental -Xmacros", home: root);
   }
 
-  public virtual FileInfo toRun { get {
-    var dotRun = new FileInfo(root + "\\.run");
-    if (!dotRun.Exists) {
-      println("error: .run file not found");
-      return null;
-    }
-
-    var f_toRun = File.ReadAllLines(dotRun.FullName).Where(f_toTest => !f_toTest.StartsWith("#")).FirstOrDefault();
-    if (f_toRun != null) f_toRun = project + "\\" + f_toRun;
-    if (f_toRun == null || !File.Exists(f_toRun)) {
-      println("error: {0}, file referenced by .run does not exist", f_toRun);
-      return null;
-    }
-
-    return new FileInfo(f_toRun);
-  } }
-
   [Action]
   public virtual ExitCode run(Arguments arguments) {
     if (inPlayground && file != null) {
@@ -117,11 +100,23 @@ public class Kep : Git {
       //options.Add("-e \"scala.reflect.Code.lift{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
       //return Console.batch("scala " + String.Join(" ", options.ToArray()));
 
-      if (toRun == null) return -1;
-      println("running {0}", toRun.FullName);
-      var lines = new Lines(toRun, File.ReadAllLines(toRun.FullName).ToList());
-      var scala = new Scala(toRun, lines);
-      return scala.run(arguments);
+      var root = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
+      var files = root.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
+      if (files.Count == 0) {
+        println("error: nothing to run");
+        return -1;
+      } else if (files.Count == 1) {
+        var toRun = files[0];
+        println("running {0}", toRun.FullName);
+        var lines = new Lines(toRun, File.ReadAllLines(toRun.FullName).ToList());
+        var scala = new Scala(toRun, lines);
+        return scala.run(arguments);
+      } else {
+        println("error: command is ambiguous");
+        files.Take(5).ToList().ForEach(file1 => println("    " + file1));
+        if (files.Count > 5) println("    ... " + (files.Count - 5) + " more");
+        return -1;
+      }
     }
   }
 

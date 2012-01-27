@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,8 +11,11 @@ public class App {
   public static int Main(String[] args) {
     String test = null;
     if (args.Length == 0) {
-      Console.Write("Test: ");
-      test = Console.ReadLine();
+      var sandbox = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
+      var staged = sandbox.Exists ? sandbox.GetFiles("*.scala", SearchOption.AllDirectories).Select(file => file.FullName.Substring(sandbox.FullName.Length)).ToList() : new List<String>();
+      Console.WriteLine("{0} file{1} staged", staged.Count, staged.Count != 1 ? "s" : "");
+      staged.ForEach(file => Console.WriteLine("    " + file));
+      return 0;
     } else {
       test = String.Join(" ", args);
     }
