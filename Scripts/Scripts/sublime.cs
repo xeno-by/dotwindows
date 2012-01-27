@@ -29,10 +29,22 @@ public class App {
       if (file0.Exists) dir0 = file0.Directory;
 
       if (file0.Exists || dir0.Exists) {
-        var idx = 0;
-        Func<FileInfo> project = () => new FileInfo(projects + "\\" + dir0.Name + (idx == 0 ? "" : idx.ToString()) + ".sublime-project");
-        while (project().Exists) idx++;
-
+        FileInfo project = null;
+        if (args.Length > 2 && args[args.Length - 2] == "/name") {
+          project = new FileInfo(projects + "\\" + args[args.Length - 1] + ".sublime-project");
+          if (project.Exists) {
+            MessageBox.Show(String.Format("Project \"{0}\" already exists found. \r\n\r\n" +
+                                          "There already exists find project file {1}.", args[args.Length - 1], project.FullName),
+                                          "Sublime Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+          }
+          args = args.Take(args.Length - 2).ToArray();
+        } else {
+          var idx = 0;
+          Func<FileInfo> gen = () => new FileInfo(projects + "\\" + dir0.Name + (idx == 0 ? "" : idx.ToString()) + ".sublime-project");
+          while (gen().Exists) idx++;
+          project = gen();
+        }
 
         var lines = new List<String>();
         lines.Add("{");
@@ -55,9 +67,9 @@ public class App {
         }
         lines.Add("  ]");
         lines.Add("}");
-        project().WriteAllText(String.Join(Environment.NewLine, lines.ToArray()));
+        project.WriteAllLines(lines);
 
-        args = new []{"--project", "\"" + project().FullName + "\""}.Concat(args).ToArray();
+        args = new []{"--project", "\"" + project.FullName + "\""}.Concat(args).ToArray();
       } else {
         var project = new FileInfo(projects + "\\" + args[0] + ".sublime-project");
         if (!project.Exists) {
@@ -86,6 +98,28 @@ public class App {
       return;
     }
 
+    var session = new FileInfo(home + @"\Settings\Session.sublime_session");
+    if (session.Exists) {
+      var iof = args.ToList().IndexOf("--project");
+      var project = args[iof + 1];
+
+      var lines = session.ReadAllLines();
+      lines = lines.Select(line => {
+        if (line.Contains("\"workspace_name\"")) {
+          var sublimepath = project.Substring(1, project.Length - 2);
+          sublimepath = sublimepath.Replace("\\", "/");
+          sublimepath = sublimepath.Replace(":/", "/");
+          sublimepath = "/" + sublimepath;
+          var linex = "      \"workspace_name\": \"" + sublimepath + "\"";
+          if (line.Trim().EndsWith(",")) linex += ",";
+          return linex;
+        } else {
+          return line;
+        }
+      }).ToList();
+      session.WriteAllLines(lines);
+    }
+
     Process.Start(sublime, String.Join(" ", args));
   }
 }
@@ -98,7 +132,19 @@ public static class Env {
 }
 
 public static class IO {
+  public static String ReadAllText(this FileInfo file) {
+    return File.ReadAllText(file.FullName);
+  }
+
+  public static List<String> ReadAllLines(this FileInfo file) {
+    return File.ReadAllLines(file.FullName).ToList();
+  }
+
   public static void WriteAllText(this FileInfo file, String s) {
     File.WriteAllText(file.FullName, s);
+  }
+
+  public static void WriteAllLines(this FileInfo file, IEnumerable<String> lines) {
+    File.WriteAllText(file.FullName, String.Join(Environment.NewLine, lines.ToArray()));
   }
 }
