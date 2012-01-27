@@ -1,3 +1,4 @@
+// build this with "csc /r:Microsoft.VisualBasic.dll /t:exe /out:untest.exe untest.cs"
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -5,6 +6,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 
 public class App {
   public static int Main(String[] args) {
@@ -57,6 +60,6 @@ public static class Env {
   }
 
   public static bool MatchesWildcard(this String s, String wildcard) {
-    return s.Contains(wildcard);
+    return Operators.LikeString(s, "*" + wildcard + "*", CompareMethod.Text);
   }
 }

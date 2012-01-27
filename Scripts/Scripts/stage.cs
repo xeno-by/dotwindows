@@ -1,3 +1,4 @@
+// build this with "csc /r:Microsoft.VisualBasic.dll /t:exe /out:stage.exe stage.cs"
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,6 +7,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 
 public class App {
   public static int Main(String[] args) {
@@ -39,7 +42,8 @@ public class App {
       process.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\"", from.FullName, to.FullName);
       process.StartInfo.UseShellExecute = false;
       process.Start();
-      if (process.ExitCode != 0) process.WaitForExit();
+      process.WaitForExit();
+      if (process.ExitCode != 0) return process.ExitCode;
 
       process = new Process();
       var addtest = @"%SCRIPTS_HOME%\test.exe".Expand();
@@ -81,6 +85,6 @@ public static class Env {
   }
 
   public static bool MatchesWildcard(this String s, String wildcard) {
-    return s.Contains(wildcard);
+    return Operators.LikeString(s, "*" + wildcard + "*", CompareMethod.Text);
   }
 }
