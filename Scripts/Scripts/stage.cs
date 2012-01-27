@@ -26,19 +26,12 @@ public class App {
     var loc2 = new DirectoryInfo(@"%PROJECTS%\Kepler\test\pending\".Expand());
     files = files.Concat(loc2.GetFiles("*.scala", SearchOption.AllDirectories).Select(file => file.FullName.Substring(root.FullName.Length))).ToList();
 
-    test = test.Replace("/", "\\");
-    var filtered = files.Where(file => file.Contains(test)).ToList();
-    if (filtered.Count == 0) {
-      Console.WriteLine("error: match not found");
-      return -1;
-    } else if (filtered.Count == 1) {
-      Console.WriteLine("staging: " + filtered[0]);
-      test = filtered[0];
-
+    Func<String, int> impl = wannabe => {
+      Console.WriteLine("staging: " + wannabe);
       var sandbox = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
       if (!sandbox.Exists) sandbox.Create();
-      var from = new FileInfo(root.FullName + test);
-      var to = new FileInfo(sandbox.FullName + Path.GetFileName(test));
+      var from = new FileInfo(root.FullName + wannabe);
+      var to = new FileInfo(sandbox.FullName + Path.GetFileName(wannabe));
 
       var process = new Process();
       var deploySymlink = @"%SCRIPTS_HOME%\deploy-symlink.exe".Expand();
@@ -46,22 +39,38 @@ public class App {
       process.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\"", from.FullName, to.FullName);
       process.StartInfo.UseShellExecute = false;
       process.Start();
-      process.WaitForExit();
-      if (process.ExitCode != 0) return process.ExitCode;
+      if (process.ExitCode != 0) process.WaitForExit();
 
       process = new Process();
       var addtest = @"%SCRIPTS_HOME%\test.exe".Expand();
       process.StartInfo.FileName = addtest;
-      process.StartInfo.Arguments = String.Format("\"{0}\"", test);
+      process.StartInfo.Arguments = String.Format("\"{0}\"", wannabe);
       process.StartInfo.UseShellExecute = false;
       process.Start();
       process.WaitForExit();
       return process.ExitCode;
-    } else {
-      Console.WriteLine("error: match is ambiguous");
-      filtered.Take(5).ToList().ForEach(file => Console.WriteLine("    " + file));
-      if (filtered.Count > 5) Console.WriteLine("    ... " + (filtered.Count - 5) + " more");
+    };
+
+    test = test.Replace("/", "\\");
+    var filtered = files.Where(file => file.MatchesWildcard(test)).ToList();
+    if (filtered.Count == 0) {
+      Console.WriteLine("error: match not found");
       return -1;
+    } else if (filtered.Count == 1) {
+      return impl(filtered[0]);
+    } else {
+      var allow_wildcards = test.Contains("*") || test.Contains("?");
+      if (allow_wildcards) {
+        // todo. don't swallow exit codes
+        filtered.ForEach(filtered0 => impl(filtered0));
+        Console.WriteLine("{0} file{1} added", filtered.Count, filtered.Count != 1 ? "s" : "");
+        return 0;
+      } else {
+        Console.WriteLine("error: match is ambiguous");
+        filtered.Take(5).ToList().ForEach(file => Console.WriteLine("    " + file));
+        if (filtered.Count > 5) Console.WriteLine("    ... " + (filtered.Count - 5) + " more");
+        return -1;
+      }
     }
   }
 }
@@ -69,5 +78,9 @@ public class App {
 public static class Env {
   public static String Expand(this String s) {
     return new Regex("%(?<envvar>.*?)%").Replace(s, m => Environment.GetEnvironmentVariable(m.Result("${envvar}")));
+  }
+
+  public static bool MatchesWildcard(this String s, String wildcard) {
+    return s.Contains(wildcard);
   }
 }
