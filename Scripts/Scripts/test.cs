@@ -28,31 +28,15 @@ public class App {
       Console.WriteLine("error: match not found");
       return -1;
     } else if (filtered.Count == 1) {
-      Console.WriteLine("staging: " + filtered[0]);
-      test = filtered[0];
+      test = @"test\" + filtered[0];
 
-      var sandbox = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
-      if (!sandbox.Exists) sandbox.Create();
-      var from = new FileInfo(root.FullName + test);
-      var to = new FileInfo(sandbox.FullName + Path.GetFileName(test));
-
-      var process = new Process();
-      var deploySymlink = @"%SCRIPTS_HOME%\deploy-symlink.exe".Expand();
-      process.StartInfo.FileName = deploySymlink;
-      process.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\"", from.FullName, to.FullName);
-      process.StartInfo.UseShellExecute = false;
-      process.Start();
-      process.WaitForExit();
-      if (process.ExitCode != 0) return process.ExitCode;
-
-      process = new Process();
-      var addtest = @"%SCRIPTS_HOME%\test.exe".Expand();
-      process.StartInfo.FileName = addtest;
-      process.StartInfo.Arguments = String.Format("\"{0}\"", test);
-      process.StartInfo.UseShellExecute = false;
-      process.Start();
-      process.WaitForExit();
-      return process.ExitCode;
+      Console.WriteLine("adding test: " + test);
+      var dottest = new FileInfo(@"%PROJECTS%\Kepler\.test".Expand());
+      if (!dottest.Exists) File.WriteAllText(dottest.FullName, "");
+      var tests = File.ReadAllLines(dottest.FullName).ToList();
+      if (!tests.Contains(test)) tests.Add(test);
+      File.WriteAllText(dottest.FullName, String.Join(Environment.NewLine, tests.ToArray()));
+      return 0;
     } else {
       Console.WriteLine("error: match is ambiguous");
       filtered.Take(5).ToList().ForEach(file => Console.WriteLine("    " + file));

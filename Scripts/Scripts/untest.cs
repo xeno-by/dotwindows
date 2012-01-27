@@ -16,21 +16,18 @@ public class App {
       test = String.Join(" ", args);
     }
 
-    var root = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
-    var files = root.GetFiles("*.scala", SearchOption.AllDirectories).Select(file => file.FullName.Substring(root.FullName.Length)).ToList();
+    var dottest = new FileInfo(@"%PROJECTS%\Kepler\.test".Expand());
+    if (!dottest.Exists) File.WriteAllText(dottest.FullName, "");
+    var tests = File.ReadAllLines(dottest.FullName).ToList();
+    var filtered = tests.Where(test1 => test1.Contains(test)).ToList();
 
-    test = test.Replace("/", "\\");
-    var filtered = files.Where(file => file.Contains(test)).ToList();
     if (filtered.Count == 0) {
       Console.WriteLine("warning: match not found");
       return 0;
     } else if (filtered.Count == 1) {
-      Console.WriteLine("unstaging: " + filtered[0]);
-      test = root + filtered[0];
-      var temp = Path.GetTempFileName();
-      File.Copy(test, temp, true);
-      Console.WriteLine(String.Format("backup: {0} now holds a copy of {1}", temp, test));
-      File.Delete(test);
+      Console.WriteLine("untesting: " + filtered[0]);
+      tests.Remove(filtered[0]);
+      File.WriteAllText(dottest.FullName, String.Join(Environment.NewLine, tests.ToArray()));
       return 0;
     } else {
       Console.WriteLine("error: match is ambiguous");
