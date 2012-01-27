@@ -69,6 +69,19 @@ public class App {
         lines.Add("}");
         project.WriteAllLines(lines);
 
+        lines = new List<String>();
+        lines.Add("{");
+        lines.Add("  \"build_system\": \"Packages/User/Myke.sublime-build\",");
+        lines.Add("  \"show_minimap\": false,");
+        lines.Add("  \"show_open_files\": true,");
+        lines.Add("  \"show_tabs\": true,");
+        lines.Add("  \"side_bar_visible\": true,");
+        lines.Add("  \"side_bar_width\": 256.0,");
+        lines.Add("  \"status_bar_visible\": true");
+        lines.Add("}");
+        var workspace = new FileInfo(Path.ChangeExtension(project.FullName, "sublime-workspace"));
+        workspace.WriteAllLines(lines);
+
         args = new []{"--project", "\"" + project.FullName + "\""}.Concat(args).ToArray();
       } else {
         var project = new FileInfo(projects + "\\" + args[0] + ".sublime-project");
