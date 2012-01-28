@@ -18,6 +18,7 @@ public class Scala : Git {
 
   public Scala(FileInfo file, Lines lines) : base(file) {
     this.lines = lines;
+    env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)";
   }
 
   public virtual String compiler { get {

@@ -18,8 +18,10 @@ using Microsoft.Win32.SafeHandles;
 
 public class App {
   public static int Main(String[] args) {
-    Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeStatus", "");
-    Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", "");
+    var path = @"Software\Far2\KeyMacros\Vars";
+    var reg = Registry.CurrentUser.OpenSubKey(path, true) ?? Registry.CurrentUser.CreateSubKey(path);
+    var env_values = reg.GetValueNames().Where(name => name.StartsWith("%%Myke")).ToList();
+    env_values.ForEach(value => reg.DeleteValue(value));
 
     try {
       try {
@@ -31,6 +33,9 @@ public class App {
       }
     } finally {
       Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeStatus", Environment.ExitCode.ToString());
+      Func<String, String> capitalize = s => String.IsNullOrEmpty(s) ? s : Char.ToUpper(s[0]) + s.Substring(1);
+      var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
+      env.Keys.ToList().ForEach(key => Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%Myke" + capitalize(key), env[key]));
     }
 
     return Environment.ExitCode;
@@ -86,7 +91,17 @@ public class App {
             return -1;
           }
 
-          return (ExitCode)actions[action]();
+          ExitCode exitCode = -1;
+          try {
+            exitCode = (ExitCode)actions[action]();
+            return exitCode;
+          } finally {
+            var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
+            if (!env.ContainsKey("action")) env["action"] = action;
+            if (!env.ContainsKey("target")) env["target"] = Config.target;
+            if (!env.ContainsKey("args")) env["args"] = Config.args.ToString();
+            if (!env.ContainsKey("meaningful")) env["meaningful"] = (exitCode ? 0 : 1).ToString();
+          }
         }
       }
 
@@ -153,6 +168,10 @@ public class ExitCode {
 
   public static bool operator false(ExitCode c) {
     return c.value != 0;
+  }
+
+  public static implicit operator bool(ExitCode c) {
+    return c.value == 0;
   }
 }
 
@@ -590,6 +609,8 @@ public static class Console {
       if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
     }
 
+    var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
+    env["workingDir"] = home.FullName;
     return internalEval(command, home);
   }
 
@@ -608,6 +629,8 @@ public static class Console {
       if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
     }
 
+    var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
+    env["workingDir"] = home.FullName;
     return cmd(command, home);
   }
 
@@ -626,6 +649,8 @@ public static class Console {
       if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
     }
 
+    var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
+    env["workingDir"] = home.FullName;
     return cmd(command, home);
   }
 
@@ -644,6 +669,8 @@ public static class Console {
       if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
     }
 
+    var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
+    env["workingDir"] = home.FullName;
     return shellex(command, home);
   }
 }
@@ -1226,16 +1253,19 @@ public abstract class Prj {
   public DirectoryInfo dir;
 
   public Prj() : this((DirectoryInfo)null) {
+    initEnv();
   }
 
   public Prj(FileInfo file) {
     this.file = file;
     this.dir = file == null ? null : file.Directory;
+    initEnv();
   }
 
   public Prj(DirectoryInfo dir) {
     this.file = null;
     this.dir = dir ?? (project == null ? null : new DirectoryInfo(project));
+    initEnv();
   }
 
   public virtual String project { get { return null; } }
@@ -1288,6 +1318,14 @@ public abstract class Prj {
   protected static ExitCode println() {
     Console.println();
     return 0;
+  }
+
+  private Dictionary<String, String> _env;
+  public Dictionary<String, String> env { get { return _env; } }
+  private void initEnv() {
+    var currentEnv = AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>;
+    _env = currentEnv = currentEnv ?? new Dictionary<String, String>();
+    AppDomain.CurrentDomain.SetData("%%MykeEnv", _env);
   }
 }
 

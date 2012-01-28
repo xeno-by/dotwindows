@@ -37,11 +37,13 @@ public class MykeCore : Csc {
       echo [HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars] >> %TMP%\mykestatus.reg
       echo ""%%%%MykeContinuation""="""" >> %TMP%\mykestatus.reg
       echo ""%%%%MykeStatus""=""%status%"" >> %TMP%\mykestatus.reg
+      if not %status% == 0 echo ""%%%%MykeMeaningful""=""1"" >> %TMP%\mykestatus.reg
+      echo ""%%%%MykeWorkingDir""=""{2}"" >> %TMP%\mykestatus.reg
       regedit /s %TMP%\mykestatus.reg
       if not %status% == 0 exit /b %status%
 
       exit /b %status%
-    ", "%SCRIPTS_HOME%".Expand(), compiler));
+    ", "%SCRIPTS_HOME%".Expand(), compiler, "%SCRIPTS_HOME%".Expand().Replace(@"\", @"\\")));
 
     if (Config.dryrun) println("cont: " + mykecompile);
     else Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", mykecompile);
@@ -70,10 +72,12 @@ public class MykeCore : Csc {
       echo [HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars] >> %TMP%\mykestatus.reg
       echo ""%%%%MykeContinuation""="""" >> %TMP%\mykestatus.reg
       echo ""%%%%MykeStatus""=""%status%"" >> %TMP%\mykestatus.reg
+      if not %status% == 0 echo ""%%%%MykeMeaningful""=""1"" >> %TMP%\mykestatus.reg
+      echo ""%%%%MykeWorkingDir""=""{2}"" >> %TMP%\mykestatus.reg
       regedit /s %TMP%\mykestatus.reg
       if not %status% == 0 exit /b %status%
 
-      myke run-without-compile ""{2}"" {3}
+      myke run-without-compile ""{3}"" {4}
       set status=%errorlevel%
 
       echo Windows Registry Editor Version 5.00 > %TMP%\mykestatus.reg
@@ -85,7 +89,7 @@ public class MykeCore : Csc {
       if not %status% == 0 exit /b %status%
 
       exit /b %status%
-    ", "%SCRIPTS_HOME%".Expand(), compiler, Config.target, arguments));
+    ", "%SCRIPTS_HOME%".Expand(), compiler, "%SCRIPTS_HOME%".Expand().Replace(@"\", @"\\"), Config.target, arguments));
 
     if (Config.dryrun) println("cont: " + mykerun);
     else Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeContinuation", mykerun);

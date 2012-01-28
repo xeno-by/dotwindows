@@ -15,6 +15,7 @@ public class Csc : Git {
 
   public Csc(FileInfo file, Lines lines) : base(file) {
     this.lines = lines;
+    env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]cs)\\(([0-9]+),[0-9]+\\)";
   }
 
   public virtual bool isconsole { get {
