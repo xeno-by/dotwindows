@@ -1248,6 +1248,11 @@ public abstract class Prj {
     return dir;
   } }
 
+  [Action]
+  public virtual ExitCode console() {
+    return Console.interactive("mycmd.exe", home: root);
+  }
+
   public abstract bool accept();
 
   protected static ExitCode print(String format, params Object[] objs) {
