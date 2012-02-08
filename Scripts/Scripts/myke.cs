@@ -100,7 +100,10 @@ public class App {
             if (!env.ContainsKey("action")) env["action"] = action;
             if (!env.ContainsKey("target")) env["target"] = Config.target;
             if (!env.ContainsKey("args")) env["args"] = Config.args.ToString();
-            if (!env.ContainsKey("meaningful")) env["meaningful"] = (exitCode ? 0 : 1).ToString();
+            if (!env.ContainsKey("meaningful")) {
+              env["meaningful"] = (exitCode ? 0 : 1).ToString();
+              if (action == "run" || action == "repl" || action == "console") env["meaningful"] = "1";
+            }
           }
         }
       }
@@ -1402,6 +1405,12 @@ public abstract class Git : Prj {
   public virtual ExitCode logthis() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
+  }
+
+  [Action]
+  public virtual ExitCode blame() {
+    if (!verifyRepo()) return -1;
+    return Console.ui(String.Format("tgit blame \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
   [Action]

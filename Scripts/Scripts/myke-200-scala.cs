@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,7 @@ public class Scala : Git {
     var shebang = lines.ElementAtOrDefault(0) ?? "";
     var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
     var m = r.Match(shebang);
-    return m.Success ? m.Result("${commandline}") : ("scalac -deprecation -Yreify-copypaste -Yreify-debug -Yshow-trees -g:vars " + file.FullName);
+    return m.Success ? m.Result("${commandline}") : ("scalac -deprecation -Xmacros -Yreify-copypaste -Yreify-debug -Yshow-trees -g:vars " + file.FullName);
   } }
 
   public override bool accept() {
@@ -198,6 +199,9 @@ public class Scala : Git {
       reg.SetValue("libVer", libVer);
       reg.SetValue("status", status.value);
       reg.SetValue(file.FullName.Replace("\\", "$slash$"), file.LastWriteTime.ToString("o"));
+      var s_symlink = GetSymlinkTarget(file.FullName);
+      var symlink = s_symlink == null ? null : new FileInfo(s_symlink);
+      if (symlink != null) reg.SetValue(symlink.FullName.Replace("\\", "$slash$"), symlink.LastWriteTime.ToString("o"));
 
       files = files.Distinct().ToList();
       files.Where(file1 => file1.Exists).ToList().ForEach(file1 => {
@@ -206,6 +210,18 @@ public class Scala : Git {
       });
 
       return status;
+    }
+  }
+
+  private static String GetSymlinkTarget(String path) {
+    using (var process = Process.Start(new ProcessStartInfo("junction", String.Format("\"{0}\"", path)){UseShellExecute = false, RedirectStandardOutput = true})) {
+      using (var reader = process.StandardOutput) {
+        var lines = reader.ReadToEnd().Split(new []{Environment.NewLine}, StringSplitOptions.None);
+        if (!((lines.Length > 5) && lines[5].Contains("SYMBOLIC LINK"))) return null;
+        var symlink = lines[6];
+        int iof = symlink.IndexOf(": ");
+        return symlink.Substring(iof + 2);
+      }
     }
   }
 

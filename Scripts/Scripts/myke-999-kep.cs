@@ -17,15 +17,17 @@ using System.Xml.XPath;
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
   public virtual String profile { get { return "fastlocker"; } }
+  //public virtual String profile { get { return "build"; } }
 
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
     return dir.IsChildOrEquivalentTo(project);
   }
 
-  public Kep() : base() {}
-  public Kep(FileInfo file) : base(file) {}
-  public Kep(DirectoryInfo dir) : base(dir) {}
+  public Kep() : base() { init(); }
+  public Kep(FileInfo file) : base(file) { init(); }
+  public Kep(DirectoryInfo dir) : base(dir) { init(); }
+  private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   public virtual bool inPlayground { get {
     var names = new [] {
@@ -82,8 +84,9 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode repl() {
-    var status = compile();
-    return status && println() && Console.interactive("scala -deprecation -Xexperimental -Xmacros", home: root);
+//    var status = compile();
+//    return status && println() && Console.interactive("scala -deprecation -Xexperimental -Xmacros", home: root);
+    return Console.interactive("scala -deprecation -Xexperimental -Xmacros", home: root);
   }
 
   [Action]
@@ -139,7 +142,7 @@ public class Kep : Git {
     if (!prefix.EndsWith("\\")) prefix += "\\";
     prefix += "test\\";
     var tests = toTest.Select(f => f.Substring(prefix.Length)).ToList();
-    var partest = @"%SCRIPTS_HOME%\partest.bat";
+    var partest = @"%SCRIPTS_HOME%\partest.exe";
     return Console.batch("\"" + partest + "\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
   }
 }

@@ -1,2 +1,3 @@
 @echo off
-java -cp "C:\Projects\Kepler\lib\jline.jar;C:\Projects\Kepler\lib\fjbg.jar;C:\Projects\Kepler\build\locker\classes\compiler;C:\Projects\Kepler\build\locker\classes\library" -Dscala.usejavacp=true scala.tools.nsc.Main %*
+rem java -cp "%PROJECTS%\Kepler\test\files\codelib\code.jar;%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library" -Dscala.usejavacp=true scala.tools.nsc.Main "-Xplugin:%PROJECTS%\Kepler\build\locker\classes\continuations.jar" %*
+java -cp "%PROJECTS%\Kepler\test\files\codelib\code.jar;%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library" -Dscala.usejavacp=true scala.tools.nsc.Main %*

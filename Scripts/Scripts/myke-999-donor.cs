@@ -27,6 +27,78 @@ public class Donor : Kep {
   public Donor(FileInfo file) : base(file) {}
   public Donor(DirectoryInfo dir) : base(dir) {}
 
+  [Default, Action]
+  public override ExitCode compile() {
+    if (inPlayground && file != null) {
+      return base.compile();
+    } else {
+      var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);
+      if (!status) return -1;
+
+      println();
+      println("Transplanting partest to Kepler...");
+      status = status && transplantDir("build/quick/classes/partest", "build/locker/classes/partest");
+      status = status && transplantDir("build/quick/classes/library/scala/actors", "build/locker/classes/partest/scala/actors");
+      status = status && transplantDir("build/quick/classes/scalap/scala/tools/scalap", "build/locker/classes/partest/scala/tools/scalap");
+      status = status && transplantDir("build/quick/classes/scalacheck/org/scalacheck", "build/locker/classes/partest/org/scalacheck");
+      status = status && transplantFile("build/pack/misc/scala-devel/plugins/continuations.jar", "build/locker/classes/continuations.jar");
+      status = status && transplantDir("build/pack/misc/scala-devel/plugins/continuations.jar", "build/locker/classes/continuations");
+      status = status && transplantDir("build/quick/classes/library/scala/util/continuations", "build/locker/classes/library/scala/util/continuations");
+      status = status && transplantDir("lib/forkjoin.jar/scala/concurrent/forkjoin", "build/locker/classes/partest/scala/concurrent/forkjoin");
+      status = status && transplantDir("lib/fjbg.jar/ch/epfl/lamp/fjbg", "build/locker/classes/partest/ch/epfl/lamp/fjbg");
+      status = status && transplantDir("lib/fjbg.jar/ch/epfl/lamp/util", "build/locker/classes/partest/ch/epfl/lamp/util");
+      status = status && transplantDir("lib/msil.jar/ch/epfl/lamp/compiler/msil", "build/locker/classes/partest/ch/epfl/lamp/compiler/msil");
+      status = status && transplantDir("lib/jline.jar/org/fusesource", "build/locker/classes/partest/org/fusesource");
+      status = status && transplantDir("lib/jline.jar/scala/tools/jline", "build/locker/classes/partest/scala/tools/jline");
+      return status;
+    }
+  }
+
+  public ExitCode transplantFile(String from, String to) {
+    from = project + "\\" + from.Replace("/", "\\");
+    to = new Kep().project + "\\" + to.Replace("/", "\\");
+    print("  * Copying {0} to {1}... ", from, to);
+
+    try {
+      ExitCode status = -1;
+      if (File.Exists(from)) status = CopyFile(from, to);
+      if (status) println("[  OK  ]");
+      return status;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  public static ExitCode CopyFile(string sourceFile, string destFile) {
+    try {
+      File.Copy(sourceFile, destFile, true);
+      return 0;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  public ExitCode transplantDir(String from, String to) {
+    from = project + "\\" + from.Replace("/", "\\");
+    to = new Kep().project + "\\" + to.Replace("/", "\\");
+    print("  * Copying {0} to {1}... ", from, to);
+
+    try {
+      ExitCode status = -1;
+      status = CopyDirectory(from, to);
+      if (status) println("[  OK  ]");
+      return status;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
   public static ExitCode CopyDirectory(string sourceFolder, string destFolder) {
     try {
       int iof = -1;
@@ -58,46 +130,6 @@ public class Donor : Kep {
       }
 
       return 0;
-    } catch (Exception ex) {
-      println("[FAILED]");
-      println(ex);
-      return -1;
-    }
-  }
-
-  [Default, Action]
-  public override ExitCode compile() {
-    if (inPlayground && file != null) {
-      return base.compile();
-    } else {
-      var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);
-      if (!status) return -1;
-
-      println();
-      println("Transplanting partest to Kepler...");
-      status = status && transplant("build/quick/classes/partest", "build/locker/classes/partest");
-      status = status && transplant("build/quick/classes/library/scala/actors", "build/locker/classes/partest/scala/actors");
-      status = status && transplant("build/quick/classes/scalap/scala/tools/scalap", "build/locker/classes/partest/scala/tools/scalap");
-      status = status && transplant("build/quick/classes/scalacheck/org/scalacheck", "build/locker/classes/partest/org/scalacheck");
-      status = status && transplant("lib/forkjoin.jar/scala/concurrent/forkjoin", "build/locker/classes/partest/scala/concurrent/forkjoin");
-      status = status && transplant("lib/fjbg.jar/ch/epfl/lamp/fjbg", "build/locker/classes/partest/ch/epfl/lamp/fjbg");
-      status = status && transplant("lib/fjbg.jar/ch/epfl/lamp/util", "build/locker/classes/partest/ch/epfl/lamp/util");
-      status = status && transplant("lib/msil.jar/ch/epfl/lamp/compiler/msil", "build/locker/classes/partest/ch/epfl/lamp/compiler/msil");
-      status = status && transplant("lib/jline.jar/org/fusesource", "build/locker/classes/partest/org/fusesource");
-      status = status && transplant("lib/jline.jar/scala/tools/jline", "build/locker/classes/partest/scala/tools/jline");
-      return status;
-    }
-  }
-
-  public ExitCode transplant(String from, String to) {
-    from = project + "\\" + from.Replace("/", "\\");
-    to = new Kep().project + "\\" + to.Replace("/", "\\");
-    print("  * Copying {0} to {1}... ", from, to);
-
-    try {
-      var status = CopyDirectory(from, to);
-      if (status) println("[  OK  ]");
-      return status;
     } catch (Exception ex) {
       println("[FAILED]");
       println(ex);

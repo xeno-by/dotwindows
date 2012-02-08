@@ -20,6 +20,7 @@ public class App {
 
     var p = new Process();
     p.StartInfo = psi;
+    p.Exited += (o, e) => Environment.Exit(p.ExitCode);
 
     if (p.Start()) {
       var stdout = new StandardOutputReader(p);
@@ -53,14 +54,15 @@ public class App {
     var s_macros = File.ReadAllLines(@"%SCRIPTS_HOME%\macros.doskey".Expand()).Where(line => !line.StartsWith(";=") && line.Trim() != String.Empty).ToList();
     var macros = s_macros.ToDictionary(s => s.Substring(0, s.IndexOf("=")), s => s.Substring(s.IndexOf("=") + 1));
 
-    foreach (var macro in macros.Keys) {
-      if (command.StartsWith(macro)) {
-        if (command == macro) {
-          command = MacroSub(command, "", macros[macro]);
+    foreach (var macro_key in macros.Keys) {
+      var macro_value = macros[macro_key];
+      if (command.StartsWith(macro_key)) {
+        if (command == macro_key) {
+          command = macro_value.DoskeyMacroSub(command, "");
           break;
         } else {
-          if (command.StartsWith(macro + " ")) {
-            command = MacroSub(command, command.Substring((macro + " ").Length), macros[macro]);
+          if (command.StartsWith(macro_key + " ")) {
+            command = macro_value.DoskeyMacroSub(command, command.Substring((macro_key + " ").Length));
             break;
           }
         }
@@ -70,11 +72,6 @@ public class App {
     LastCommand = command + Environment.NewLine;
     p.StandardInput.WriteLine(command);
     p.StandardInput.Flush();
-  }
-
-  // todo. implement more doskey stuff as it becomes necessary
-  private static String MacroSub(String command, String args, String macro) {
-    return macro.Replace("$*", args);
   }
 
   private abstract class StandardStreamReader {
@@ -152,25 +149,15 @@ public class App {
       Console.Write(s);
     }
   }
-
-  // i planned to merge stderr and stdout manually, but later found out that that's not a problem
-  // since if one does not redirect standard error, it gets correctly merged into stdout by default
-  // however, i leave these classes and all the apparel in place, just in case I'll need it later
-  private class StandardErrorReader: StandardStreamReader {
-    public StandardErrorReader(Process p): base(p, p.StandardError) {}
-
-    protected override int TryRead(Char[] buf, int start, int len) {
-      return Stream.Read(buf, start, len);
-    }
-
-    protected override void AfterChunkRead(String s) {
-      Console.Write(s);
-    }
-  }
 }
 
 public static class Env {
   public static String Expand(this String s) {
     return new Regex("%(?<envvar>.*?)%").Replace(s, m => Environment.GetEnvironmentVariable(m.Result("${envvar}")));
+  }
+
+  // todo. implement more doskey stuff as it becomes necessary
+  public static String DoskeyMacroSub(this String macro, String command, String args) {
+    return macro.Replace("$*", args);
   }
 }

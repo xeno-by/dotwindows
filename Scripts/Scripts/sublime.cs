@@ -24,11 +24,13 @@ public class App {
     }
 
     if (args.Length > 0) {
-      var file0 = new FileInfo(args[0]);
-      var dir0 = new DirectoryInfo(args[0]);
-      if (file0.Exists) dir0 = file0.Directory;
+      if (args[0] == "/new") {
+        args = args.Skip(1).ToArray();
 
-      if (file0.Exists || dir0.Exists) {
+        var file0 = new FileInfo(args[0]);
+        var dir0 = new DirectoryInfo(args[0]);
+        if (file0.Exists) dir0 = file0.Directory;
+
         FileInfo project = null;
         if (args.Length > 2 && args[args.Length - 2] == "/name") {
           project = new FileInfo(projects + "\\" + args[args.Length - 1] + ".sublime-project");
@@ -84,22 +86,30 @@ public class App {
 
         args = new []{"--project", "\"" + project.FullName + "\""}.Concat(args).ToArray();
       } else {
-        var project = new FileInfo(projects + "\\" + args[0] + ".sublime-project");
-        if (!project.Exists) {
-          MessageBox.Show(String.Format("Project \"{0}\" not found. \r\n\r\n" +
-                                        "Could not find project file {1}.", args[0], project),
-                                        "Sublime Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-          return;
-        } else {
-          if (args.Length == 2 && (args[1].ToLower() == "/reg" || args[1].ToLower() == "/register")) {
-            projects.GetFiles("*.is.default").ToList().ForEach(file => file.Delete());
-            var default_file = new FileInfo(Path.ChangeExtension(project.FullName, "is.default"));
-            default_file.WriteAllText("");
-            args = args.Take(1).Concat(args.Skip(2)).ToArray();
-          }
+        var file0 = new FileInfo(args[0]);
+        var dir0 = new DirectoryInfo(args[0]);
+        if (file0.Exists) dir0 = file0.Directory;
 
-          if (args.Length != 1) return;
-          args = new []{"--project", "\"" + project.FullName + "\""};
+        if (file0.Exists || dir0.Exists || args[0].Contains(".")) {
+          // don't do any postprocessing of args => open in current instance of sublime
+        } else {
+          var project = new FileInfo(projects + "\\" + args[0] + ".sublime-project");
+          if (!project.Exists) {
+            MessageBox.Show(String.Format("Project \"{0}\" not found. \r\n\r\n" +
+                                          "Could not find project file {1}.", args[0], project),
+                                          "Sublime Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+          } else {
+            if (args.Length == 2 && (args[1].ToLower() == "/reg" || args[1].ToLower() == "/register")) {
+              projects.GetFiles("*.is.default").ToList().ForEach(file => file.Delete());
+              var default_file = new FileInfo(Path.ChangeExtension(project.FullName, "is.default"));
+              default_file.WriteAllText("");
+              args = args.Take(1).Concat(args.Skip(2)).ToArray();
+            }
+
+            if (args.Length != 1) return;
+            args = new []{"--project", "\"" + project.FullName + "\""};
+          }
         }
       }
     }

@@ -1,2 +1,2 @@
 @echo off
-java -cp "C:\Projects\Kepler\lib\jline.jar;C:\Projects\Kepler\lib\fjbg.jar;C:\Projects\Kepler\build\locker\classes\compiler;C:\Projects\Kepler\build\locker\classes\library" -Djline.terminal=scala.tools.jline.UnsupportedTerminal -Dscala.usejavacp=true scala.tools.nsc.MainGenericRunner %*
+java -cp "%PROJECTS%\Kepler\test\files\codelib\code.jar;%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library" -Djline.terminal=scala.tools.jline.UnsupportedTerminal -Dscala.usejavacp=true scala.tools.nsc.MainGenericRunner "-Xplugin:%PROJECTS%\Kepler\build\locker\classes\continuations.jar" %*
