@@ -1,3 +1,4 @@
 @echo off
-rem java -cp "%PROJECTS%\Kepler\test\files\codelib\code.jar;%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library" -Dscala.usejavacp=true scala.tools.nsc.Main "-Xplugin:%PROJECTS%\Kepler\build\locker\classes\continuations.jar" %*
-java -cp "%PROJECTS%\Kepler\test\files\codelib\code.jar;%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library" -Dscala.usejavacp=true scala.tools.nsc.Main %*
+rem java -cp "%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library" -Dscala.usejavacp=true scala.tools.nsc.Main "-Xplugin:%PROJECTS%\Kepler\build\locker\classes\continuations.jar" %*
+rem java -cp "%PROJECTS%\Kepler\test\files\codelib\code.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library" -Dscala.usejavacp=true scala.tools.nsc.Main %*
+java -cp "%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library" -Dscala.usejavacp=true scala.tools.nsc.Main %*

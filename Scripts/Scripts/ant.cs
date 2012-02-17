@@ -7,8 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 public class App {
-  public static String miniProfile = "-Xss1m -Xms1024m -Xmx1024m -XX:+UseParallelGC -XX:MaxPermSize=256M";
-  public static String maxiProfile = "-Xss1m -Xms2048m -Xmx2048m -XX:+UseParallelGC -XX:MaxPermSize=256M";
+  public static String miniProfile = "-Xss128m -Xms1024m -Xmx1024m -XX:+UseParallelGC -XX:MaxPermSize=256M";
+  public static String maxiProfile = "-Xss128m -Xms2048m -Xmx2048m -XX:+UseParallelGC -XX:MaxPermSize=256M";
 
   public static int Main(String[] args) {
     var ant_launcher_template = @"%ANT_HOME%\lib\ant-launcher.jar";

@@ -56,12 +56,13 @@ public class Donor : Kep {
 
   public ExitCode transplantFile(String from, String to) {
     from = project + "\\" + from.Replace("/", "\\");
+    var to5 = new Kep5().project + "\\" + to.Replace("/", "\\");
     to = new Kep().project + "\\" + to.Replace("/", "\\");
     print("  * Copying {0} to {1}... ", from, to);
 
     try {
       ExitCode status = -1;
-      if (File.Exists(from)) status = CopyFile(from, to);
+      if (File.Exists(from)) status = CopyFile(from, to) && CopyFile(from, to5);
       if (status) println("[  OK  ]");
       return status;
     } catch (Exception ex) {
@@ -84,12 +85,13 @@ public class Donor : Kep {
 
   public ExitCode transplantDir(String from, String to) {
     from = project + "\\" + from.Replace("/", "\\");
+    var to5 = new Kep5().project + "\\" + to.Replace("/", "\\");
     to = new Kep().project + "\\" + to.Replace("/", "\\");
     print("  * Copying {0} to {1}... ", from, to);
 
     try {
       ExitCode status = -1;
-      status = CopyDirectory(from, to);
+      status = CopyDirectory(from, to) && CopyDirectory(from, to5);
       if (status) println("[  OK  ]");
       return status;
     } catch (Exception ex) {

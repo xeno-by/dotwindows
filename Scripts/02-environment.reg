@@ -45,8 +45,7 @@ Windows Registry Editor Version 5.00
 "MAVEN_HOME"="C:\\Program Files (x86)\\maven\\"
 "MAVEN_REPO"=hex(2):63,00,3a,00,5c,00,50,00,72,00,6f,00,6a,00,65,00,63,00,74,\
   00,73,00,5c,00,52,00,65,00,70,00,6f,00,73,00,69,00,74,00,6f,00,72,00,69,00,\
-  65,00,73,00,5c,00,4d,00,61,00,76,00,65,00,6e,00,52,00,65,00,70,00,6f,00,00,\
-  00
+  65,00,73,00,5c,00,4e,00,65,00,78,00,75,00,73,00,00,00
 "MOBIDRIVE"="e:"
 "NUMBER_OF_PROCESSORS"="4"
 "OS"="Windows_NT"
@@ -189,6 +188,7 @@ Windows Registry Editor Version 5.00
 "QTJAVA"="C:\\Program Files (x86)\\Java\\jre6\\lib\\ext\\QTJava.zip"
 "REFLECTOR_HOME"="C:\\Program Files (x86)\\Reflector\\"
 "SBT_HOME"="C:\\Program Files (x86)\\sbt\\"
+"SCALASNAPSHOT_HOME"="c:\\Projects\\Kepler\\build\\locker"
 "SCALA_HOME"=hex(2):43,00,3a,00,5c,00,50,00,72,00,6f,00,6a,00,65,00,63,00,74,\
   00,73,00,5c,00,44,00,6f,00,6e,00,6f,00,72,00,5c,00,62,00,75,00,69,00,6c,00,\
   64,00,5c,00,70,00,61,00,63,00,6b,00,5c,00,00,00
