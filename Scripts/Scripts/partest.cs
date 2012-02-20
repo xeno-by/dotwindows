@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 public class App {
   public static int Main(String[] args) {
-    if (!Directory.Exists("%PROJECTS%/Kepler/build/locker/classes/partest")) {
+    if (!Directory.Exists("%PROJECTS%/Kepler/build/locker/classes/partest".Expand())) {
       var exitCode = TransplantPartest();
       if (exitCode != 0) return exitCode;
     }
