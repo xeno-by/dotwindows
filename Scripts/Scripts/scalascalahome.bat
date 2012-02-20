@@ -1,2 +1,2 @@
 @echo off
-echo %PROJECTS%\ScalaUpstream\build\pack
+echo %SCALA_HOME%

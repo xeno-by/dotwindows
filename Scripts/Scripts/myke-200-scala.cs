@@ -26,7 +26,7 @@ public class Scala : Git {
     var shebang = lines.ElementAtOrDefault(0) ?? "";
     var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
     var m = r.Match(shebang);
-    return m.Success ? m.Result("${commandline}") : ("scalac -deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Yshow-trees -uniqid -g:vars " + file.FullName);
+    return m.Success ? m.Result("${commandline}") : ("scalac " + file.FullName);
   } }
 
   public override bool accept() {

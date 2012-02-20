@@ -1,12 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
 public class App {
   public static int Main(String[] args) {
+    if (!Directory.Exists("%PROJECTS%/Kepler/build/locker/classes/partest")) {
+      var exitCode = TransplantPartest();
+      if (exitCode != 0) return exitCode;
+    }
+
+    return RunPartest(args);
+  }
+
+  public static int TransplantPartest() {
+    var process = new Process();
+    process.StartInfo.FileName = "myke.exe";
+    process.StartInfo.WorkingDirectory = "%PROJECTS%/Donor".Expand();
+    process.StartInfo.Arguments = "compile";
+    process.StartInfo.UseShellExecute = false;
+    process.Start();
+    process.WaitForExit();
+    return process.ExitCode;
+  }
+
+  public static int RunPartest(String[] args) {
     var classpath = "%PROJECTS%/Kepler/build/locker/classes/compiler;%PROJECTS%/Kepler/build/locker/classes/library;%PROJECTS%/Kepler/build/locker/classes/partest".Expand();
     Environment.SetEnvironmentVariable("CLASSPATH", classpath);
 
@@ -22,6 +43,8 @@ public class App {
     opts.Add("-cp %CLASSPATH%");
     opts.Add("-classpath %CLASSPATH%");
     opts.Add("scala.tools.partest.nest.NestRunner");
+    //opts.Add("--debug");
+    //opts.Add("--verbose");
     opts.Add("--classpath %PROJECTS%/Kepler/build/locker/classes");
     opts.AddRange(args);
 
