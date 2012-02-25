@@ -83,6 +83,8 @@ mre=myke repl $*
 mru=myke run $*
 mr=myke run $*
 mt=myke test $*
+sref="D:\Dropbox\Scratchpad\Stockage\ScalaReference.pdf"
+pins="D:\Dropbox\Scratchpad\Stockage\Programming in Scala 2nd.pdf"
 
 ;= :end
 ;= rem ******************************************************************
