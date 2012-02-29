@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 
 public class App {
   public static String classpath = @"%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library";
-  //public static String javaopts = "-Dscala.usejavacp=true -Djline.terminal=scala.tools.jline.UnsupportedTerminal";
   public static String javaopts = "-Dscala.usejavacp=true";
   public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Yshow-trees -uniqid -g:vars";
   //public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Yshow-trees -uniqid -g:vars";
@@ -29,6 +28,10 @@ public class App {
       Console.WriteLine(String.Format("error: multiple profiles {0} specified on the command line contradict each other.", String.Join(", ", matches.Keys.ToArray())));
       return -1;
     }
+
+    var sublime = args.Contains("/sublime");
+    args = args.Where(arg => arg != "/sublime").ToArray();
+    if (sublime) javaopts += " -Djline.terminal=scala.tools.jline.UnsupportedTerminal";
 
     var f_profile = new FileInfo("%SCRIPTS_HOME%".Expand() + "\\" + "scala.profile");
     var profile = matches.Count() > 0 ? profiles[matches.Keys.Single()] : profiles["default"];

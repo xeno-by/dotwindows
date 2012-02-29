@@ -1,2 +1,2 @@
 @echo off
-echo %SCALASNAPSHOT_HOME%
+echo %SCALASNAPSHOT_HOME%/classes

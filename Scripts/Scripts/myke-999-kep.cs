@@ -84,9 +84,8 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode repl() {
-//    var status = compile();
-//    return status && println() && Console.interactive("scala -deprecation -Xexperimental -Xmacros", home: root);
-    return Console.interactive("scala -deprecation -Xexperimental -Xmacros", home: root);
+//    return compile() && println() && Console.interactive(Config.sublime ? "scala /sublime" : "scala", home: root);
+    return Console.interactive(Config.sublime ? "scala /sublime" : "scala", home: root);
   }
 
   [Action]

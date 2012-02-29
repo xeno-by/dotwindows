@@ -124,13 +124,15 @@ public class App {
           this.Write(helo);
           adaptee.Write(helo);
 
-          var init = "(:swank-rpc (swank:init-project (:sources (\"d:/Dropbox/Scratchpad/Scala\") :target \"d:/Dropbox/Scratchpad/Scala\")) 2)";
+          //var init = "(:swank-rpc (swank:init-project (:sources (\"d:/Dropbox/Scratchpad/Scala\") :target \"d:/Dropbox/Scratchpad/Scala\")) 2)";
+          //var init = "(:swank-rpc (swank:init-project (:sources (\"C:/Projects/Kepler/src/library\" \"C:/Projects/Kepler/src/compiler\") :compile-jars (\"C:/Projects/Kepler/lib\") :target \"C:/Projects/Kepler/build\")) 2)";
+          var init = "(:swank-rpc (swank:init-project " + File.ReadAllText(@"D:\Dropbox\Scratchpad\Scala\.ensime") + ") 2)";
           this.Write(init);
           adaptee.Write(init);
 
-          var compile = "(:swank-rpc (swank:builder-init) 3)";
-          this.Write(compile);
-          adaptee.Write(compile);
+          //var compile = "(:swank-rpc (swank:builder-init) 3)";
+          //this.Write(compile);
+          //adaptee.Write(compile);
 
           while (stream.CanRead) {
             adaptee.Write(Read());

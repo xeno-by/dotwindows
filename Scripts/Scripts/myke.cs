@@ -897,6 +897,7 @@ public static class FileSystem {
 }
 
 public static class Config {
+  public static bool sublime;
   public static bool dryrun;
   public static bool verbose;
   public static String action;
@@ -907,6 +908,7 @@ public static class Config {
   public static ExitCode parse(String[] args) {
     var flags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
     args = args.SkipWhile(arg => arg.StartsWith("/")).ToArray();
+    Config.sublime = flags.Contains("/S");
     Config.dryrun = flags.Contains("/D");
     Config.verbose = flags.Contains("/V");
 

@@ -18,10 +18,13 @@ public class Reify {
       }
     }
 
+    var temp = Path.GetTempFileName();
+    File.WriteAllText(temp, "object __wrapper { def wrapper() = scala.reflect.Code.lift{" + code + "} }");
+
     var process = new Process();
-    var scala = @"%SCRIPTS_HOME%\scala.bat".Expand();
+    var scala = @"%SCRIPTS_HOME%\scalac.exe".Expand();
     process.StartInfo.FileName = scala;
-    process.StartInfo.Arguments = "-Yreify-copypaste -e \"scala.reflect.Code.lift{" + code + "}\"";
+    process.StartInfo.Arguments = "-Yreify-copypaste " + temp;
     process.StartInfo.UseShellExecute = false;
     process.Start();
     process.WaitForExit();
