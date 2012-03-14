@@ -99,7 +99,7 @@ public class Kep : Git {
       //options.Add("-deprecation");
       //options.Add("-Yreify-copypaste");
       //Func<String> readArguments = () => Console.readln(prompt: "Lift", history: String.Format("lift {0}", root.FullName));
-      //options.Add("-e \"scala.reflect.Code.lift{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
+      //options.Add("-e \"scala.reflect.mirror.reify{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
       //return Console.batch("scala " + String.Join(" ", options.ToArray()));
 
       var root = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());

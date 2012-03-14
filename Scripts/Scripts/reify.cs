@@ -19,7 +19,7 @@ public class Reify {
     }
 
     var temp = Path.GetTempFileName();
-    File.WriteAllText(temp, "object __wrapper { def wrapper() = scala.reflect.Code.lift{" + code + "} }");
+    File.WriteAllText(temp, "object __wrapper { def wrapper() = scala.reflect.mirror.reify{" + code + "} }");
 
     var process = new Process();
     var scala = @"%SCRIPTS_HOME%\scalac.exe".Expand();

@@ -1,1 +1,1 @@
--Xss128m -Xms2048m -Xmx2048m -XX:+UseParallelGC -XX:MaxPermSize=256M
+-Xss128m -Xms3072m -Xmx3072m -XX:+UseParallelGC -XX:MaxPermSize=1024M

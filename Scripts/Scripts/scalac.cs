@@ -9,8 +9,9 @@ using System.Text.RegularExpressions;
 public class App {
   public static String classpath = @"%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library";
   public static String javaopts = "-Dscala.usejavacp=true";
-  public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Yshow-trees -uniqid -g:vars";
   //public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Yshow-trees -uniqid -g:vars";
+  //public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Yshow-trees -Yshow-symkinds -g:vars";
+  public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Yshow-trees -g:vars";
 
   public static Dictionary<String, String> profiles = new Dictionary<String, String>();
   static App() {
@@ -39,6 +40,16 @@ public class App {
     profile = profile.Replace("$CLASSPATH$", classpath);
     profile = profile.Replace("$JAVAOPTS$", javaopts);
     profile = profile.Replace("$SCALAOPTS$", scalaopts);
+
+    if (args.Contains("-nouniqid")) {
+      args = args.Where(arg => arg != "-uniqid" && arg != "-nouniqid").ToArray();
+      profile = profile.Replace("-uniqid", "");
+    }
+
+    if (args.Contains("-Ynoshow-trees")) {
+      args = args.Where(arg => arg != "-Yshow-trees" && arg != "-Ynoshow-trees").ToArray();
+      profile = profile.Replace("-Yshow-trees", "");
+    }
 
     var psi = new ProcessStartInfo();
     psi.FileName = @"%JAVA_HOME%\bin\java.exe".Expand();
