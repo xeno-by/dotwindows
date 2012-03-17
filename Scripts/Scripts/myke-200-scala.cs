@@ -41,8 +41,27 @@ public class Scala : Git {
     if (inferreds.Count > 0 && arguments.Count > 0) { println("cannot use compiler shebangs with non-empty arguments"); return null; }
     var inferred = inferreds.SingleOrDefault();
 
-    var @default = "scalac " + file.Name.ShellEscape() + (arguments.Count() == 0 ? "" : " " + arguments);
-    return inferred ?? @default;
+    Func<String> defaultCompiler = () => {
+      var indices = sources.Select(fi => {
+        var iof = fi.Name.LastIndexOf("_");
+        if (iof == -1) return (int?) null;
+        var suffix = Path.GetFileNameWithoutExtension(fi.Name.Substring(iof + 1));
+        int parsed;
+        if (int.TryParse(suffix, out parsed)) return (int?)parsed;
+        else return (int?)null;
+      }).ToList();
+
+      if (indices.Where(i => i != null).Distinct().Count() == indices.Count()) {
+        var ordered = indices.Zip(sources, (index, source) => new KeyValuePair<int, FileInfo>(index.Value, source)).OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList();
+        var flags = new Arguments(arguments.Where(argument => !new FileInfo(argument).Exists).ToList());
+        var compilers = ordered.Select(fi => "scalac " + fi.Name.ShellEscape() + (flags.Count() == 0 ? "" : " " + flags)).ToList();
+        return String.Join(Environment.NewLine, compilers.ToArray());
+      } else {
+        return "scalac " + file.Name.ShellEscape() + (arguments.Count() == 0 ? "" : " " + arguments);
+      }
+    };
+
+    return inferred ?? defaultCompiler();
   } }
 
   public override bool accept() {
@@ -204,7 +223,8 @@ public class Scala : Git {
       watcher.Renamed += (o, e) => files.Add(new FileInfo(e.FullPath));
       watcher.EnableRaisingEvents = true;
 
-      status = Console.batch(compiler, home: root);
+      var compilers = compiler.Split(new []{Environment.NewLine}, StringSplitOptions.None).ToList();
+      status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => curr ? Console.batch(compiler1, home: root) : curr);
 
       var parent_reg = Registry.CurrentUser.OpenSubKey(parent_key, true) ?? Registry.CurrentUser.CreateSubKey(parent_key);
       parent_reg.DeleteSubKey(short_key);
