@@ -148,7 +148,7 @@ public class Kep : Git {
       if (tests.Count == 0) { println("nothing to test!"); return -1; }
     } else {
       var suite = getCurrentTestSuite();
-      if (suite == null) { println("there are no test suites associated with this project"); return -1; }
+      if (suite == null) { println("there is no test suite associated with this project"); return -1; }
       tests = getTestSuiteTests(suite);
       if (tests == null || tests.Count() == 0) { println(suite + " does not have any tests"); return -1; }
       tests.ForEach(test => { if (!test.StartsWith("test\\")) throw new Exception("bad test: " + test); });

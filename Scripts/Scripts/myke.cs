@@ -1343,39 +1343,6 @@ public abstract class Prj {
     var suite = arguments.Last();
     if (!setTestSuite(new Arguments(new List<String>{suite}))) return -1;
 
-    var prefix = project;
-    prefix = prefix.Replace("/", "\\");
-    if (!prefix.EndsWith("\\")) prefix += "\\";
-    var files = new List<String>();
-    var wildcards = new List<String>{Config.target}.Concat(arguments.Take(arguments.Count() - 1)).ToList();
-    if (wildcards.First() == Path.GetFullPath(".")) wildcards = wildcards.Skip(1).ToList();
-    wildcards.ForEach(wildcard => {
-      wildcard = wildcard.Replace("/", "\\");
-
-      var relativeTo = Path.GetDirectoryName(wildcard);
-      if (!wildcard.Contains("\\")) {
-        relativeTo = Path.GetFullPath(new DirectoryInfo(".").FullName);
-        if (relativeTo.EndsWith("\\")) relativeTo = relativeTo.Substring(0, relativeTo.Length - 1);
-        wildcard = relativeTo + "\\" + wildcard;
-      } else if (!wildcard.Contains(":")) {
-        relativeTo = root.FullName;
-        if (relativeTo.EndsWith("\\")) relativeTo = relativeTo.Substring(0, relativeTo.Length - 1);
-        wildcard = relativeTo + "\\" + wildcard;
-      }
-
-      if (wildcard.Contains("*") || wildcard.Contains("?")) {
-        wildcard = wildcard.Substring(relativeTo.Length + 1);
-        var flags = wildcard.Contains("\\") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-        var dir = new DirectoryInfo(relativeTo);
-        if (dir.Exists) {
-          dir.GetFiles(wildcard, flags).ToList().ForEach(fi => files.Add(Path.GetFullPath(fi.FullName)));
-          dir.GetDirectories(wildcard, flags).ToList().ForEach(di => files.Add(Path.GetFullPath(di.FullName)));
-        }
-      } else {
-        files.Add(wildcard);
-      }
-    });
-
     var dotTestName = ".test" + "." + suite;
     var dotTest = new FileInfo(root + "\\" + dotTestName);
     if (dotTest.Exists) {
@@ -1385,26 +1352,38 @@ public abstract class Prj {
       if (!confirmed) { return -1; }
     }
 
-    files = files.Select(file => file.StartsWith(prefix, true, CultureInfo.CurrentCulture) ? file.Substring(prefix.Length) : file).ToList();
-    File.WriteAllLines(dotTest.FullName, files);
+    File.WriteAllLines(dotTest.FullName, new String[]{});
+    println("created suite " + suite);
 
-    files.ForEach(file => println(file));
-    if (files.Count() == 0) println("created " + suite + " with no tests");
-    else println("created " + suite + " with " + files.Count + " test" + (files.Count == 1 ? "" : "s"));
+    var wildcards = new List<String>{Config.target}.Concat(arguments.Take(arguments.Count() - 1)).ToList();
+    if (wildcards.First() == Path.GetFullPath(".")) wildcards = wildcards.Skip(1).ToList();
+    addTestSuiteTests(suite, wildcards);
 
     return 0;
   }
 
   [Action]
   public virtual ExitCode addFilesToTestSuite(Arguments arguments) {
-    println("not implemented");
-    return -1;
+    var suite = getCurrentTestSuite();
+    if (suite == null) { println("there is no test suite associated with this project"); return -1; }
+
+    var wildcards = new List<String>{Config.target}.Concat(arguments).ToList();
+    if (wildcards.First() == Path.GetFullPath(".")) wildcards = wildcards.Skip(1).ToList();
+    addTestSuiteTests(suite, wildcards);
+
+    return 0;
   }
 
   [Action]
   public virtual ExitCode removeFilesFromTestSuite(Arguments arguments) {
-    println("not implemented");
-    return -1;
+    var suite = getCurrentTestSuite();
+    if (suite == null) { println("there is no test suite associated with this project"); return -1; }
+
+    var wildcards = new List<String>{Config.target}.Concat(arguments).ToList();
+    if (wildcards.First() == Path.GetFullPath(".")) wildcards = wildcards.Skip(1).ToList();
+    removeTestSuiteTests(suite, wildcards);
+
+    return 0;
   }
 
   [Action]
@@ -1434,7 +1413,7 @@ public abstract class Prj {
   [Action]
   public virtual ExitCode listTestSuite() {
     var suite = getCurrentTestSuite();
-    if (suite == null) { println("there are no test suites associated with this project"); return -1; }
+    if (suite == null) { println("there is no test suite associated with this project"); return -1; }
 
     var tests = getTestSuiteTests(suite);
     if (tests == null || tests.Count() == 0) { println(suite + " does not have any tests"); return -1; }
@@ -1469,10 +1448,73 @@ public abstract class Prj {
     }).Where(f_toTest => f_toTest != String.Empty).ToList();
   }
 
+  public virtual void addTestSuiteTests(String profile, List<String> wildcards, bool removeNonMatching = false) {
+    var prefix = project;
+    prefix = prefix.Replace("/", "\\");
+    if (!prefix.EndsWith("\\")) prefix += "\\";
+
+    var tests = new List<String>();
+    wildcards.ForEach(wildcard => {
+      wildcard = wildcard.Replace("/", "\\");
+
+      var relativeTo = Path.GetDirectoryName(wildcard);
+      if (!wildcard.Contains("\\")) {
+        relativeTo = Path.GetFullPath(new DirectoryInfo(".").FullName);
+        if (relativeTo.EndsWith("\\")) relativeTo = relativeTo.Substring(0, relativeTo.Length - 1);
+        wildcard = relativeTo + "\\" + wildcard;
+      } else if (!wildcard.Contains(":")) {
+        relativeTo = root.FullName;
+        if (relativeTo.EndsWith("\\")) relativeTo = relativeTo.Substring(0, relativeTo.Length - 1);
+        wildcard = relativeTo + "\\" + wildcard;
+      }
+
+      if (wildcard.Contains("*") || wildcard.Contains("?")) {
+        wildcard = wildcard.Substring(relativeTo.Length + 1);
+        var flags = wildcard.Contains("\\") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+        var dir = new DirectoryInfo(relativeTo);
+        if (dir.Exists) {
+          dir.GetFiles(wildcard, flags).ToList().ForEach(fi => tests.Add(Path.GetFullPath(fi.FullName)));
+          dir.GetDirectories(wildcard, flags).ToList().ForEach(di => tests.Add(Path.GetFullPath(di.FullName)));
+        }
+      } else {
+        tests.Add(wildcard);
+      }
+    });
+    tests = tests.Select(file => file.StartsWith(prefix, true, CultureInfo.CurrentCulture) ? file.Substring(prefix.Length) : file).ToList();
+
+    var existingTests = getTestSuiteTests(profile);
+    println("found " + existingTests.Count + " " + profile + " tests");
+    println("adding " + tests.Count + " " + profile + " tests");
+    var newTests = tests.Where(test => existingTests.Where(existingTest => existingTest.Contains(test)).Count() == 0).ToList();
+    if (newTests.Count() == 0) println("none of them are new");
+    else if (newTests.Count() == tests.Count()) println("all of them are new");
+    else println(newTests.Count() + " of them are new: " + String.Join(", ", newTests.ToArray()));
+    var obsoleteTests = removeNonMatching ? existingTests.Where(existingTest => tests.Where(test => existingTest.Contains(test)).Count() == 0).ToList() : new List<String>();
+    if (removeNonMatching) {
+      if (obsoleteTests.Count() == 0) println("none of the existing tests are obsolete");
+      else if (obsoleteTests.Count() == tests.Count()) println("all of the existing tests are obsolete");
+      else println(obsoleteTests.Count() + " of the existing tests are obsolete: " + String.Join(", ", obsoleteTests.ToArray()));
+    }
+
+    if (newTests.Count() != 0 || obsoleteTests.Count() != 0) {
+      existingTests.AddRange(newTests);
+      existingTests.RemoveAll(existingTest => obsoleteTests.Contains(existingTest));
+
+      var dotTestName = ".test" + "." + profile;
+      var dotTest = new FileInfo(root + "\\" + dotTestName);
+      File.WriteAllLines(dotTest.FullName, existingTests);
+      println("wrote " + dotTest.FullName.Substring(root.FullName.Length + 1));
+    }
+  }
+
+  public virtual void removeTestSuiteTests(String profile, List<String> wildcards) {
+    throw new NotImplementedException();
+  }
+
   [Action]
   public virtual ExitCode runTest() {
     var suite = getCurrentTestSuite();
-    if (suite == null) { println("there are no test suites associated with this project"); return -1; }
+    if (suite == null) { println("there is no test suite associated with this project"); return -1; }
 
     println("don't know how to run test suite " + suite);
     return -1;
