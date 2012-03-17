@@ -38,6 +38,15 @@ public class Kep : Git {
     return names.Any(name => name != null && (name.Contains("/test") || name.Contains("/sandbox")));
   } }
 
+  public virtual bool inTest { get {
+    var names = new [] {
+      file == null ? null : file.FullName.Replace("\\", "/"),
+      dir == null ? null : dir.FullName.Replace("\\", "/"),
+    };
+
+    return names.Any(name => name != null && name.Contains("/test"));
+  } }
+
   [Action]
   public virtual ExitCode clean() {
     if (inPlayground) {
@@ -143,16 +152,25 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode runTest() {
-    var dotProfile = new FileInfo(root + "\\.profile");
-    var profile = dotProfile.Exists ? File.ReadAllText(dotProfile.FullName) : null;
-    var script = toTest(profile);
-    if (script == null || script.Count() == 0) return -1;
-
     var prefix = project;
     prefix = prefix.Replace("/", "\\");
     if (!prefix.EndsWith("\\")) prefix += "\\";
     prefix += "test\\";
-    var tests = script.Select(f => f.Substring(prefix.Length)).ToList();
+
+    List<String> tests;
+    if (inTest) {
+      var files = new List<FileSystemInfo>{(FileSystemInfo)file ?? dir}.Concat(arguments.Select(argument => new DirectoryInfo(argument).Exists ? (FileSystemInfo)new DirectoryInfo(argument) : new FileInfo(argument))).ToList();
+      files = files.Where(file1 => file1.Exists).ToList();
+      tests = files.Select(f => f.FullName.Substring(prefix.Length)).ToList();
+    } else {
+      var dotProfile = new FileInfo(root + "\\.profile");
+      var profile = dotProfile.Exists ? File.ReadAllText(dotProfile.FullName) : null;
+      var script = toTest(profile);
+      if (script == null || script.Count() == 0) return -1;
+      tests = script.Select(f => f.Substring(prefix.Length)).ToList();
+    }
+    if (tests.Count == 0) { println("nothing to test!"); return -1; }
+
     var partest = @"%SCRIPTS_HOME%\partest.exe";
     return Console.batch("\"" + partest + "\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
   }
