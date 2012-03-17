@@ -30,7 +30,7 @@ public class Donor : Kep {
 
   [Default, Action]
   public override ExitCode compile() {
-    if (inPlayground && file != null) {
+    if (inPlayground || inTest) {
       return base.compile();
     } else {
       var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);

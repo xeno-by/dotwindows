@@ -15,17 +15,37 @@ using Microsoft.Win32.SafeHandles;
   "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using sbt.")]
 
 public class Scala : Git {
-  private Lines lines;
-  private Arguments arguments;
-  public Scala(FileInfo file, Lines lines, Arguments arguments) : base(file) {
-    this.lines = lines;
-    this.arguments = arguments ?? new Arguments();
+  public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }
+  public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { init(arguments); }
+
+  private List<FileInfo> sources;
+  private List<String> flags;
+  private void init(Arguments arguments) {
+    var head = ((FileSystemInfo)file ?? dir).FullName;
+    if (head == Path.GetFullPath(".")) head = ".";
+    else head = ((FileSystemInfo)file ?? dir).Name;
+
+    arguments = new Arguments((arguments ?? new Arguments()).Concat(new List<String>{head}).ToList());
+    var combo = arguments.SelectMany<String, Object>(argument => {
+      if (File.Exists(argument)) {
+        var file1 = new FileInfo(argument);
+        return new List<Object>{file1};
+      } else if (Directory.Exists(argument)) {
+        var dir1 = new DirectoryInfo(argument);
+        return dir1.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
+      } else {
+        return new List<Object>{argument};
+      }
+    }).ToList();
+    sources = combo.OfType<FileInfo>().ToList();
+    flags = combo.OfType<String>().ToList();
+
     env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)";
   }
 
-  public virtual List<FileInfo> sources { get {
-    return new List<FileInfo>{file}.Concat(arguments.Select(argument => new FileInfo(argument)).Where(argument => argument.Exists)).ToList();
-  } }
+  public override bool accept() {
+    return sources.Count() > 0 && compiler != null;
+  }
 
   public virtual String compiler { get {
     Func<FileInfo, String> inferCompiler = fi => {
@@ -38,7 +58,8 @@ public class Scala : Git {
 
     var inferreds = sources.Select(inferCompiler).Where(s => s != null).Distinct().ToList();
     if (inferreds.Count > 1) { println("ambiguous compiler shebangs"); return null; }
-    if (inferreds.Count > 0 && arguments.Count > 0) { println("cannot use compiler shebangs with non-empty arguments"); return null; }
+    if (inferreds.Count > 0 && sources.Count > 1) { println("cannot use compiler shebangs with multiple sources"); return null; }
+    if (inferreds.Count > 0 && flags.Count > 1) { println("cannot use compiler shebangs with non-empty flags"); return null; }
     var inferred = inferreds.SingleOrDefault();
 
     Func<String> defaultCompiler = () => {
@@ -53,20 +74,15 @@ public class Scala : Git {
 
       if (indices.Where(i => i != null).Distinct().Count() == indices.Count()) {
         var ordered = indices.Zip(sources, (index, source) => new KeyValuePair<int, FileInfo>(index.Value, source)).OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList();
-        var flags = new Arguments(arguments.Where(argument => !new FileInfo(argument).Exists).ToList());
         var compilers = ordered.Select(fi => "scalac " + fi.Name.ShellEscape() + (flags.Count() == 0 ? "" : " " + flags)).ToList();
         return String.Join(Environment.NewLine, compilers.ToArray());
       } else {
-        return "scalac " + file.Name.ShellEscape() + (arguments.Count() == 0 ? "" : " " + arguments);
+        return "scalac " + String.Join(" ", flags.Concat(sources.Select(file => file.Name.ShellEscape())).ToArray());
       }
     };
 
     return inferred ?? defaultCompiler();
   } }
-
-  public override bool accept() {
-    return file.Extension == ".scala" && compiler != null;
-  }
 
   [Action]
   public virtual ExitCode clean() {
@@ -82,6 +98,7 @@ public class Scala : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
+    if (!accept()) { println("don't know how to compile the stuff you asked"); return -1; }
     ExitCode status = null;
 
     var eval = Console.eval("scalahome");
@@ -272,14 +289,13 @@ public class Scala : Git {
   }
 
   public virtual String inferArguments() {
-    return lines.Any(line => line.Contains("args")) ? null : "";
+    return sources.SelectMany(fi => fi.Exists ? File.ReadAllLines(fi.FullName) : new String[]{}).Any(line => line.Contains("args")) ? null : "";
   }
 
   [Action]
-  public virtual ExitCode run(Arguments arguments) {
-    var finalArguments = arguments.Where(argument => !new FileInfo(argument).Exists).ToList();
-    Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", file.FullName));
-    Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
-    return compile() && Console.interactive("scala " + " " + readMainclass() + " " + (finalArguments.Count > 0 ? finalArguments.ToString() : readArguments()), home: root);
+  public virtual ExitCode run() {
+    Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", compiler));
+    Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", compiler));
+    return compile() && Console.interactive("scala " + " " + readMainclass() + " " + readArguments(), home: root);
   }
 }

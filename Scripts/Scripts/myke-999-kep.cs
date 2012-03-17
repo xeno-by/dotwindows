@@ -30,12 +30,7 @@ public class Kep : Git {
   private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   public virtual bool inPlayground { get {
-    var names = new [] {
-      file == null ? null : file.FullName.Replace("\\", "/"),
-      dir == null ? null : dir.FullName.Replace("\\", "/"),
-    };
-
-    return names.Any(name => name != null && (name.Contains("/test/") || name.Contains("/sandbox/")));
+    return dir.FullName.Replace("\\", "/").Contains("/sandbox");
   } }
 
   public virtual bool inTest { get {
@@ -51,7 +46,7 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode clean() {
-    if (inPlayground) {
+    if (inPlayground || inTest) {
       dir.GetDirectories("*.obj").ToList().ForEach(dir1 => dir1.Delete());
       dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
       dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
@@ -65,9 +60,8 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode rebuild() {
-    if (inPlayground && file != null) {
-      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines, arguments);
+    if (inPlayground || inTest) {
+      var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.rebuild();
     } else {
       return Console.batch("ant clean " + profile + " -buildfile build.xml", home: root);
@@ -76,9 +70,8 @@ public class Kep : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    if (inPlayground && file != null) {
-      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines, arguments);
+    if (inPlayground || inTest) {
+      var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.compile();
     } else {
       var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);
@@ -101,11 +94,10 @@ public class Kep : Git {
   }
 
   [Action]
-  public virtual ExitCode run(Arguments arguments) {
-    if (inPlayground && file != null) {
-      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines, arguments);
-      return scala.run(arguments);
+  public virtual ExitCode run() {
+    if (inPlayground || inTest) {
+      var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
+      return scala.run();
     } else {
       //var options = new List<String>();
       //options.Add("-deprecation");
@@ -122,9 +114,8 @@ public class Kep : Git {
       } else if (files.Count == 1) {
         var toRun = files[0];
         println("running {0}", toRun.FullName);
-        var lines = new Lines(toRun, File.ReadAllLines(toRun.FullName).ToList());
-        var scala = new Scala(toRun, lines, arguments);
-        return scala.run(arguments);
+        var scala = new Scala(toRun, arguments);
+        return scala.run();
       } else {
         println("error: command is ambiguous");
         files.Take(5).ToList().ForEach(file1 => println("    " + file1));
@@ -136,12 +127,13 @@ public class Kep : Git {
 
   [Action]
   public override ExitCode runTest() {
+    var prefix = project;
+    prefix = prefix.Replace("/", "\\");
+    if (!prefix.EndsWith("\\")) prefix += "\\";
+    prefix += "test\\";
+
     List<String> tests;
     if (inTest) {
-      var prefix = project;
-      prefix = prefix.Replace("/", "\\");
-      if (!prefix.EndsWith("\\")) prefix += "\\";
-      prefix += "test\\";
       var files = new List<FileSystemInfo>{(FileSystemInfo)file ?? dir}.Concat(arguments.Select(argument => new DirectoryInfo(argument).Exists ? (FileSystemInfo)new DirectoryInfo(argument) : new FileInfo(argument))).ToList();
       files = files.Where(file1 => file1.Exists).ToList();
       tests = files.Select(f => f.FullName.Substring(prefix.Length)).ToList();
@@ -154,6 +146,25 @@ public class Kep : Git {
       tests.ForEach(test => { if (!test.StartsWith("test\\")) throw new Exception("bad test: " + test); });
       tests = tests.Select(test => test.Substring("test\\".Length)).ToList();
     }
+
+    tests = tests.Select(test => {
+      var full = prefix + test;
+
+      var suffixes = new []{ ".check", ".flags", "-run.log", "-neg.log", "-pos.log" };
+      foreach (var suffix in suffixes) {
+        if (full.EndsWith(suffix)) {
+          var trimmed = full.Substring(0, full.Length - suffix.Length);
+          if (Directory.Exists(trimmed)) {
+            return trimmed.Substring(prefix.Length);
+          }
+          if (File.Exists(trimmed + ".scala")) {
+            return trimmed.Substring(prefix.Length);
+          }
+        }
+      }
+
+      return test;
+    }).Distinct().ToList();
 
     var partest = @"%SCRIPTS_HOME%\partest.exe";
     return Console.batch("\"" + partest + "\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");

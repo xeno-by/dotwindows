@@ -29,37 +29,19 @@ public class Scratchpad : Git {
 
   [Action]
   public virtual ExitCode rebuild() {
-    if (file != null) {
-      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines, arguments);
-      return scala.rebuild();
-    } else {
-      println("rebuild: not implemented when invoked upon the entire scratchpad");
-      return -1;
-    }
+    var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
+    return scala.rebuild();
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
-    if (file != null) {
-      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines, arguments);
-      return scala.compile();
-    } else {
-      println("compile: not implemented when invoked upon the entire scratchpad");
-      return -1;
-    }
+    var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
+    return scala.compile();
   }
 
   [Action]
-  public virtual ExitCode run(Arguments arguments) {
-    if (file != null) {
-      var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines, arguments);
-      return scala.run(arguments);
-    } else {
-      println("run: not implemented when invoked upon the entire scratchpad");
-      return -1;
-    }
+  public virtual ExitCode run() {
+    var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
+    return scala.run();
   }
 }
