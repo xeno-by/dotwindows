@@ -35,16 +35,18 @@ public class Kep : Git {
       dir == null ? null : dir.FullName.Replace("\\", "/"),
     };
 
-    return names.Any(name => name != null && (name.Contains("/test") || name.Contains("/sandbox")));
+    return names.Any(name => name != null && (name.Contains("/test/") || name.Contains("/sandbox/")));
   } }
 
   public virtual bool inTest { get {
-    var names = new [] {
-      file == null ? null : file.FullName.Replace("\\", "/"),
-      dir == null ? null : dir.FullName.Replace("\\", "/"),
-    };
+    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) return true;
 
-    return names.Any(name => name != null && name.Contains("/test"));
+    var s = Path.GetFullPath(dir.FullName).Replace("\\", "/");
+    var iof = s.IndexOf("/test/");
+    if (iof == -1) return false;
+    s = s.Substring(iof + "/test/".Length);
+    // test/files/run will fail, but test/files/run/blah will pass
+    return s.Where(c => c == '/').Count() >= 2;
   } }
 
   [Action]
@@ -132,44 +134,26 @@ public class Kep : Git {
     }
   }
 
-  public virtual List<String> toTest(String profile) {
-    var dotTestName = ".test" + (String.IsNullOrEmpty(profile) ? "" : "." + profile);
-    var dotTest = new FileInfo(root + "\\" + dotTestName);
-    if (!dotTest.Exists) {
-      println("error: " + dotTestName + " file not found");
-      return null;
-    }
-
-    var fs_toTest = File.ReadAllLines(dotTest.FullName).ToList();
-    return fs_toTest.Select(f_toTest => {
-      var iof = f_toTest.IndexOf("#");
-      if (iof != -1) f_toTest = f_toTest.Substring(0, iof);
-      return f_toTest.Trim();
-    }).Where(f_toTest => f_toTest != String.Empty).Select(f_toTest => {
-      return project + "\\" + f_toTest;
-    }).ToList();
-  }
-
   [Action]
-  public virtual ExitCode runTest() {
-    var prefix = project;
-    prefix = prefix.Replace("/", "\\");
-    if (!prefix.EndsWith("\\")) prefix += "\\";
-    prefix += "test\\";
-
+  public override ExitCode runTest() {
     List<String> tests;
     if (inTest) {
+      var prefix = project;
+      prefix = prefix.Replace("/", "\\");
+      if (!prefix.EndsWith("\\")) prefix += "\\";
+      prefix += "test\\";
       var files = new List<FileSystemInfo>{(FileSystemInfo)file ?? dir}.Concat(arguments.Select(argument => new DirectoryInfo(argument).Exists ? (FileSystemInfo)new DirectoryInfo(argument) : new FileInfo(argument))).ToList();
       files = files.Where(file1 => file1.Exists).ToList();
       tests = files.Select(f => f.FullName.Substring(prefix.Length)).ToList();
+      if (tests.Count == 0) { println("nothing to test!"); return -1; }
     } else {
-      var dotProfile = new FileInfo(root + "\\.profile");
-      var profile = dotProfile.Exists ? File.ReadAllText(dotProfile.FullName) : null;
-      var script = toTest(profile);
-      if (script == null || script.Count() == 0) return -1;
-      tests = script.Select(f => f.Substring(prefix.Length)).ToList();
+      var suite = getCurrentTestSuite();
+      if (suite == null) { println("there are no test suites associated with this project"); return -1; }
+      tests = getTestSuiteTests(suite);
+      if (tests == null || tests.Count() == 0) { println(suite + " does not have any tests"); return -1; }
+      tests.ForEach(test => { if (!test.StartsWith("test\\")) throw new Exception("bad test: " + test); });
+      tests = tests.Select(test => test.Substring("test\\".Length)).ToList();
     }
-    if (tests.Count == 0) { println("nothing to test!"); return -1; }
 
     var partest = @"%SCRIPTS_HOME%\partest.exe";
     return Console.batch("\"" + partest + "\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");

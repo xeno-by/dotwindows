@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -1325,12 +1326,156 @@ public abstract class Prj {
     return 0;
   }
 
+  protected static String readln(String prompt = null, String history = null) {
+    return Console.readln(prompt, history);
+  }
+
   private Dictionary<String, String> _env;
   public Dictionary<String, String> env { get { return _env; } }
   private void initEnv() {
     var currentEnv = AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>;
     _env = currentEnv = currentEnv ?? new Dictionary<String, String>();
     AppDomain.CurrentDomain.SetData("%%MykeEnv", _env);
+  }
+
+  [Action]
+  public virtual ExitCode makeTestSuite(Arguments arguments) {
+    var suite = arguments.Last();
+    if (!setTestSuite(new Arguments(new List<String>{suite}))) return -1;
+
+    var prefix = project;
+    prefix = prefix.Replace("/", "\\");
+    if (!prefix.EndsWith("\\")) prefix += "\\";
+    var files = new List<String>();
+    var wildcards = new List<String>{Config.target}.Concat(arguments.Take(arguments.Count() - 1)).ToList();
+    if (wildcards.First() == Path.GetFullPath(".")) wildcards = wildcards.Skip(1).ToList();
+    wildcards.ForEach(wildcard => {
+      wildcard = wildcard.Replace("/", "\\");
+
+      var relativeTo = Path.GetDirectoryName(wildcard);
+      if (!wildcard.Contains("\\")) {
+        relativeTo = Path.GetFullPath(new DirectoryInfo(".").FullName);
+        if (relativeTo.EndsWith("\\")) relativeTo = relativeTo.Substring(0, relativeTo.Length - 1);
+        wildcard = relativeTo + "\\" + wildcard;
+      } else if (!wildcard.Contains(":")) {
+        relativeTo = root.FullName;
+        if (relativeTo.EndsWith("\\")) relativeTo = relativeTo.Substring(0, relativeTo.Length - 1);
+        wildcard = relativeTo + "\\" + wildcard;
+      }
+
+      if (wildcard.Contains("*") || wildcard.Contains("?")) {
+        wildcard = wildcard.Substring(relativeTo.Length + 1);
+        var flags = wildcard.Contains("\\") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+        var dir = new DirectoryInfo(relativeTo);
+        if (dir.Exists) {
+          dir.GetFiles(wildcard, flags).ToList().ForEach(fi => files.Add(Path.GetFullPath(fi.FullName)));
+          dir.GetDirectories(wildcard, flags).ToList().ForEach(di => files.Add(Path.GetFullPath(di.FullName)));
+        }
+      } else {
+        files.Add(wildcard);
+      }
+    });
+
+    var dotTestName = ".test" + "." + suite;
+    var dotTest = new FileInfo(root + "\\" + dotTestName);
+    if (dotTest.Exists) {
+      print("suite " + suite + " already exists. overwrite? ");
+      var result = readln().ToLower();
+      var confirmed = result == "" || result == "y" || result == "yes" || result == "yep";
+      if (!confirmed) { return -1; }
+    }
+
+    files = files.Select(file => file.StartsWith(prefix, true, CultureInfo.CurrentCulture) ? file.Substring(prefix.Length) : file).ToList();
+    File.WriteAllLines(dotTest.FullName, files);
+
+    files.ForEach(file => println(file));
+    if (files.Count() == 0) println("created " + suite + " with no tests");
+    else println("created " + suite + " with " + files.Count + " test" + (files.Count == 1 ? "" : "s"));
+
+    return 0;
+  }
+
+  [Action]
+  public virtual ExitCode addFilesToTestSuite(Arguments arguments) {
+    println("not implemented");
+    return -1;
+  }
+
+  [Action]
+  public virtual ExitCode removeFilesFromTestSuite(Arguments arguments) {
+    println("not implemented");
+    return -1;
+  }
+
+  [Action]
+  public virtual ExitCode getTestSuite() {
+    var suite = getCurrentTestSuite();
+    if (suite == null) { println(""); return -1; }
+
+    println(suite);
+    env["currentTestSuite"] = suite;
+    var path = @"Software\Far2\SavedDialogHistory\MykeTestSuites";
+    Registry.CurrentUser.DeleteSubKey(path, false);
+    var reg = Registry.CurrentUser.OpenSubKey(path, true) ?? Registry.CurrentUser.CreateSubKey(path);
+    path = "HKEY_CURRENT_USER\\" + path;
+    Registry.SetValue(path, "Lines", getTestSuites().ToArray(), RegistryValueKind.MultiString);
+
+    return 0;
+  }
+
+  [Action]
+  public virtual ExitCode setTestSuite(Arguments arguments) {
+    var suite = arguments.Last();
+    var dotProfile = new FileInfo(root + "\\.profile");
+    File.WriteAllText(dotProfile.FullName, suite);
+    return 0;
+  }
+
+  [Action]
+  public virtual ExitCode listTestSuite() {
+    var suite = getCurrentTestSuite();
+    if (suite == null) { println("there are no test suites associated with this project"); return -1; }
+
+    var tests = getTestSuiteTests(suite);
+    if (tests == null || tests.Count() == 0) { println(suite + " does not have any tests"); return -1; }
+
+    tests.ForEach(test => println(test));
+    println(suite + " has " + tests.Count + " test" + (tests.Count == 1 ? "" : "s"));
+    return 0;
+  }
+
+  public virtual String getCurrentTestSuite() {
+    var dotProfile = new FileInfo(root + "\\.profile");
+    return dotProfile.Exists ? File.ReadAllText(dotProfile.FullName) : null;
+  }
+
+  public virtual List<String> getTestSuites() {
+    return root.GetFiles(".test.*").Select(fi => fi.Extension).Select(s => s.StartsWith(".") ? s.Substring(1) : s).ToList();
+  }
+
+  public virtual List<String> getTestSuiteTests(String profile) {
+    var dotTestName = ".test" + (String.IsNullOrEmpty(profile) ? "" : "." + profile);
+    var dotTest = new FileInfo(root + "\\" + dotTestName);
+    if (!dotTest.Exists) {
+      println("error: " + dotTestName + " file not found");
+      return null;
+    }
+
+    var fs_toTest = File.ReadAllLines(dotTest.FullName).ToList();
+    return fs_toTest.Select(f_toTest => {
+      var iof = f_toTest.IndexOf("#");
+      if (iof != -1) f_toTest = f_toTest.Substring(0, iof);
+      return f_toTest.Trim();
+    }).Where(f_toTest => f_toTest != String.Empty).ToList();
+  }
+
+  [Action]
+  public virtual ExitCode runTest() {
+    var suite = getCurrentTestSuite();
+    if (suite == null) { println("there are no test suites associated with this project"); return -1; }
+
+    println("don't know how to run test suite " + suite);
+    return -1;
   }
 }
 
