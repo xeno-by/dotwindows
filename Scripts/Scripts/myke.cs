@@ -1,4 +1,4 @@
-// build this with "csc /r:ZetaLongPaths.dll /t:exe /out:myke.exe /debug+ myke*.cs"
+// build this with "csc /r:Microsoft.VisualBasic.dll /r:ZetaLongPaths.dll /t:exe /out:myke.exe /debug+ myke*.cs"
 
 using System;
 using System.Collections;
@@ -14,6 +14,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 
@@ -1369,7 +1371,17 @@ public abstract class Prj {
 
     var wildcards = new List<String>{Config.target}.Concat(arguments).ToList();
     if (wildcards.First() == Path.GetFullPath(".")) wildcards = wildcards.Skip(1).ToList();
-    addTestSuiteTests(suite, wildcards);
+    if (wildcards.Count() == 1 && wildcards.Single() == "*") {
+      var calculated = calculateTestSuiteTests(suite);
+      if (calculated != null) {
+        addTestSuiteTests(suite, calculated, true);
+      } else {
+        println("don't know how to calculate tests for " + suite);
+        return -1;
+      }
+    } else {
+      addTestSuiteTests(suite, wildcards, false);
+    }
 
     return 0;
   }
@@ -1448,10 +1460,15 @@ public abstract class Prj {
     }).Where(f_toTest => f_toTest != String.Empty).ToList();
   }
 
+  public virtual List<String> calculateTestSuiteTests(String profile) {
+    return null;
+  }
+
   public virtual void addTestSuiteTests(String profile, List<String> wildcards, bool removeNonMatching = false) {
-    var prefix = project;
-    prefix = prefix.Replace("/", "\\");
-    if (!prefix.EndsWith("\\")) prefix += "\\";
+    var dotTestName = ".test" + "." + profile;
+    var dotTest = new FileInfo(root + "\\" + dotTestName);
+    var existingTests = dotTest.Exists ? File.ReadAllLines(dotTest.FullName).ToList() : new List<String>();
+    println("found " + existingTests.Count + " existing " + profile + " tests");
 
     var tests = new List<String>();
     wildcards.ForEach(wildcard => {
@@ -1480,10 +1497,12 @@ public abstract class Prj {
         tests.Add(wildcard);
       }
     });
+
+    var prefix = project;
+    prefix = prefix.Replace("/", "\\");
+    if (!prefix.EndsWith("\\")) prefix += "\\";
     tests = tests.Select(file => file.StartsWith(prefix, true, CultureInfo.CurrentCulture) ? file.Substring(prefix.Length) : file).ToList();
 
-    var existingTests = getTestSuiteTests(profile);
-    println("found " + existingTests.Count + " " + profile + " tests");
     println("adding " + tests.Count + " " + profile + " tests");
     var newTests = tests.Where(test => existingTests.Where(existingTest => existingTest.Contains(test)).Count() == 0).ToList();
     if (newTests.Count() == 0) println("none of them are new");
@@ -1500,15 +1519,27 @@ public abstract class Prj {
       existingTests.AddRange(newTests);
       existingTests.RemoveAll(existingTest => obsoleteTests.Contains(existingTest));
 
-      var dotTestName = ".test" + "." + profile;
-      var dotTest = new FileInfo(root + "\\" + dotTestName);
       File.WriteAllLines(dotTest.FullName, existingTests);
       println("wrote " + dotTest.FullName.Substring(root.FullName.Length + 1));
     }
   }
 
   public virtual void removeTestSuiteTests(String profile, List<String> wildcards) {
-    throw new NotImplementedException();
+    var dotTestName = ".test" + "." + profile;
+    var dotTest = new FileInfo(root + "\\" + dotTestName);
+    var existingTests = dotTest.Exists ? File.ReadAllLines(dotTest.FullName).ToList() : new List<String>();
+    println("found " + existingTests.Count + " existing " + profile + " tests");
+
+    var removedTests = wildcards.SelectMany(wildcard => existingTests.Where(existingTest => Operators.LikeString(existingTest, "*" + wildcard + "*", CompareMethod.Text)));
+    if (removedTests.Count() == 0) println("none of the existing tests are to be removed");
+    else if (removedTests.Count() == existingTests.Count()) println("all of the existing tests are to be removed");
+    else println(removedTests.Count() + " of the existing tests are to be removed: " + String.Join(", ", removedTests.ToArray()));
+
+    if (removedTests.Count() != 0) {
+      existingTests.RemoveAll(existingTest => removedTests.Contains(existingTest));
+      File.WriteAllLines(dotTest.FullName, existingTests);
+      println("wrote " + dotTest.FullName.Substring(root.FullName.Length + 1));
+    }
   }
 
   [Action]

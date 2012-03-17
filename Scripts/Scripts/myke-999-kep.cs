@@ -1,4 +1,4 @@
-// build this with "csc /r:ZetaLongPaths.dll /t:exe /out:myke.exe /debug+ myke*.cs"
+// build this with "csc /r:Microsoft.VisualBasic.dll /r:ZetaLongPaths.dll /t:exe /out:myke.exe /debug+ myke*.cs"
 
 using System;
 using System.Collections.Generic;
@@ -159,15 +159,30 @@ public class Kep : Git {
     return Console.batch("\"" + partest + "\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
   }
 
-  protected virtual ExitCode indexTests(String profile, Func<String, String, String, bool> filter) {
-    var dotTest = new FileInfo(root + "\\.test." + profile);
-    var existingTests = dotTest.Exists ? File.ReadAllLines(dotTest.FullName).ToList() : new List<String>();
+  public override List<String> calculateTestSuiteTests(String profile) {
+    Func<String, String, String, bool> filter = null;
+    if (profile == "macro") {
+      filter = (fullName, shortName, text) => {
+        var pos = fullName.Contains("macro") || text.Contains("macro");
+        var neg = shortName == "test\\files\\run\\reify_printf.scala";
+        return pos && !neg;
+      };
+    } else if (profile == "reify") {
+      filter = (fullName, shortName, text) => {
+        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("TypeTag") || text.Contains("GroundTypeTag");
+        var neg = shortName.StartsWith("test\\files\\run\\macro-def-path-dependent");
+        return pos && !neg;
+      };
+    }
+
+    if (filter == null)
+      return null;
 
     var ktr = new DirectoryInfo(root + "\\test\\files\\run");
     var ktp = new DirectoryInfo(root + "\\test\\files\\pos");
     var ktn = new DirectoryInfo(root + "\\test\\files\\neg");
     var ktdirs = new []{ktr, ktp, ktn}.ToList();
-    var tests = ktdirs.SelectMany(ktdir => ktdir.GetFiles("*.scala", SearchOption.AllDirectories).Select(f => {
+    return ktdirs.SelectMany(ktdir => ktdir.GetFiles("*.scala", SearchOption.AllDirectories).Select(f => {
       var fullName = f.FullName;
       var prefix = ktdir.FullName;
       if (!prefix.EndsWith("\\")) prefix += "\\";
@@ -181,42 +196,5 @@ public class Kep : Git {
       var text = File.ReadAllText(f.FullName);
       return filter(fullName, shortName, text) ? shortName : null;
     })).Where(test => test != null).Distinct().ToList();
-
-    println("found " + tests.Count + " " + profile + " tests");
-    var newTests = tests.Where(test => existingTests.Where(existingTest => existingTest.Contains(test)).Count() == 0).ToList();
-    if (newTests.Count() == tests.Count()) println("all of them are new");
-    else if (newTests.Count() == 0) println("none of them are new");
-    else println(newTests.Count() + " of them are new: " + String.Join(", ", newTests.ToArray()));
-    var obsoleteTests = existingTests.Where(existingTest => tests.Where(test => existingTest.Contains(test)).Count() == 0).ToList();
-    if (obsoleteTests.Count() == tests.Count()) println("all of them are obsolete");
-    else if (obsoleteTests.Count() == 0) println("none of them are obsolete");
-    else println(obsoleteTests.Count() + " of them are obsolete: " + String.Join(", ", obsoleteTests.ToArray()));
-
-    if (newTests.Count() != 0 || obsoleteTests.Count() != 0) {
-      existingTests.AddRange(newTests);
-      existingTests.RemoveAll(existingTest => obsoleteTests.Contains(existingTest));
-      File.WriteAllLines(dotTest.FullName, existingTests);
-      println("wrote " + dotTest.FullName.Substring(root.FullName.Length + 1));
-    }
-
-    return 0;
-  }
-
-  [Action]
-  public virtual ExitCode indexMacroTests() {
-    return indexTests("macro", (fullName, shortName, text) => {
-      var pos = fullName.Contains("macro") || text.Contains("macro");
-      var neg = shortName == "test\\files\\run\\reify_printf.scala";
-      return pos && !neg;
-    });
-  }
-
-  [Action]
-  public virtual ExitCode indexReifyTests() {
-    return indexTests("reify", (fullName, shortName, text) => {
-      var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("TypeTag") || text.Contains("GroundTypeTag");
-      var neg = shortName.StartsWith("test\\files\\run\\macro-def-path-dependent");
-      return pos && !neg;
-    });
   }
 }
