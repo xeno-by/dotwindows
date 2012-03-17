@@ -1401,7 +1401,7 @@ public abstract class Prj {
   [Action]
   public virtual ExitCode getTestSuite() {
     var suite = getCurrentTestSuite();
-    if (suite == null) { println(""); return -1; }
+    if (suite == null) { println("there is no test suite associated with this project"); return -1; }
 
     println(suite);
     env["currentTestSuite"] = suite;
