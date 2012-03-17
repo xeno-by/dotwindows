@@ -46,6 +46,10 @@ REGEDIT4
 "Sequence"="CtrlS\n\nF12\n%Value = menu.getvalue();\n%Iof = index(\".\", %Value);\n%%MykeScreen = atoi(substr(%Value, 0, %Iof - 1));\n%%MykeTarget = substr(%Value, %Iof + 17);\n\nmenu.select(\"0. \", 1, 0);\nEnter\n\n%%MykePanels = APanel.Visible || PPanel.Visible;\n$If (%%MykePanels) CtrlO $End\n$If (!CmdLine.Empty) Esc $End\n\n%Command = \"myke pull \\\"\" + %%MykeTarget + \"\\\"\";\n$Text %Command\nEnter\n\n%Done = 0;\n$While (!%Done && mload(\"%%MykeContinuation\") && %%MykeContinuation != \"\")\n  %Command = %%MykeContinuation;\n  %%MykeContinuation = \"\";\n  msave(\"%%MykeContinuation\");\n\n  $Text %Command\n  Enter\n\n  $If (mload(\"%%MykeStatus\") && %%MykeStatus != 0)\n    %Done = 1;\n  $End\n$End\n"
 "DisableOutput"=dword:00000001
 
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\CtrlShiftU]
+"DisableOutput"=dword:00000001
+"Sequence"="CtrlS\n\nF12\n%Value = menu.getvalue();\n%Iof = index(\".\", %Value);\n%%MykeScreen = atoi(substr(%Value, 0, %Iof - 1));\n%%MykeTarget = substr(%Value, %Iof + 17);\n\nmenu.select(\"0. \", 1, 0);\nEnter\n\n%%MykePanels = APanel.Visible || PPanel.Visible;\n$If (%%MykePanels) CtrlO $End\n$If (!CmdLine.Empty) Esc $End\n\n%Command = \"myke pull \\\"\" + %%MykeTarget + \"\\\"\";\n$Text %Command\nEnter\n\n%Done = 0;\n$While (!%Done && mload(\"%%MykeContinuation\") && %%MykeContinuation != \"\")\n  %Command = %%MykeContinuation;\n  %%MykeContinuation = \"\";\n  msave(\"%%MykeContinuation\");\n\n  $Text %Command\n  Enter\n\n  $If (mload(\"%%MykeStatus\") && %%MykeStatus != 0)\n    %Done = 1;\n  $End\n$End\n"
+
 [HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell]
 
 [HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\CtrlShiftO]
@@ -84,6 +88,10 @@ REGEDIT4
 "Sequence"="%%MykePanels = APanel.Visible || PPanel.Visible;\n$If (%%MykePanels) CtrlO $End\n$If (!CmdLine.Empty) Esc $End\n\n%Command = \"myke run-test .\";\n$Text %Command\nEnter\n\n%Done = 0;\n$While (!%Done && mload(\"%%MykeContinuation\") && %%MykeContinuation != \"\")\n  %Command = %%MykeContinuation;\n  %%MykeContinuation = \"\";\n  msave(\"%%MykeContinuation\");\n\n  $Text %Command\n  Enter\n\n  $If (mload(\"%%MykeStatus\") && %%MykeStatus != 0)\n    %Done = 1;\n  $End\n$End\n\n$If (mload(\"%%MykeStatus\") && %%MykeStatus == 0)\n  $If (%%MykePanels) CtrlO $End\n  %%MykePanels = \"\";\n$End"
 "DisableOutput"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\CtrlTab]
-"Sequence"="$If (%%MykeScreen == \"\")\r\r\n  $AKey\r\r\n$Else\r\r\n  $If (%%MykePanels) CtrlO $End\r\r\n\r\r\n  F12\r\r\n  menu.select(%%MykeScreen + \". \", 1, 0);\r\r\n  Enter\r\r\n\r\r\n  %%MykeScreen = \"\";\r\r\n  %%MykeTarget = \"\";\r\r\n  %%MykePanels = \"\";\r\r\n$End"
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\CtrlShiftJ]
+"DisableOutput"=dword:00000001
+"Sequence"="clip(3)\nAltShiftIns\n%Selection = clip(0);\nclip(4)\n%Selection = replace(%Selection, chr(13), chr(32));\n%Selection = replace(%Selection, chr(10), \"\");\n$If (!APanel.selected)\n  %Selection = \".\";\n$End\n\n%%MykePanels = APanel.Visible || PPanel.Visible;\n$If (%%MykePanels) CtrlO $End\n$If (!CmdLine.Empty) Esc $End\n\n%Command = \"myke blame \";\n$Text %Command\n$Text %Selection\nEnter\n\n%Done = 0;\n$While (!%Done && mload(\"%%MykeContinuation\") && %%MykeContinuation != \"\")\n  %Command = %%MykeContinuation;\n  %%MykeContinuation = \"\";\n  msave(\"%%MykeContinuation\");\n\n  $Text %Command\n  Enter\n\n  $If (mload(\"%%MykeStatus\") && %%MykeStatus != 0)\n    %Done = 1;\n  $End\n$End\n\n$If (mload(\"%%MykeStatus\") && %%MykeStatus == 0)\n  $If (%%MykePanels) CtrlO $End\n  %%MykePanels = \"\";\n$End"
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\CtrlShiftU]
+"Sequence"="c d Space CtrlShift[ Tab Enter Tab"
 "DisableOutput"=dword:00000001

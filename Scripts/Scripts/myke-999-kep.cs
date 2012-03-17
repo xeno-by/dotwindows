@@ -41,6 +41,7 @@ public class Kep : Git {
   [Action]
   public virtual ExitCode clean() {
     if (inPlayground) {
+      dir.GetDirectories("*.obj").ToList().ForEach(dir1 => dir1.Delete());
       dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
       dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
       return 0;
