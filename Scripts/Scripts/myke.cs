@@ -1239,8 +1239,8 @@ public class Lines : BaseList<String> {
 public class Arguments : BaseList<String> {
   private List<String> arguments;
 
-  public Arguments(List<String> arguments) {
-    this.arguments = arguments;
+  public Arguments(List<String> arguments = null) {
+    this.arguments = arguments ?? new List<String>();
   }
 
   protected override IEnumerable<String> Read() {

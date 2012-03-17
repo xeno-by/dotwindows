@@ -11,8 +11,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 [Connector(name = "kep5", priority = 999, description =
-  "Wraps the development workflow of the stable mirror or project Kepler.\r\n" +
-  "Uses ant for building, itself for a repl, runs Reflection and doesn't support tests yet.")]
+  "Wraps the development workflow of the stable mirror or project Kepler.")]
 
 public class Kep5 : Kep {
   public override String project { get { return @"%PROJECTS%\Kepler5".Expand(); } }
@@ -20,6 +19,6 @@ public class Kep5 : Kep {
   //public override String profile { get { return "build"; } }
 
   public Kep5() : base() {}
-  public Kep5(FileInfo file) : base(file) {}
-  public Kep5(DirectoryInfo dir) : base(dir) {}
+  public Kep5(FileInfo file, Arguments arguments) : base(file, arguments) {}
+  public Kep5(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
 }

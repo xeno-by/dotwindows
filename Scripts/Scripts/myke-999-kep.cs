@@ -11,8 +11,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 [Connector(name = "kep", priority = 999, description =
-  "Wraps the development workflow of project Kepler.\r\n" +
-  "Uses ant for building, itself for a repl, runs Reflection and doesn't support tests yet.")]
+  "Wraps the development workflow of project Kepler.")]
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
@@ -24,9 +23,10 @@ public class Kep : Git {
     return dir.IsChildOrEquivalentTo(project);
   }
 
+  private Arguments arguments;
   public Kep() : base() { init(); }
-  public Kep(FileInfo file) : base(file) { init(); }
-  public Kep(DirectoryInfo dir) : base(dir) { init(); }
+  public Kep(FileInfo file, Arguments arguments) : base(file) { init(); this.arguments = arguments; }
+  public Kep(DirectoryInfo dir, Arguments arguments) : base(dir) { init(); this.arguments = arguments; }
   private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   public virtual bool inPlayground { get {
@@ -56,7 +56,7 @@ public class Kep : Git {
   public virtual ExitCode rebuild() {
     if (inPlayground && file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines);
+      var scala = new Scala(file, lines, arguments);
       return scala.rebuild();
     } else {
       return Console.batch("ant clean " + profile + " -buildfile build.xml", home: root);
@@ -67,7 +67,7 @@ public class Kep : Git {
   public virtual ExitCode compile() {
     if (inPlayground && file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines);
+      var scala = new Scala(file, lines, arguments);
       return scala.compile();
     } else {
       var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);
@@ -75,7 +75,7 @@ public class Kep : Git {
 
       var partest = project + @"\build\locker\classes\partest";
       if (!Directory.Exists(partest)) {
-        var donor = new Donor(new DirectoryInfo(new Donor().project));
+        var donor = new Donor(new DirectoryInfo(new Donor().project), arguments);
         return donor.compile();
       } else {
         return 0;
@@ -93,7 +93,7 @@ public class Kep : Git {
   public virtual ExitCode run(Arguments arguments) {
     if (inPlayground && file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines);
+      var scala = new Scala(file, lines, arguments);
       return scala.run(arguments);
     } else {
       //var options = new List<String>();
@@ -112,7 +112,7 @@ public class Kep : Git {
         var toRun = files[0];
         println("running {0}", toRun.FullName);
         var lines = new Lines(toRun, File.ReadAllLines(toRun.FullName).ToList());
-        var scala = new Scala(toRun, lines);
+        var scala = new Scala(toRun, lines, arguments);
         return scala.run(arguments);
       } else {
         println("error: command is ambiguous");

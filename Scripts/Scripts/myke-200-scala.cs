@@ -16,17 +16,33 @@ using Microsoft.Win32.SafeHandles;
 
 public class Scala : Git {
   private Lines lines;
-
-  public Scala(FileInfo file, Lines lines) : base(file) {
+  private Arguments arguments;
+  public Scala(FileInfo file, Lines lines, Arguments arguments) : base(file) {
     this.lines = lines;
+    this.arguments = arguments ?? new Arguments();
     env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)";
   }
 
+  public virtual List<FileInfo> sources { get {
+    return new List<FileInfo>{file}.Concat(arguments.Select(argument => new FileInfo(argument)).Where(argument => argument.Exists)).ToList();
+  } }
+
   public virtual String compiler { get {
-    var shebang = lines.ElementAtOrDefault(0) ?? "";
-    var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
-    var m = r.Match(shebang);
-    return m.Success ? m.Result("${commandline}") : ("scalac " + file.FullName);
+    Func<FileInfo, String> inferCompiler = fi => {
+      var lines = fi.Exists ? File.ReadAllLines(fi.FullName) : new String[]{};
+      var shebang = lines.ElementAtOrDefault(0) ?? "";
+      var r = new Regex("^\\s*//\\s*build\\s+this\\s+with\\s+\"(?<commandline>.*)\"\\s*$");
+      var m = r.Match(shebang);
+      return m.Success ? m.Result("${commandline}") : null;
+    };
+
+    var inferreds = sources.Select(inferCompiler).Where(s => s != null).Distinct().ToList();
+    if (inferreds.Count > 1) { println("ambiguous compiler shebangs"); return null; }
+    if (inferreds.Count > 0 && arguments.Count > 0) { println("cannot use compiler shebangs with non-empty arguments"); return null; }
+    var inferred = inferreds.SingleOrDefault();
+
+    var @default = "scalac " + file.Name.ShellEscape() + (arguments.Count() == 0 ? "" : " " + arguments);
+    return inferred ?? @default;
   } }
 
   public override bool accept() {
@@ -108,7 +124,7 @@ public class Scala : Git {
     }
 
     var parent_key = "Software\\Myke";
-    var short_key = ("compile " + file.FullName).Replace("\\", "$slash$");
+    var short_key = (compiler + " @ " + dir.FullName).Replace("\\", "$slash$");
     var full_key = parent_key + "\\" + short_key;
     var reg = Registry.CurrentUser.OpenSubKey(full_key, true) ?? Registry.CurrentUser.CreateSubKey(full_key);
     var prev_status = reg.GetValue("status") == null ? new ExitCode{value = 0} : new ExitCode{value = (int)reg.GetValue("status")};
@@ -178,7 +194,7 @@ public class Scala : Git {
     }
 
     using (var watcher = new FileSystemWatcher(root.FullName)) {
-      var files = new List<FileInfo>();
+      var files = new List<FileInfo>(sources);
       watcher.Filter = "*.class";
       watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
       watcher.IncludeSubdirectories = true;
@@ -198,15 +214,13 @@ public class Scala : Git {
       reg.SetValue("compVer", compVer);
       reg.SetValue("libVer", libVer);
       reg.SetValue("status", status.value);
-      reg.SetValue(file.FullName.Replace("\\", "$slash$"), file.LastWriteTime.ToString("o"));
-      var s_symlink = GetSymlinkTarget(file.FullName);
-      var symlink = s_symlink == null ? null : new FileInfo(s_symlink);
-      if (symlink != null) reg.SetValue(symlink.FullName.Replace("\\", "$slash$"), symlink.LastWriteTime.ToString("o"));
 
       files = files.Distinct().ToList();
       files.Where(file1 => file1.Exists).ToList().ForEach(file1 => {
-        reg.SetValue(file.FullName.Replace("\\", "$slash$"), file.LastWriteTime.ToString("o"));
         reg.SetValue(file1.FullName.Replace("\\", "$slash$"), file1.LastWriteTime.ToString("o"));
+        var s_symlink = GetSymlinkTarget(file1.FullName);
+        var symlink = s_symlink == null ? null : new FileInfo(s_symlink);
+        if (symlink != null) reg.SetValue(symlink.FullName.Replace("\\", "$slash$"), symlink.LastWriteTime.ToString("o"));
       });
 
       return status;
@@ -226,10 +240,13 @@ public class Scala : Git {
   }
 
   public virtual String inferMainclass() {
-    var mains = lines.Select(line => {
-      var m = Regex.Match(line, @"object\s+(?<name>.*?)\s+extends\s+App");
-      return m.Success ? m.Result("${name}") : null;
-    }).Where(main => main != null).ToList();
+    var mains = sources.SelectMany(fi => {
+      var lines = fi.Exists ? File.ReadAllLines(fi.FullName) : new String[]{};
+      return lines.Select(line => {
+        var m = Regex.Match(line, @"object\s+(?<name>.*?)\s+extends\s+App");
+        return m.Success ? m.Result("${name}") : null;
+      }).Where(main => main != null).ToList();
+    }).ToList();
 
     return mains.Count() == 1 ? mains.Single() : null;
   }
@@ -240,8 +257,9 @@ public class Scala : Git {
 
   [Action]
   public virtual ExitCode run(Arguments arguments) {
+    var finalArguments = arguments.Where(argument => !new FileInfo(argument).Exists).ToList();
     Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", file.FullName));
     Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
-    return compile() && Console.interactive("scala " + " " + readMainclass() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()), home: root);
+    return compile() && Console.interactive("scala " + " " + readMainclass() + " " + (finalArguments.Count > 0 ? finalArguments.ToString() : readArguments()), home: root);
   }
 }

@@ -11,8 +11,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 [Connector(name = "upstream", priority = 999, description =
-  "Wraps the development workflow of upstream Scala.\r\n" +
-  "Uses ant for building, itself for a repl, runs Reflection and doesn't support tests yet.")]
+  "Wraps the development workflow of upstream Scala.")]
 
 public class Upstream : Kep {
   public override String project { get { return @"%PROJECTS%\ScalaUpstream".Expand(); } }
@@ -24,6 +23,6 @@ public class Upstream : Kep {
   }
 
   public Upstream() : base() {}
-  public Upstream(FileInfo file) : base(file) {}
-  public Upstream(DirectoryInfo dir) : base(dir) {}
+  public Upstream(FileInfo file, Arguments arguments) : base(file, arguments) {}
+  public Upstream(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
 }

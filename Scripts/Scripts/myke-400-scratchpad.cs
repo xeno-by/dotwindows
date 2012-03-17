@@ -10,9 +10,10 @@ using System.Text.RegularExpressions;
 [Connector(name = "scratchpad", priority = 400, description = "Provides a builder for Scala scratchpad")]
 
 public class Scratchpad : Git {
+  private Arguments arguments;
   public Scratchpad() : base() {}
-  public Scratchpad(FileInfo file) : base(file) {}
-  public Scratchpad(DirectoryInfo dir) : base(dir) {}
+  public Scratchpad(FileInfo file, Arguments arguments) : base(file) { this.arguments = arguments; }
+  public Scratchpad(DirectoryInfo dir, Arguments arguments) : base(dir) { this.arguments = arguments; }
 
   public override bool accept() {
     if (Config.verbose) println("scratchpad = {0}, dir = {1}", @"%DROPBOX%\Scratchpad\Scala".Expand(), dir.FullName);
@@ -30,7 +31,7 @@ public class Scratchpad : Git {
   public virtual ExitCode rebuild() {
     if (file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines);
+      var scala = new Scala(file, lines, arguments);
       return scala.rebuild();
     } else {
       println("rebuild: not implemented when invoked upon the entire scratchpad");
@@ -42,7 +43,7 @@ public class Scratchpad : Git {
   public virtual ExitCode compile() {
     if (file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines);
+      var scala = new Scala(file, lines, arguments);
       return scala.compile();
     } else {
       println("compile: not implemented when invoked upon the entire scratchpad");
@@ -54,7 +55,7 @@ public class Scratchpad : Git {
   public virtual ExitCode run(Arguments arguments) {
     if (file != null) {
       var lines = new Lines(file, File.ReadAllLines(file.FullName).ToList());
-      var scala = new Scala(file, lines);
+      var scala = new Scala(file, lines, arguments);
       return scala.run(arguments);
     } else {
       println("run: not implemented when invoked upon the entire scratchpad");

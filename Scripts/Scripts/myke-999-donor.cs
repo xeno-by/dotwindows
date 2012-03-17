@@ -23,9 +23,10 @@ public class Donor : Kep {
     return dir.IsChildOrEquivalentTo(project);
   }
 
+  private Arguments arguments;
   public Donor() : base() {}
-  public Donor(FileInfo file) : base(file) {}
-  public Donor(DirectoryInfo dir) : base(dir) {}
+  public Donor(FileInfo file, Arguments arguments) : base(file, arguments) { this.arguments = arguments; }
+  public Donor(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) { this.arguments = arguments; }
 
   [Default, Action]
   public override ExitCode compile() {
