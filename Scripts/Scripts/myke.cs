@@ -1368,15 +1368,21 @@ public abstract class Prj {
   [Action]
   public virtual ExitCode makeTestSuite(Arguments arguments) {
     var suite = arguments.Last();
-    if (!setTestSuite(new Arguments(new List<String>{suite}))) return -1;
-
     var dotTestName = ".test" + "." + suite;
     var dotTest = new FileInfo(root + "\\" + dotTestName);
-    if (dotTest.Exists) {
-      print("suite " + suite + " already exists. overwrite? ");
-      var result = readln().ToLower();
-      var confirmed = result == "" || result == "y" || result == "yes" || result == "yep";
-      if (!confirmed) { return -1; }
+    if (!setTestSuite(new Arguments(new List<String>{suite}))) return -1;
+
+    if (suite == "failed") {
+      arguments = new Arguments(new List<String>{"failed"});
+    } else if (suite == "succeeded") {
+      arguments = new Arguments(new List<String>{"succeeded"});
+    } else {
+      if (dotTest.Exists) {
+        print("suite " + suite + " already exists. overwrite? ");
+        var result = readln().ToLower();
+        var confirmed = result == "" || result == "y" || result == "yes" || result == "yep";
+        if (!confirmed) { return -1; }
+      }
     }
 
     File.WriteAllLines(dotTest.FullName, new String[]{});
@@ -1396,17 +1402,7 @@ public abstract class Prj {
 
     var wildcards = new List<String>{Config.target}.Concat(arguments).ToList();
     if (wildcards.First() == Path.GetFullPath(".")) wildcards = wildcards.Skip(1).ToList();
-    if (wildcards.Count() == 1 && wildcards.Single() == "*") {
-      var calculated = calculateTestSuiteTests(suite);
-      if (calculated != null) {
-        addTestSuiteTests(suite, calculated, true);
-      } else {
-        println("don't know how to calculate tests for " + suite);
-        return -1;
-      }
-    } else {
-      addTestSuiteTests(suite, wildcards, false);
-    }
+    addTestSuiteTests(suite, wildcards, false);
 
     return 0;
   }
@@ -1448,15 +1444,41 @@ public abstract class Prj {
   }
 
   [Action]
-  public virtual ExitCode listTestSuite() {
+  public virtual ExitCode listTestSuiteAllTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
 
-    var tests = getTestSuiteTests(suite);
+    var tests = getTestSuiteAllTests(suite);
     if (tests == null || tests.Count() == 0) { println(suite + " does not have any tests"); return -1; }
 
     tests.ForEach(test => println(test));
-    println(suite + " has " + tests.Count + " test" + (tests.Count == 1 ? "" : "s"));
+    //println(suite + " has " + tests.Count + " test" + (tests.Count == 1 ? "" : "s"));
+    return 0;
+  }
+
+  [Action]
+  public virtual ExitCode listTestSuiteFailedTests() {
+    var suite = getCurrentTestSuite();
+    if (suite == null) { println("there is no test suite associated with this project"); return -1; }
+
+    var tests = getTestSuiteFailedTests(suite);
+    if (tests == null || tests.Count() == 0) { println(suite + " does not have any failed tests"); return -1; }
+
+    tests.ForEach(test => println(test));
+    //println(suite + " has " + tests.Count + " failed test" + (tests.Count == 1 ? "" : "s"));
+    return 0;
+  }
+
+  [Action]
+  public virtual ExitCode listTestSuiteSucceededTests() {
+    var suite = getCurrentTestSuite();
+    if (suite == null) { println("there is no test suite associated with this project"); return -1; }
+
+    var tests = getTestSuiteSucceededTests(suite);
+    if (tests == null || tests.Count() == 0) { println(suite + " does not have any succeeded tests"); return -1; }
+
+    tests.ForEach(test => println(test));
+    //println(suite + " has " + tests.Count + " succeeded test" + (tests.Count == 1 ? "" : "s"));
     return 0;
   }
 
@@ -1469,7 +1491,7 @@ public abstract class Prj {
     return root.GetFiles(".test.*").Select(fi => fi.Extension).Select(s => s.StartsWith(".") ? s.Substring(1) : s).ToList();
   }
 
-  public virtual List<String> getTestSuiteTests(String profile) {
+  public virtual List<String> getTestSuiteAllTests(String profile) {
     var dotTestName = ".test" + (String.IsNullOrEmpty(profile) ? "" : "." + profile);
     var dotTest = new FileInfo(root + "\\" + dotTestName);
     if (!dotTest.Exists) {
@@ -1483,6 +1505,14 @@ public abstract class Prj {
       if (iof != -1) f_toTest = f_toTest.Substring(0, iof);
       return f_toTest.Trim();
     }).Where(f_toTest => f_toTest != String.Empty).ToList();
+  }
+
+  public virtual List<String> getTestSuiteFailedTests(String profile) {
+    return new List<String>{"not supported"};
+  }
+
+  public virtual List<String> getTestSuiteSucceededTests(String profile) {
+    return new List<String>{"not supported"};
   }
 
   public virtual List<String> calculateTestSuiteTests(String profile) {
@@ -1518,15 +1548,19 @@ public abstract class Prj {
           dir.GetFiles(wildcard, flags).ToList().ForEach(fi => tests.Add(Path.GetFullPath(fi.FullName)));
           dir.GetDirectories(wildcard, flags).ToList().ForEach(di => tests.Add(Path.GetFullPath(di.FullName)));
         }
+      } else if (wildcard == "refresh") {
+        var calculated = calculateTestSuiteTests(profile);
+        if (calculated != null) tests.AddRange(calculated);
+      } else if (wildcard == "failed") {
+        var failed = getTestSuiteFailedTests(profile);
+        if (failed.Count() != 1 || failed[0] != "not supported") tests.AddRange(failed);
+      } else if (wildcard == "succeeded") {
+        var succeeded = getTestSuiteSucceededTests(profile);
+        if (succeeded.Count() != 1 || succeeded[0] != "not supported") tests.AddRange(succeeded);
       } else {
         tests.Add(wildcard);
       }
     });
-
-    var prefix = project;
-    prefix = prefix.Replace("/", "\\");
-    if (!prefix.EndsWith("\\")) prefix += "\\";
-    tests = tests.Select(file => file.StartsWith(prefix, true, CultureInfo.CurrentCulture) ? file.Substring(prefix.Length) : file).ToList();
 
     println("adding " + tests.Count + " " + profile + " tests");
     var newTests = tests.Where(test => existingTests.Where(existingTest => existingTest.Contains(test)).Count() == 0).ToList();

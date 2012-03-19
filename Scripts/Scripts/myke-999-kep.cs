@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -151,10 +152,10 @@ public class Kep : Git {
     } else {
       var suite = getCurrentTestSuite();
       if (suite == null) { println("there is no test suite associated with this project"); return -1; }
-      tests = getTestSuiteTests(suite);
+      tests = getTestSuiteAllTests(suite);
       if (tests == null || tests.Count() == 0) { println(suite + " does not have any tests"); return -1; }
-      tests.ForEach(test => { if (!test.StartsWith("test\\")) throw new Exception("bad test: " + test); });
-      tests = tests.Select(test => test.Substring("test\\".Length)).ToList();
+      tests.ForEach(test => { if (!test.StartsWith(prefix, true, CultureInfo.CurrentCulture)) throw new Exception("bad test: " + test); });
+      tests = tests.Select(test => test.Substring(prefix.Length)).ToList();
     }
 
     tests = tests.Select(test => {
@@ -177,23 +178,27 @@ public class Kep : Git {
     }).Distinct().ToList();
 
     var partest = @"%SCRIPTS_HOME%\partest.exe";
-    return Console.batch("\"" + partest + "\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
+    return Console.batch("\"\"" + partest + "\"\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
   }
 
   public override List<String> calculateTestSuiteTests(String profile) {
-    Func<String, String, String, bool> filter = null;
+    Func<String, String, Func<String>, bool> filter = null;
     if (profile == "macro") {
-      filter = (fullName, shortName, text) => {
+      filter = (fullName, shortName, text0) => {
+        var text = text0();
         var pos = fullName.Contains("macro") || text.Contains("macro");
         var neg = shortName == "test\\files\\run\\reify_printf.scala";
         return pos && !neg;
       };
     } else if (profile == "reify") {
-      filter = (fullName, shortName, text) => {
+      filter = (fullName, shortName, text0) => {
+        var text = text0();
         var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("TypeTag") || text.Contains("GroundTypeTag");
         var neg = shortName.StartsWith("test\\files\\run\\macro-def-path-dependent");
         return pos && !neg;
       };
+    } else if (profile == "all") {
+      filter = (fullName, shortName, text0) => true;
     }
 
     if (filter == null)
@@ -214,8 +219,52 @@ public class Kep : Git {
       if (category.StartsWith("\\")) category = category.Substring(1);
       if (category.EndsWith("\\")) category = category.Substring(0, category.Length - 1);
       var shortName = category + "\\" + stripped;
-      var text = File.ReadAllText(f.FullName);
-      return filter(fullName, shortName, text) ? shortName : null;
+      Func<String> text = () => File.ReadAllText(f.FullName);
+      return filter(fullName, shortName, text) ? (project + "\\" + shortName) : null;
     })).Where(test => test != null).Distinct().ToList();
+  }
+
+  public override List<String> getTestSuiteFailedTests(String profile) {
+    return getTestSuiteTestsInternal(profile, "failed");
+  }
+  public override List<String> getTestSuiteSucceededTests(String profile) {
+    return getTestSuiteTestsInternal(profile, "succeeded");
+  }
+
+  public List<String> getTestSuiteTestsInternal(String profile, String kind) {
+    var result = new List<String>();
+    var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
+    if (traceDir.Exists) {
+      var logs = traceDir.GetFiles("*.log").OrderByDescending(fi => fi.LastWriteTime).ToList();
+      var relevant = logs.Where(log => File.ReadAllText(log.FullName).StartsWith("myke run-test " + project, true, CultureInfo.CurrentCulture)).FirstOrDefault();
+      if (relevant != null) {
+        println(relevant.FullName);
+        var s_all = File.ReadAllLines(relevant.FullName)[1].Substring(71);
+        s_all = s_all.Substring(0, s_all.Length - 32);
+        var all = s_all.Split(new[]{" "}, StringSplitOptions.None).Select(shortName => project + "\\test\\" + shortName).ToList();
+        var fragments = File.ReadAllLines(relevant.FullName).Select(line => {
+          var rxSucceeded = @"^testing: \[\.\.\.\](?<filename>.*?)\s*\[  OK  \]$";
+          var rxFailed = @"^testing: \[\.\.\.\](?<filename>.*?)\s*\[FAILED\]$";
+          var rx = kind == "failed" ? rxFailed : rxSucceeded;
+          var m = Regex.Match(line, rx);
+          return m.Success ? m.Result("${filename}") : null;
+        }).Where(fragment => fragment != null).Distinct().ToList();
+        fragments.ForEach(fragment => {
+          var matches = all.Where(test => test.EndsWith(fragment)).ToList();
+          if (matches.Count() != 1) result.Add(fragment);
+          else {
+            var match = matches[0];
+            var flavor = match.Substring((project + "\\test\\files\\").Length);
+            var iof = flavor.IndexOf("\\");
+            flavor = flavor.Substring(0, iof);
+            result.Add(match);
+            var filename = Path.GetDirectoryName(match) + "\\" + Path.GetFileNameWithoutExtension(match);
+            result.Add(filename + "-" + flavor + ".log");
+          }
+        });
+      }
+    }
+    result = result.OrderBy(name => name).ToList();
+    return result;
   }
 }
