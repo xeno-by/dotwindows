@@ -32,7 +32,7 @@ public class Scala : Git {
         return new List<Object>{file1};
       } else if (Directory.Exists(argument)) {
         var dir1 = new DirectoryInfo(argument);
-        return dir1.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
+        return dir1.GetFiles("*.scala", SearchOption.TopDirectoryOnly).ToList();
       } else {
         return new List<Object>{argument};
       }
@@ -296,6 +296,7 @@ public class Scala : Git {
   public virtual ExitCode run() {
     Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", compiler));
     Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", compiler));
-    return compile() && Console.interactive("scala " + " " + readMainclass() + " " + readArguments(), home: root);
+//    return compile() && Console.interactive("scala " + " " + readMainclass() + " " + readArguments(), home: root);
+    return compile() && Console.batch("scala " + " " + readMainclass() + " " + readArguments(), home: root);
   }
 }

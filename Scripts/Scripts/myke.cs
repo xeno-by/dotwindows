@@ -486,22 +486,24 @@ public static class Console {
     }
   }
 
-  private static ExitCode cmd(String command, DirectoryInfo home = null) {
-    var script = Path.GetTempFileName() + ".bat";
-    if (!Config.verbose) File.AppendAllText(script, "@echo off" + "\r\n");
-    File.AppendAllText(script, "cd /D \"" + (home ?? new DirectoryInfo(".")).FullName + "\"" + "\r\n");
-    File.AppendAllText(script, command + "\r\n");
-    File.AppendAllText(script, "exit /b %errorlevel%");
+  private static ExitCode cmd(String command, DirectoryInfo home = null, bool trace = false) {
+    //var script = Path.GetTempFileName() + ".bat";
+    //if (!Config.verbose) File.AppendAllText(script, "@echo off" + "\r\n");
+    //File.AppendAllText(script, "cd /D \"" + (home ?? new DirectoryInfo(".")).FullName + "\"" + "\r\n");
+    //File.AppendAllText(script, command + "\r\n");
+    //File.AppendAllText(script, "exit /b %errorlevel%");
 
     var psi = new ProcessStartInfo();
-    psi.FileName = script;
+    //psi.FileName = script;
+    psi.FileName = "cmd.exe";
+    psi.Arguments = "/C " + command;
     psi.WorkingDirectory = (home ?? new DirectoryInfo(".")).FullName;
     psi.UseShellExecute = false;
 
     if (Config.verbose) {
       Console.println("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
-      Console.println("script at {0} is:", script);
-      Console.println(File.ReadAllText(script));
+      //Console.println("script at {0} is:", script);
+      //Console.println(File.ReadAllText(script));
       Console.println();
       Console.println("========================================");
       Console.println("The command will now be executed by cmd.exe");
@@ -516,7 +518,30 @@ public static class Console {
       var p = new Process();
       p.StartInfo = psi;
 
+      if (trace) {
+        var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
+        var fileName = env.ContainsKey("traceFile") ? env["traceFile"] : null;
+        if (fileName == null) {
+          var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
+          if (!traceDir.Exists) traceDir.Create();
+          fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log";
+          env["traceFile"] = fileName;
+          var lines = new List<String>();
+          lines.Add(String.Format("myke {0} {1} {2}", Config.action, Config.originalTarget, Config.args));
+          lines.Add(String.Format("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory));
+          lines.Add(String.Empty);
+          File.WriteAllLines(fileName, lines.ToArray());
+        }
+
+        psi.RedirectStandardOutput = true;
+        p.OutputDataReceived += (sender, args) => { if (args.Data != null) {
+          println(args.Data);
+          File.AppendAllText(fileName, args.Data + Environment.NewLine);
+        }; };
+      }
+
       if (p.Start()) {
+        if (trace) p.BeginOutputReadLine();
         p.WaitForExit();
         return p.ExitCode;
       } else {
@@ -637,7 +662,7 @@ public static class Console {
 
     var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
     env["workingDir"] = home.FullName;
-    return cmd(command, home);
+    return cmd(command, home, true);
   }
 
   public static ExitCode interactive(String command) {
@@ -657,7 +682,7 @@ public static class Console {
 
     var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
     env["workingDir"] = home.FullName;
-    return cmd(command, home);
+    return cmd(command, home, false);
   }
 
   public static ExitCode ui(String command) {

@@ -41,12 +41,22 @@ public class Kep : Git {
     if (iof == -1) return false;
     s = s.Substring(iof + "/test/".Length);
     // test/files/run will fail, but test/files/run/blah will pass
-    return s.Where(c => c == '/').Count() >= 2;
+    return s.Where(c => c == '/').Count() > 1;
+  } }
+
+  public virtual bool inTestRoot { get {
+    if (file != null && file.FullName.Replace("\\", "/").Contains("/test/")) return true;
+
+    var s = Path.GetFullPath(dir.FullName).Replace("\\", "/");
+    var iof = s.IndexOf("/test/");
+    if (iof == -1) return false;
+    s = s.Substring(iof + "/test/".Length);
+    return s.Where(c => c == '/').Count() == 1;
   } }
 
   [Action]
   public virtual ExitCode clean() {
-    if (inPlayground || inTest) {
+    if (inPlayground || inTest || inTestRoot) {
       dir.GetDirectories("*.obj").ToList().ForEach(dir1 => dir1.Delete());
       dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
       dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
