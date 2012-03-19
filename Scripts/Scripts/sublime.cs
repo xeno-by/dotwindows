@@ -92,6 +92,12 @@ public class App {
 
         if (file0.Exists || dir0.Exists || args[0].Contains(".")) {
           // don't do any postprocessing of args => open in current instance of sublime
+          // upd. the hack below is needed because "sublime file_name" is currently broken!!
+          var sublimeNotYetOpen = Process.GetProcesses().Where(process => process.ProcessName != null && process.ProcessName.EndsWith("sublime_text")).Count() == 0;
+          if (sublimeNotYetOpen) {
+            var project = new FileInfo(projects + "\\kep.sublime-project");
+            args = new []{"--project", "\"" + project.FullName + "\"", args[0]};
+          }
         } else {
           var project = new FileInfo(projects + "\\" + args[0] + ".sublime-project");
           if (!project.Exists) {
