@@ -103,6 +103,7 @@ public class App {
             if (!env.ContainsKey("action")) env["action"] = action;
             if (!env.ContainsKey("target")) env["target"] = Config.target;
             if (!env.ContainsKey("args")) env["args"] = Config.args.ToString();
+            if (!env.ContainsKey("root")) env["root"] = ((Prj)conn).root == null ? null : ((Prj)conn).root.ToString();
             if (!env.ContainsKey("meaningful")) {
               env["meaningful"] = (exitCode ? 0 : 1).ToString();
               if (action == "run" || action == "repl" || action == "console") env["meaningful"] = "1";
