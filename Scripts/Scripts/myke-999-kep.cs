@@ -63,7 +63,7 @@ public class Kep : Git {
       dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
       return 0;
     } else {
-      //return Console.batch("ant clean -buildfile build.xml", home: root);
+      //return Console.batch("ant all.clean -buildfile build.xml", home: root);
       println("error: clean for kepler is disabled to prevent occasional loss of work");
       return -1;
     }
@@ -75,7 +75,7 @@ public class Kep : Git {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.rebuild();
     } else {
-      return Console.batch("ant clean " + profile + " -buildfile build.xml", home: root);
+      return Console.batch("ant all.clean " + profile + " -buildfile build.xml", home: root);
     }
   }
 
@@ -179,6 +179,14 @@ public class Kep : Git {
 
     var partest = @"%SCRIPTS_HOME%\partest.exe";
     return Console.batch("\"\"" + partest + "\"\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
+  }
+
+  [Action]
+  public ExitCode runAllTests() {
+    var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
+    status = status && Console.batch("ant build -buildfile build.xml", home: root);
+    status = status && Console.batch("ant test", home: root);
+    return status;
   }
 
   public override List<String> calculateTestSuiteTests(String profile) {
