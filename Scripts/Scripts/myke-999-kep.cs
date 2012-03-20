@@ -184,15 +184,14 @@ public class Kep : Git {
 
   [Action]
   public ExitCode runAllTests() {
-//    var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
-//    status = status && Console.batch("ant build -buildfile build.xml", home: root);
-//    if (status) {
+    var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
+    status = status && Console.batch("ant build -buildfile build.xml", home: root);
+    if (status) {
       var tests = calculateTestSuiteTests("all").Select(test => test.Substring((project + "\\test\\").Length)).ToList();
       traceln("[myke] testing: {0}", String.Join(" ", tests.ToArray()));
-      return 0;
-//      status = Console.batch("ant test", home: root);
-//    }
-//    return status;
+      status = Console.batch("ant test", home: root);
+    }
+    return status;
   }
 
   public override List<String> calculateTestSuiteTests(String profile) {

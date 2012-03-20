@@ -1,0 +1,5 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\ShiftF4]
+"Sequence"="$If (!APanel.Plugin)\n  %Name=prompt(\"Editor\", \"&Open/create file: \", 0x30, APanel.Current);\n  $If (%Name != \"\")\n    %Cmd = CmdLine.Value;\n    Esc\n\n    $Text \"edit:\\\"\"\n    $Text %Name\n    $Text \"\\\"\"\n    Enter\n\n    F12\n    %Editor = menu.getvalue();\n    0\n    $Text %Cmd\n    F12\n    menu.select(%Editor)\n    Enter\n  $End\n$Else\n  $If (APanel.Prefix == \"tmp\")\n    %Name=prompt(\"Editor\", \"&Open/create file: \", 0x30, APanel.Current);\n    $If (%Name != \"\")\n      %Cmd = CmdLine.Value;\n      Esc\n\n      $Text \"edit:\\\"\"\n      $Text %Name\n      $Text \"\\\"\"\n      Enter\n\n      F12\n      %Editor = menu.getvalue();\n      0\n      $Text %Cmd\n      F12\n      menu.select(%Editor)\n      Enter\n    $End\n  $Else\n    $AKey\n  $End\n$End"
+"DisableOutput"=dword:00000001

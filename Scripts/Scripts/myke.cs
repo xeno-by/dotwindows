@@ -1205,6 +1205,7 @@ public static class Connectors {
   }
 
   public static bool canTrace(this MethodInfo action) {
+    if (action == null) return false;
     var attrs = action.GetCustomAttributes(typeof(DontTraceAttribute), true).Cast<DontTraceAttribute>().ToList();
     return attrs.Count() == 0;
   }

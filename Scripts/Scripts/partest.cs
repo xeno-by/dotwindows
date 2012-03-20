@@ -34,7 +34,7 @@ public class App {
     var opts = new List<String>();
     opts.Add("-Xmx1024M");
     opts.Add("-Xms64M");
-    opts.Add("-Dscala.home=\"%PROJECTS%/Kepler\"");
+    opts.Add("-Dscala.home=\"%PROJECTS%/Kepler/test\"");
     opts.Add("-Dpartest.javacmd=\"java\"");
     opts.Add("-Dpartest.java_options=\"-Xmx1024M -Xms64M\"");
     opts.Add("-Dpartest.scalac_options=\"-deprecation\"");
