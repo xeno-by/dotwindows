@@ -1454,9 +1454,9 @@ public abstract class Prj {
     if (!setTestSuite(new Arguments(new List<String>{suite}))) return -1;
 
     if (suite == "failed") {
-      arguments = new Arguments(new List<String>{"failed"});
+      arguments = new Arguments(new List<String>{"failed", "failed"});
     } else if (suite == "succeeded") {
-      arguments = new Arguments(new List<String>{"succeeded"});
+      arguments = new Arguments(new List<String>{"succeeded", "succeeded"});
     } else {
       if (dotTest.Exists) {
         print("suite " + suite + " already exists. overwrite? ");
@@ -1629,13 +1629,13 @@ public abstract class Prj {
           dir.GetFiles(wildcard, flags).ToList().ForEach(fi => tests.Add(Path.GetFullPath(fi.FullName)));
           dir.GetDirectories(wildcard, flags).ToList().ForEach(di => tests.Add(Path.GetFullPath(di.FullName)));
         }
-      } else if (wildcard == "refresh") {
+      } else if (wildcard == relativeTo + "\\refresh") {
         var calculated = calculateTestSuiteTests(profile);
         if (calculated != null) tests.AddRange(calculated);
-      } else if (wildcard == "failed") {
+      } else if (wildcard == relativeTo + "\\failed") {
         var failed = getTestSuiteFailedTests(profile);
         if (failed.Count() != 1 || failed[0] != "not supported") tests.AddRange(failed);
-      } else if (wildcard == "succeeded") {
+      } else if (wildcard == relativeTo + "\\succeeded") {
         var succeeded = getTestSuiteSucceededTests(profile);
         if (succeeded.Count() != 1 || succeeded[0] != "not supported") tests.AddRange(succeeded);
       } else {
