@@ -184,14 +184,15 @@ public class Kep : Git {
 
   [Action]
   public ExitCode runAllTests() {
-    var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
-    status = status && Console.batch("ant build -buildfile build.xml", home: root);
-    if (status) {
+//    var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
+//    status = status && Console.batch("ant build -buildfile build.xml", home: root);
+//    if (status) {
       var tests = calculateTestSuiteTests("all").Select(test => test.Substring((project + "\\test\\").Length)).ToList();
       traceln("[myke] testing: {0}", String.Join(" ", tests.ToArray()));
-      status = Console.batch("ant test", home: root);
-    }
-    return status;
+      return 0;
+//      status = Console.batch("ant test", home: root);
+//    }
+//    return status;
   }
 
   public override List<String> calculateTestSuiteTests(String profile) {
@@ -220,8 +221,9 @@ public class Kep : Git {
     var ktr = new DirectoryInfo(root + "\\test\\files\\run");
     var ktp = new DirectoryInfo(root + "\\test\\files\\pos");
     var ktn = new DirectoryInfo(root + "\\test\\files\\neg");
-    var ktdirs = new []{ktr, ktp, ktn}.ToList();
-    return ktdirs.SelectMany(ktdir => ktdir.GetFiles("*.scala", SearchOption.AllDirectories).Select(f => {
+    var ktj = new DirectoryInfo(root + "\\test\\files\\jvm");
+    var ktdirs = new []{ktr, ktp, ktn, ktj}.ToList();
+    return ktdirs.SelectMany(ktdir => ktdir.GetFiles("*.scala", SearchOption.AllDirectories).Concat(ktdir.GetFiles("*.java", SearchOption.AllDirectories)).Select(f => {
       var fullName = f.FullName;
       var prefix = ktdir.FullName;
       if (!prefix.EndsWith("\\")) prefix += "\\";
@@ -273,7 +275,11 @@ public class Kep : Git {
           return m.Success ? m.Result("${filename}") : null;
         }).Where(fragment => fragment != null).Distinct().ToList();
         fragments.ForEach(fragment => {
-          if (!fragment.Contains("\\scalap\\")) {
+          var neg = fragment.Contains("\\scalap\\");
+          neg = neg || fragment.Contains("\\scalacheck\\");
+          neg = neg || fragment.Contains("\\buildmanager\\");
+          neg = neg || fragment.Contains("\\res\\");
+          if (!neg) {
             var matches = tests.Where(test => test.EndsWith(fragment)).ToList();
             if (matches.Count() != 1) result.Add(fragment);
             else {
