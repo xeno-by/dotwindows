@@ -37,8 +37,7 @@ public class App {
     } finally {
       Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeStatus", Environment.ExitCode.ToString());
       Func<String, String> capitalize = s => String.IsNullOrEmpty(s) ? s : Char.ToUpper(s[0]) + s.Substring(1);
-      var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
-      env.Keys.ToList().ForEach(key => Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%Myke" + capitalize(key), env[key]));
+      Config.env.Keys.ToList().ForEach(key => Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%Myke" + capitalize(key), Config.env[key]));
     }
 
     return Environment.ExitCode;
@@ -71,7 +70,7 @@ public class App {
           Console.print("* {0}... ", t_conn.name());
         }
 
-        var conn = t_conn.instantiate();
+        var conn = (Prj)t_conn.instantiate();
         var accepts = conn != null && conn.accept();
         if (Config.verbose) {
           if (accepts) Console.println("[A]");
@@ -79,6 +78,13 @@ public class App {
         }
 
         if (accepts) {
+          Config.conn = conn;
+
+          var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
+          if (!traceDir.Exists) traceDir.Create();
+          var fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + conn.name() + "-" + Config.action + ".log";
+          Config.env["traceFile"] = fileName;
+
           var action = Config.action;
           if (Config.verbose) {
             Console.println();
@@ -96,14 +102,15 @@ public class App {
 
           ExitCode exitCode = -1;
           try {
+            Config.conn_action = conn.GetType().actions()[action];
             exitCode = (ExitCode)actions[action]();
             return exitCode;
           } finally {
-            var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
+            var env = Config.env;
             if (!env.ContainsKey("action")) env["action"] = action;
             if (!env.ContainsKey("target")) env["target"] = Config.target;
             if (!env.ContainsKey("args")) env["args"] = Config.args.ToString();
-            if (!env.ContainsKey("root")) env["root"] = ((Prj)conn).root == null ? null : ((Prj)conn).root.ToString();
+            if (!env.ContainsKey("root")) env["root"] = conn.root == null ? null : conn.root.ToString();
             if (!env.ContainsKey("meaningful")) {
               env["meaningful"] = (exitCode ? 0 : 1).ToString();
               if (action == "run" || action == "repl" || action == "console") env["meaningful"] = "1";
@@ -184,31 +191,75 @@ public class ExitCode {
 
 public static class Console {
   public static void print(String format, params Object[] objs) {
+    trace(format, objs);
     System.Console.Write(String.Format(format, objs));
   }
 
   public static void print(String obj) {
+    trace(obj);
     System.Console.Write(obj);
   }
 
   public static void print(Object obj) {
+    trace(obj);
     System.Console.Write(obj);
   }
 
   public static void println(String format, params Object[] objs) {
+    traceln(format, objs);
     System.Console.WriteLine(String.Format(format, objs));
   }
 
   public static void println(String obj) {
+    traceln(obj);
     System.Console.WriteLine(obj);
   }
 
   public static void println(Object obj) {
+    traceln(obj);
     System.Console.WriteLine(obj);
   }
 
   public static void println() {
+    traceln();
     System.Console.WriteLine();
+  }
+
+  public static bool firstTrace = true;
+  public static void internalTrace(String msg) {
+    if (firstTrace) { firstTrace = false; traceln("myke {0} {1} {2}", Config.action, Config.originalTarget, Config.args); }
+    if (Config.conn_action.canTrace()) File.AppendAllText(Config.env["traceFile"], msg);
+  }
+
+  public static void trace(String format, params Object[] objs) {
+    internalTrace(String.Format(format, objs));
+  }
+
+  public static void trace(String obj) {
+    internalTrace(obj);
+  }
+
+  public static void trace(Object obj) {
+    internalTrace(obj == null ? "" : obj.ToString());
+  }
+
+  public static void traceln(String format, params Object[] objs) {
+    trace(format, objs);
+    trace(Environment.NewLine);
+  }
+
+  public static void traceln(String obj) {
+    trace(obj);
+    trace(Environment.NewLine);
+  }
+
+  public static void traceln(Object obj) {
+    trace(obj);
+    trace(Environment.NewLine);
+  }
+
+  public static void traceln() {
+    trace(Environment.NewLine);
   }
 
   public class Point {
@@ -519,26 +570,12 @@ public static class Console {
       var p = new Process();
       p.StartInfo = psi;
 
+      traceln("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
       if (trace) {
-        var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
-        var fileName = env.ContainsKey("traceFile") ? env["traceFile"] : null;
-        if (fileName == null) {
-          var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
-          if (!traceDir.Exists) traceDir.Create();
-          fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log";
-          env["traceFile"] = fileName;
-          var lines = new List<String>();
-          lines.Add(String.Format("myke {0} {1} {2}", Config.action, Config.originalTarget, Config.args));
-          lines.Add(String.Format("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory));
-          lines.Add(String.Empty);
-          File.WriteAllLines(fileName, lines.ToArray());
-        }
-
         psi.RedirectStandardOutput = true;
-        p.OutputDataReceived += (sender, args) => { if (args.Data != null) {
-          println(args.Data);
-          File.AppendAllText(fileName, args.Data + Environment.NewLine);
-        }; };
+        p.OutputDataReceived += (sender, args) => { if (args.Data != null) println(args.Data); };
+      } else {
+        traceln("<interactive session, not traced>");
       }
 
       if (p.Start()) {
@@ -618,6 +655,11 @@ public static class Console {
       var p = new Process();
       p.StartInfo = psi;
 
+      if (!Console.firstTrace) {
+        traceln("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
+        traceln("<ui session, not traced>");
+      }
+
       if (p.Start()) {
         return 0;
       } else {
@@ -641,8 +683,7 @@ public static class Console {
       if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
     }
 
-    var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
-    env["workingDir"] = home.FullName;
+    Config.env["workingDir"] = home.FullName;
     return internalEval(command, home);
   }
 
@@ -661,8 +702,7 @@ public static class Console {
       if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
     }
 
-    var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
-    env["workingDir"] = home.FullName;
+    Config.env["workingDir"] = home.FullName;
     return cmd(command, home, true);
   }
 
@@ -681,8 +721,7 @@ public static class Console {
       if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
     }
 
-    var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
-    env["workingDir"] = home.FullName;
+    Config.env["workingDir"] = home.FullName;
     return cmd(command, home, false);
   }
 
@@ -701,8 +740,7 @@ public static class Console {
       if (File.Exists(Config.target)) home = new FileInfo(Config.target).Directory;
     }
 
-    var env = (AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>) ?? new Dictionary<String, String>();
-    env["workingDir"] = home.FullName;
+    Config.env["workingDir"] = home.FullName;
     return shellex(command, home);
   }
 }
@@ -933,6 +971,9 @@ public static class Config {
   public static String originalTarget;
   public static String target;
   public static Arguments args;
+  public static Prj conn;
+  public static MethodInfo conn_action;
+  public static Dictionary<String, String> env;
 
   public static ExitCode parse(String[] args) {
     var flags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
@@ -966,6 +1007,10 @@ public static class Config {
     Config.originalTarget = Path.GetFullPath(target);
     Config.target = Path.GetFullPath(target);
     Config.args = new Arguments(args.ToList());
+
+    // conn will be set elsewhere
+    Config.conn = null;
+    Config.env = new Dictionary<String, String>();
 
     return 0;
   }
@@ -1037,6 +1082,9 @@ public class ActionAttribute : Attribute {
 }
 
 public class DefaultAttribute : Attribute {
+}
+
+public class DontTraceAttribute : Attribute {
 }
 
 public static class Connectors {
@@ -1154,6 +1202,11 @@ public static class Connectors {
 
   public static ExitCode action(this Object connector, String action) {
     return connector.actions()[action]();
+  }
+
+  public static bool canTrace(this MethodInfo action) {
+    var attrs = action.GetCustomAttributes(typeof(DontTraceAttribute), true).Cast<DontTraceAttribute>().ToList();
+    return attrs.Count() == 0;
   }
 
   private static Object[] bindArgs(this MethodBase method) {
@@ -1286,20 +1339,16 @@ public abstract class Prj {
   public FileInfo file;
   public DirectoryInfo dir;
 
-  public Prj() : this((DirectoryInfo)null) {
-    initEnv();
-  }
+  public Prj() : this((DirectoryInfo)null) {}
 
   public Prj(FileInfo file) {
     this.file = file;
     this.dir = file == null ? null : file.Directory;
-    initEnv();
   }
 
   public Prj(DirectoryInfo dir) {
     this.file = null;
     this.dir = dir ?? (project == null ? null : new DirectoryInfo(project));
-    initEnv();
   }
 
   public virtual String project { get { return null; } }
@@ -1354,17 +1403,48 @@ public abstract class Prj {
     return 0;
   }
 
+  protected static ExitCode trace(String format, params Object[] objs) {
+    Console.trace(format, objs);
+    return 0;
+  }
+
+  protected static ExitCode trace(String obj) {
+    Console.trace(obj);
+    return 0;
+  }
+
+  protected static ExitCode trace(Object obj) {
+    Console.trace(obj);
+    return 0;
+  }
+
+  protected static ExitCode traceln(String format, params Object[] objs) {
+    Console.traceln(format, objs);
+    return 0;
+  }
+
+  protected static ExitCode traceln(String obj) {
+    Console.traceln(obj);
+    return 0;
+  }
+
+  protected static ExitCode traceln(Object obj) {
+    Console.traceln(obj);
+    return 0;
+  }
+
+  protected static ExitCode traceln() {
+    Console.traceln();
+    return 0;
+  }
+
   protected static String readln(String prompt = null, String history = null) {
     return Console.readln(prompt, history);
   }
 
-  private Dictionary<String, String> _env;
-  public Dictionary<String, String> env { get { return _env; } }
-  private void initEnv() {
-    var currentEnv = AppDomain.CurrentDomain.GetData("%%MykeEnv") as Dictionary<String, String>;
-    _env = currentEnv = currentEnv ?? new Dictionary<String, String>();
-    AppDomain.CurrentDomain.SetData("%%MykeEnv", _env);
-  }
+  public static Dictionary<String, String> env { get {
+    return Config.env;
+  } }
 
   [Action]
   public virtual ExitCode makeTestSuite(Arguments arguments) {
@@ -1420,7 +1500,7 @@ public abstract class Prj {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode getTestSuite() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1436,7 +1516,7 @@ public abstract class Prj {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode setTestSuite(Arguments arguments) {
     var suite = arguments.Last();
     var dotProfile = new FileInfo(root + "\\.profile");
@@ -1444,7 +1524,7 @@ public abstract class Prj {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode listTestSuiteAllTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1457,7 +1537,7 @@ public abstract class Prj {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode listTestSuiteFailedTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1470,7 +1550,7 @@ public abstract class Prj {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode listTestSuiteSucceededTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1664,7 +1744,7 @@ public abstract class Git : Prj {
     }
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode commit() {
     if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
       var status = Console.batch("save-settings.bat");
@@ -1675,36 +1755,36 @@ public abstract class Git : Prj {
     return Console.ui(String.Format("tgit commit \"{0}\"", repo.GetRealPath().FullName));
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode logall() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", repo.GetRealPath().FullName));
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode logthis() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode blame() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit blame \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode log() {
     return logall();
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
     return Console.interactive("git push", home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
     return Console.interactive("git pull", home: repo.GetRealPath());

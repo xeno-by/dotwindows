@@ -177,6 +177,7 @@ public class Kep : Git {
       return test;
     }).Distinct().ToList();
 
+    traceln("[myke] testing: {0}", String.Join(" ", tests.ToArray()));
     var partest = @"%SCRIPTS_HOME%\partest.exe";
     return Console.batch("\"\"" + partest + "\"\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
   }
@@ -185,7 +186,11 @@ public class Kep : Git {
   public ExitCode runAllTests() {
     var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
     status = status && Console.batch("ant build -buildfile build.xml", home: root);
-    status = status && Console.batch("ant test", home: root);
+    if (status) {
+      var tests = calculateTestSuiteTests("all").Select(test => test.Substring((project + "\\test\\").Length)).ToList();
+      traceln("[myke] testing: {0}", String.Join(" ", tests.ToArray()));
+      status = Console.batch("ant test", home: root);
+    }
     return status;
   }
 
@@ -244,30 +249,43 @@ public class Kep : Git {
     var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
     if (traceDir.Exists) {
       var logs = traceDir.GetFiles("*.log").OrderByDescending(fi => fi.LastWriteTime).ToList();
-      var relevant = logs.Where(log => File.ReadAllText(log.FullName).StartsWith("myke run-test " + project, true, CultureInfo.CurrentCulture)).FirstOrDefault();
+      var tests = null as List<String>;
+      var relevant = logs.Where(log => {
+        var lines = File.ReadAllLines(log.FullName);
+        var shebang = lines.FirstOrDefault();
+        if (shebang != null) {
+          var psiPrefix = "[myke] testing: ";
+          var psi = lines.FirstOrDefault(line => line.StartsWith(psiPrefix));
+          if (psi != null) {
+            tests = psi.Substring(psiPrefix.Length).Split(new[]{" "}, StringSplitOptions.None).Select(shortName => project + "\\test\\" + shortName).ToList();
+            return true;
+          }
+        }
+        return false;
+      }).FirstOrDefault();
       if (relevant != null) {
         println(relevant.FullName);
-        var s_all = File.ReadAllLines(relevant.FullName)[1].Substring(71);
-        s_all = s_all.Substring(0, s_all.Length - 32);
-        var all = s_all.Split(new[]{" "}, StringSplitOptions.None).Select(shortName => project + "\\test\\" + shortName).ToList();
         var fragments = File.ReadAllLines(relevant.FullName).Select(line => {
-          var rxSucceeded = @"^testing: \[\.\.\.\](?<filename>.*?)\s*\[  OK  \]$";
-          var rxFailed = @"^testing: \[\.\.\.\](?<filename>.*?)\s*\[FAILED\]$";
+          var rxSucceeded = @"testing: \[\.\.\.\](?<filename>.*?)\s*\[  OK  \]$";
+          var rxFailed = @"testing: \[\.\.\.\](?<filename>.*?)\s*\[FAILED\]$";
           var rx = kind == "failed" ? rxFailed : rxSucceeded;
           var m = Regex.Match(line, rx);
           return m.Success ? m.Result("${filename}") : null;
         }).Where(fragment => fragment != null).Distinct().ToList();
         fragments.ForEach(fragment => {
-          var matches = all.Where(test => test.EndsWith(fragment)).ToList();
-          if (matches.Count() != 1) result.Add(fragment);
-          else {
-            var match = matches[0];
-            var flavor = match.Substring((project + "\\test\\files\\").Length);
-            var iof = flavor.IndexOf("\\");
-            flavor = flavor.Substring(0, iof);
-            result.Add(match);
-            var filename = Path.GetDirectoryName(match) + "\\" + Path.GetFileNameWithoutExtension(match);
-            result.Add(filename + "-" + flavor + ".log");
+          if (!fragment.Contains("\\scalap\\")) {
+            var matches = tests.Where(test => test.EndsWith(fragment)).ToList();
+            if (matches.Count() != 1) result.Add(fragment);
+            else {
+              var match = matches[0];
+              var flavor = match.Substring((project + "\\test\\files\\").Length);
+              var iof = flavor.IndexOf("\\");
+              flavor = flavor.Substring(0, iof);
+              result.Add(match);
+              var filename = Path.GetDirectoryName(match) + "\\" + Path.GetFileNameWithoutExtension(match);
+              result.Add(filename + "-" + flavor + ".log");
+              result.Add(filename + ".check");
+            }
           }
         });
       }
