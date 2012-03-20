@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 
 public class App {
@@ -150,6 +152,16 @@ public class App {
     }
 
     Process.Start(sublime, String.Join(" ", args));
+    Thread.Sleep(50);
+    ActivateSublimeWindow();
+  }
+
+  [DllImportAttribute("User32.dll")]
+  private static extern IntPtr SetForegroundWindow(IntPtr hWnd);
+
+  public static void ActivateSublimeWindow() {
+    var sublime = Process.GetProcesses().Where(process => process.ProcessName != null && process.ProcessName.EndsWith("sublime_text")).FirstOrDefault();
+    if (sublime != null) SetForegroundWindow(sublime.MainWindowHandle);
   }
 }
 

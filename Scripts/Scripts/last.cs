@@ -11,21 +11,25 @@ using System.Windows.Forms;
 public class App {
   [STAThread]
   public static void Main(String[] args) {
-    var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
-    if (traceDir.Exists) {
-      var logs = traceDir.GetFiles("*.log").OrderByDescending(fi => fi.LastWriteTime).ToList();
-      if (logs.Count() > 0) {
-        var config = new FileInfo(traceDir + "\\" + ".config");
-        if (config.Exists) config.Delete();
+    try {
+      var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
+      if (traceDir.Exists) {
+        var logs = traceDir.GetFiles("*.log").OrderByDescending(fi => fi.LastWriteTime).ToList();
+        if (logs.Count() > 0) {
+          var config = new FileInfo(traceDir + "\\" + ".config");
+          if (config.Exists) config.Delete();
 
-        var last = logs.Count() > 0 ? logs[0].FullName : null;
-        config.WriteAllText(last ?? "");
+          var last = logs.Count() > 0 ? logs[0].FullName : null;
+          config.WriteAllText(last ?? "");
 
-        if (last != null) {
-          var sublime = @"C:\Program Files (x86)\scripts\sublime.exe";
-          Process.Start(sublime, last);
+          if (last != null) {
+            var sublime = @"C:\Program Files (x86)\scripts\sublime.exe";
+            Process.Start(sublime, last);
+          }
         }
       }
+    } catch (Exception ex) {
+      MessageBox.Show(ex.ToString());
     }
   }
 }

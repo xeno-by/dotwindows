@@ -1,4 +1,4 @@
-// build this with "csc /t:winexe prev.cs"
+// build this with "csc /t:winexe next.cs"
 
 using System;
 using System.Collections.Generic;
@@ -21,14 +21,14 @@ public class App {
           if (prevprev != null && !prevprev.Exists) prevprev = null;
           if (prevprev != null && config.LastWriteTime < logs[0].LastWriteTime) prevprev = null;
 
-          logs = logs.SkipWhile(log => prevprev != null && log.FullName != prevprev.FullName).ToList();
-          if (prevprev != null) logs = logs.Skip(1).ToList();
-          var prev = logs.Count() > 0 ? logs[0].FullName : null;
-          config.WriteAllText(prev ?? "");
+          logs = logs.TakeWhile(log => prevprev != null && log.FullName != prevprev.FullName).ToList();
+          if (prevprev == null) logs = logs.Take(1).ToList();
+          var next = logs.Count() > 0 ? logs.Last().FullName : null;
+          config.WriteAllText(next ?? "");
 
-          if (prev != null) {
+          if (next != null) {
             var sublime = @"C:\Program Files (x86)\scripts\sublime.exe";
-            Process.Start(sublime, prev);
+            Process.Start(sublime, next);
           } else {
             var last = @"C:\Program Files (x86)\scripts\last.exe";
             Process.Start(last);
