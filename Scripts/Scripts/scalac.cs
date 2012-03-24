@@ -12,7 +12,7 @@ public class App {
   //public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Yshow-trees -uniqid -g:vars";
   //public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Yshow-trees -Yshow-symkinds -g:vars";
   //public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Yshow-trees -g:vars";
-  public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -g:vars";
+  public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Xlog-implicits -g:vars";
 
   public static Dictionary<String, String> profiles = new Dictionary<String, String>();
   static App() {

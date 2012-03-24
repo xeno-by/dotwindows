@@ -17,7 +17,6 @@ using System.Xml.XPath;
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
   public virtual String profile { get { return "fastlocker"; } }
-  //public virtual String profile { get { return "build"; } }
 
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
@@ -79,6 +78,16 @@ public class Kep : Git {
     }
   }
 
+  [Action]
+  public virtual ExitCode rebuildAlt() {
+    if (inPlayground || inTest) {
+      var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
+      return scala.rebuild();
+    } else {
+      return Console.batch("ant all.clean build -buildfile build.xml", home: root);
+    }
+  }
+
   [Default, Action]
   public virtual ExitCode compile() {
     if (inPlayground || inTest) {
@@ -86,6 +95,25 @@ public class Kep : Git {
       return scala.compile();
     } else {
       var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);
+      if (!status) return status;
+
+      var partest = project + @"\build\locker\classes\partest";
+      if (!Directory.Exists(partest)) {
+        var donor = new Donor(new DirectoryInfo(new Donor().project), arguments);
+        return donor.compile();
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  [Action]
+  public virtual ExitCode compileAlt() {
+    if (inPlayground || inTest) {
+      var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
+      return scala.compile();
+    } else {
+      var status = Console.batch("ant build -buildfile build.xml", home: root);
       if (!status) return status;
 
       var partest = project + @"\build\locker\classes\partest";
@@ -184,8 +212,7 @@ public class Kep : Git {
 
   [Action]
   public ExitCode runAllTests() {
-    var status = Console.batch("ant all.clean -buildfile build.xml", home: root);
-    status = status && Console.batch("ant build -buildfile build.xml", home: root);
+    var status = Console.batch("ant build -buildfile build.xml", home: root);
     if (status) {
       var tests = calculateTestSuiteTests("all").Select(test => test.Substring((project + "\\test\\").Length)).ToList();
       traceln("[myke] testing: {0}", String.Join(" ", tests.ToArray()));

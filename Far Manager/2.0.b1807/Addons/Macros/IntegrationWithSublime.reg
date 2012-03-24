@@ -1,0 +1,5 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\CtrlS]
+"Sequence"="%S = CmdLine.Value;\nEsc\n\ns u b l i m e Space\n$If (APanel.Selected)\n  clip(3)\n  CtrlShiftIns\n  %Selection = clip(0);\n  clip(4)\n  %Selection = replace(%Selection, chr(13), chr(32));\n  %Selection = replace(%Selection, chr(10), \"\");\n  $Text %Selection\n$Else\n  CtrlEnter\n$End\nEnter\n\n$Text %S"
+"DisableOutput"=dword:00000001

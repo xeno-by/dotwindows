@@ -289,7 +289,7 @@ public class Scala : Git {
   }
 
   public virtual String inferArguments() {
-    return sources.SelectMany(fi => fi.Exists ? File.ReadAllLines(fi.FullName) : new String[]{}).Any(line => line.Contains("args")) ? null : "";
+    return sources.SelectMany(fi => fi.Exists ? File.ReadAllLines(fi.FullName) : new String[]{}).Any(line => Regex.Match(line, @"\Bargs\B").Success) ? null : "";
   }
 
   [Action]

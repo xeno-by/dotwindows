@@ -78,6 +78,10 @@ REGEDIT4
 "Sequence"="F12\n%PreviousPanel = menu.getvalue();\n0\nEsc p r e v Enter\nF12\nmenu.select(%PreviousPanel)\nEnter\n"
 "DisableOutput"=dword:00000001
 
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\AltShiftB]
+"DisableOutput"=dword:00000001
+"Sequence"="CtrlS\n\nF12\n%Value = menu.getvalue();\n%Iof = index(\".\", %Value);\n%%MykeScreen = atoi(substr(%Value, 0, %Iof - 1));\n%%MykeTarget = substr(%Value, %Iof + 17);\n%Selection = fsplit(%%MykeTarget, 0x0C);\n$If (index(%Selection, \" \") != -1)\n  %Selection = \"\\\"\" + %Selection + \"\\\"\";\n$End\n\nmenu.select(\"0. \", 1, 0);\nEnter\n\n%%MykePanels = APanel.Visible || PPanel.Visible;\n$If (%%MykePanels) CtrlO $End\n$If (!CmdLine.Empty) Esc $End\n\n%Command = \"myke compile-alt \";\n$Text %Command\n$Text %Selection\nEnter\n\n%Done = 0;\n$While (!%Done && mload(\"%%MykeContinuation\") && %%MykeContinuation != \"\")\n  %Command = %%MykeContinuation;\n  %%MykeContinuation = \"\";\n  msave(\"%%MykeContinuation\");\n\n  $Text %Command\n  Enter\n\n  $If (mload(\"%%MykeStatus\") && %%MykeStatus != 0)\n    %Done = 1;\n  $End\n$End\n\n$If (mload(\"%%MykeStatus\") && %%MykeStatus == 0)\n  $If (%%MykePanels) CtrlO $End\n\n  F12\n  menu.select(%%MykeScreen + \". \", 1, 0);\n  Enter\n\n  %%MykeScreen = \"\";\n  %%MykeTarget = \"\";\n  %%MykePanels = \"\";\n$End"
+
 [HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell]
 
 [HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\CtrlShiftO]
@@ -163,3 +167,7 @@ REGEDIT4
 [HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\CtrlAltRight]
 "Sequence"="Esc p r e v Enter"
 "DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltShiftB]
+"DisableOutput"=dword:00000001
+"Sequence"="%NeedFlash = !APanel.Visible;\n$If (%NeedFlash) CtrlO $End\nclip(3)\nCtrlShiftIns\n%Selection = clip(0);\nclip(4)\n%Selection = replace(%Selection, chr(13), chr(32));\n%Selection = replace(%Selection, chr(10), \"\");\n$If (!APanel.selected)\n  %Selection = \".\";\n$End\n$If (%NeedFlash) CtrlO $End\n\n%%MykePanels = APanel.Visible;\n$If (%%MykePanels) CtrlO $End\n$If (!CmdLine.Empty) Esc $End\n\n%Command = \"myke compile-alt \";\n$Text %Command\n$Text %Selection\nEnter\n\n%Done = 0;\n$While (!%Done && mload(\"%%MykeContinuation\") && %%MykeContinuation != \"\")\n  %Command = %%MykeContinuation;\n  %%MykeContinuation = \"\";\n  msave(\"%%MykeContinuation\");\n\n  $Text %Command\n  Enter\n\n  $If (mload(\"%%MykeStatus\") && %%MykeStatus != 0)\n    %Done = 1;\n  $End\n$End\n\n$If (mload(\"%%MykeStatus\") && %%MykeStatus == 0)\n  $If (%%MykePanels) CtrlO $End\n  %%MykePanels = \"\";\n$End"

@@ -572,14 +572,17 @@ public static class Console {
 
       traceln("psi: filename = {0}, arguments = {1}, home = {2}", psi.FileName, psi.Arguments, psi.WorkingDirectory);
       if (trace) {
+        var lck = new Object();
         psi.RedirectStandardOutput = true;
-        p.OutputDataReceived += (sender, args) => { if (args.Data != null) println(args.Data); };
+        psi.RedirectStandardError = true;
+        p.OutputDataReceived += (sender, args) => { lock(lck) { if (args.Data != null) println(args.Data); }; };
+        p.ErrorDataReceived += (sender, args) => { lock(lck) { if (args.Data != null) println(args.Data); }; };
       } else {
         traceln("<interactive session, not traced>");
       }
 
       if (p.Start()) {
-        if (trace) p.BeginOutputReadLine();
+        if (trace) { p.BeginOutputReadLine(); p.BeginErrorReadLine(); }
         p.WaitForExit();
         return p.ExitCode;
       } else {
