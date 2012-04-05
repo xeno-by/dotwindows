@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 public class App {
   public static String classpath = @"%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library";
   public static String javaopts = "-Dscala.usejavacp=true";
-  public static String scalaopts = "-deprecation -Xexperimental -Xmacros -Yreify-copypaste -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Xlog-implicits -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+  public static String scalaopts = "-deprecation -unchecked -Xexperimental -Xmacros -Yreify-debug -Ymacro-debug -Ymacro-copypaste -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
 
   public static Dictionary<String, String> profiles = new Dictionary<String, String>();
   static App() {

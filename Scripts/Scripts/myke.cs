@@ -1674,7 +1674,12 @@ public abstract class Prj {
     var existingTests = dotTest.Exists ? File.ReadAllLines(dotTest.FullName).ToList() : new List<String>();
     println("found " + existingTests.Count + " existing " + profile + " tests");
 
-    var removedTests = wildcards.SelectMany(wildcard => existingTests.Where(existingTest => Operators.LikeString(existingTest, "*" + wildcard + "*", CompareMethod.Text)));
+    var removedTests = wildcards.SelectMany(wildcard => {
+      wildcard = wildcard.Trim();
+      if (!wildcard.StartsWith("*")) wildcard = "*" + wildcard;
+      if (!wildcard.EndsWith("*")) wildcard = wildcard + "*";
+      return existingTests.Where(existingTest => Operators.LikeString(existingTest, wildcard, CompareMethod.Text));
+    });
     if (removedTests.Count() == 0) println("none of the existing tests are to be removed");
     else if (removedTests.Count() == existingTests.Count()) println("all of the existing tests are to be removed");
     else println(removedTests.Count() + " of the existing tests are to be removed: " + String.Join(", ", removedTests.ToArray()));

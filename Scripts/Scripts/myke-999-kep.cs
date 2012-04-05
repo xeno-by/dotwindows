@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using ZetaLongPaths;
 
 [Connector(name = "kep", priority = 999, description =
   "Wraps the development workflow of project Kepler.")]
@@ -57,7 +58,7 @@ public class Kep : Git {
   [Action]
   public virtual ExitCode clean() {
     if (inPlayground || inTest || inTestRoot) {
-      dir.GetDirectories("*.obj").ToList().ForEach(dir1 => dir1.Delete());
+      dir.GetDirectories("*.obj").ToList().ForEach(dir1 => dir1.Delete(true));
       dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
       dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
       return 0;
@@ -79,13 +80,22 @@ public class Kep : Git {
   }
 
   [Action]
+  public virtual ExitCode rebuildLibrary() {
+    return Console.batch("ant all.clean " + profile + " -buildfile build.xml", home: root);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildCompiler() {
+    var compilerClasses = new DirectoryInfo(project + "\\build\\locker\\classes\\compiler");
+    if (compilerClasses.Exists) ZlpIOHelper.DeleteDirectory(compilerClasses.FullName, true);
+    var compilerToken = new FileInfo(project + "\\build\\locker\\compiler.complete");
+    if (compilerToken.Exists) compilerToken.Delete();
+    return Console.batch("ant " + profile + " -buildfile build.xml", home: root);
+  }
+
+  [Action]
   public virtual ExitCode rebuildAlt() {
-    if (inPlayground || inTest) {
-      var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
-      return scala.rebuild();
-    } else {
-      return Console.batch("ant all.clean build -buildfile build.xml", home: root);
-    }
+    return Console.batch("ant all.clean build -buildfile build.xml", home: root);
   }
 
   [Default, Action]
@@ -176,18 +186,19 @@ public class Kep : Git {
       var files = new List<FileSystemInfo>{(FileSystemInfo)file ?? dir}.Concat(arguments.Select(argument => new DirectoryInfo(argument).Exists ? (FileSystemInfo)new DirectoryInfo(argument) : new FileInfo(argument))).ToList();
       files = files.Where(file1 => file1.Exists).ToList();
       tests = files.Select(f => f.FullName.Substring(prefix.Length)).ToList();
-      if (tests.Count == 0) { println("nothing to test!"); return -1; }
     } else {
       var suite = getCurrentTestSuite();
       if (suite == null) { println("there is no test suite associated with this project"); return -1; }
-      tests = getTestSuiteAllTests(suite);
-      if (tests == null || tests.Count() == 0) { println(suite + " does not have any tests"); return -1; }
+      tests = getTestSuiteAllTests(suite) ?? new List<String>();
       tests.ForEach(test => { if (!test.StartsWith(prefix, true, CultureInfo.CurrentCulture)) throw new Exception("bad test: " + test); });
       tests = tests.Select(test => test.Substring(prefix.Length)).ToList();
     }
 
     tests = tests.Select(test => {
       var full = prefix + test;
+
+      if (full.Contains("nyi") || (Directory.Exists(full) && Directory.GetFiles(full, "*nyi*").Count() > 0))
+        return null;
 
       var suffixes = new []{ ".check", ".flags", "-run.log", "-neg.log", "-pos.log" };
       foreach (var suffix in suffixes) {
@@ -196,15 +207,23 @@ public class Kep : Git {
           if (Directory.Exists(trimmed)) {
             return trimmed.Substring(prefix.Length);
           }
-          if (File.Exists(trimmed + ".scala")) {
+          trimmed += ".scala";
+          if (File.Exists(trimmed)) {
             return trimmed.Substring(prefix.Length);
           }
         }
       }
 
-      return test;
-    }).Distinct().ToList();
+      if (full.EndsWith(".scala")) {
+        return test;
+      } else if (Directory.Exists(full)) {
+        return test;
+      } else {
+        return null;
+      }
+    }).Where(test => test != null).Distinct().ToList();
 
+    if (tests.Count == 0) { println("nothing to test!"); return -1; }
     traceln("[myke] testing: {0}", String.Join(" ", tests.ToArray()));
     var partest = @"%SCRIPTS_HOME%\partest.exe";
     return Console.batch("\"\"" + partest + "\"\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
@@ -295,7 +314,7 @@ public class Kep : Git {
         println(relevant.FullName);
         var fragments = File.ReadAllLines(relevant.FullName).Select(line => {
           var rxSucceeded = @"testing: \[\.\.\.\](?<filename>.*?)\s*\[  OK  \]$";
-          var rxFailed = @"testing: \[\.\.\.\](?<filename>.*?)\s*\[FAILED\]$";
+          var rxFailed = @"(testing: \[\.\.\.\](?<filename>.*?)\s*\[FAILED\]$)|(Possible compiler crash during test of: (?<filename>.*?)$)";
           var rx = kind == "failed" ? rxFailed : rxSucceeded;
           var m = Regex.Match(line, rx);
           return m.Success ? m.Result("${filename}") : null;
