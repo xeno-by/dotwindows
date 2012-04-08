@@ -24,7 +24,7 @@ public class Kep : Git {
     return dir.IsChildOrEquivalentTo(project);
   }
 
-  private Arguments arguments;
+  protected Arguments arguments;
   public Kep() : base() { init(); }
   public Kep(FileInfo file, Arguments arguments) : base(file) { init(); this.arguments = arguments; }
   public Kep(DirectoryInfo dir, Arguments arguments) : base(dir) { init(); this.arguments = arguments; }
@@ -155,22 +155,24 @@ public class Kep : Git {
       //options.Add("-e \"scala.reflect.mirror.reify{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
       //return Console.batch("scala " + String.Join(" ", options.ToArray()));
 
-      var root = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
-      var files = root.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
-      if (files.Count == 0) {
-        println("error: nothing to run");
-        return -1;
-      } else if (files.Count == 1) {
-        var toRun = files[0];
-        println("running {0}", toRun.FullName);
-        var scala = new Scala(toRun, arguments);
-        return scala.run();
-      } else {
-        println("error: command is ambiguous");
-        files.Take(5).ToList().ForEach(file1 => println("    " + file1));
-        if (files.Count > 5) println("    ... " + (files.Count - 5) + " more");
-        return -1;
-      }
+      //var root = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
+      //var files = root.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
+      //if (files.Count == 0) {
+      //  println("error: nothing to run");
+      //  return -1;
+      //} else if (files.Count == 1) {
+      //  var toRun = files[0];
+      //  println("running {0}", toRun.FullName);
+      //  var scala = new Scala(toRun, arguments);
+      //  return scala.run();
+      //} else {
+      //  println("error: command is ambiguous");
+      //  files.Take(5).ToList().ForEach(file1 => println("    " + file1));
+      //  if (files.Count > 5) println("    ... " + (files.Count - 5) + " more");
+      //  return -1;
+      //}
+
+      return Console.batch("partest --debug --verbose files\\pos\\t1693.scala", home: root);
     }
   }
 
@@ -252,7 +254,7 @@ public class Kep : Git {
     } else if (profile == "reify") {
       filter = (fullName, shortName, text0) => {
         var text = text0();
-        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("TypeTag") || text.Contains("GroundTypeTag");
+        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("ClassTag") || text.Contains("TypeTag") || text.Contains("GroundTypeTag");
         var neg = shortName.StartsWith("test\\files\\run\\macro-def-path-dependent");
         return pos && !neg;
       };
@@ -343,5 +345,55 @@ public class Kep : Git {
     }
     result = result.OrderBy(name => name).ToList();
     return result;
+  }
+
+  private ExitCode transplantFile(String from, String to) {
+    from = project + "\\" + from.Replace("/", "\\");
+    to = project + "\\" + to.Replace("/", "\\");
+    print("  * Copying {0} to {1}... ", from, to);
+
+    try {
+      ExitCode status = -1;
+      if (File.Exists(from)) status = CopyFile(from, to);
+      if (status) println("[  OK  ]");
+      return status;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  private static ExitCode CopyFile(string sourceFile, string destFile) {
+    try {
+      File.Copy(sourceFile, destFile, true);
+      return 0;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  [Action]
+  public virtual ExitCode deploy() {
+    var paloLibraryJar = new FileInfo(root + @"\build\palo\lib\scala-library.jar");
+    var paloCompilerJar = new FileInfo(root + @"\build\palo\lib\scala-compiler.jar");
+    var packLibraryJar = new FileInfo(root + @"\build\pack\lib\scala-library.jar");
+    var packCompilerJar = new FileInfo(root + @"\build\pack\lib\scala-compiler.jar");
+    var paloModTime = paloLibraryJar.Exists && paloCompilerJar.Exists ? (paloLibraryJar.LastWriteTime > paloCompilerJar.LastWriteTime ? paloLibraryJar.LastWriteTime : paloCompilerJar.LastWriteTime) : DateTime.MinValue;
+    var packModTime = packLibraryJar.Exists && packCompilerJar.Exists ? (packLibraryJar.LastWriteTime > packCompilerJar.LastWriteTime ? packLibraryJar.LastWriteTime : packCompilerJar.LastWriteTime) : DateTime.MinValue;
+    var source = paloModTime > packModTime ? "build/palo/" : "build/pack/";
+
+    var status = (paloModTime != DateTime.MinValue || packModTime != DateTime.MinValue) ? (ExitCode)0 : (ExitCode)(-1);
+    if (!status) {
+      println("Couldn't find neither pack nor palo to deploy as a starr");
+      return status;
+    }
+
+    println("Deploying starr upon ourselves...");
+    status = status && transplantFile(source + "lib/scala-library.jar", "lib/scala-library.jar");
+    status = status && transplantFile(source + "lib/scala-compiler.jar", "lib/scala-compiler.jar");
+    return status;
   }
 }

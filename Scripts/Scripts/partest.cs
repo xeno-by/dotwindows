@@ -27,6 +27,10 @@ public class App {
     return process.ExitCode;
   }
 
+// it seems that the commented code below is no longer necessary
+// -Xbootclasspath has solved all the problems!
+// the question is: why?! but I have no time to find this out :(
+/*
   public static int RunPartest(String[] args) {
     var classpath = "%PROJECTS%/Kepler/build/locker/classes/compiler;%PROJECTS%/Kepler/build/locker/classes/library;%PROJECTS%/Kepler/build/locker/classes/partest".Expand();
     Environment.SetEnvironmentVariable("CLASSPATH", classpath);
@@ -42,6 +46,28 @@ public class App {
     opts.Add("-Dscala.usejavacp=\"true\"");
     opts.Add("-cp %CLASSPATH%");
     opts.Add("-classpath %CLASSPATH%");
+    opts.Add("scala.tools.partest.nest.NestRunner");
+    //opts.Add("--debug");
+    //opts.Add("--verbose");
+    opts.Add("--classpath %PROJECTS%/Kepler/build/locker/classes");
+    opts.AddRange(args);
+
+    var process = new Process();
+    process.StartInfo.FileName = "java.exe";
+    process.StartInfo.WorkingDirectory = "%PROJECTS%/Kepler/test".Expand();
+    process.StartInfo.Arguments = String.Join(" ", opts.Select(opt => opt.Expand()).ToArray());
+    process.StartInfo.UseShellExecute = false;
+    process.Start();
+    process.WaitForExit();
+    return process.ExitCode;
+  }
+*/
+  public static int RunPartest(String[] args) {
+    var classpath = "%PROJECTS%/Kepler/test/files/codelib/code.jar;%PROJECTS%/Kepler/build/locker/classes/compiler;%PROJECTS%/Kepler/build/locker/classes/library;%PROJECTS%/Kepler/build/locker/classes/partest".Expand();
+    Environment.SetEnvironmentVariable("CLASSPATH", classpath);
+
+    var opts = new List<String>();
+    opts.Add("-Xbootclasspath/a:%CLASSPATH%");
     opts.Add("scala.tools.partest.nest.NestRunner");
     //opts.Add("--debug");
     //opts.Add("--verbose");
