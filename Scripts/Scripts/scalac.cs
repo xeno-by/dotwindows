@@ -8,9 +8,10 @@ using System.Text.RegularExpressions;
 
 public class App {
   public static String classpath = @"%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library";
+  public static String upstreamclasspath = @"%PROJECTS%\ScalaUpstream\lib\fjbg.jar;%PROJECTS%\ScalaUpstream\build\locker\classes\compiler;%PROJECTS%\ScalaUpstream\build\locker\classes\library";
   public static String javaopts = "-Dscala.usejavacp=true";
-  public static String scalaopts = "-deprecation -unchecked -Xexperimental -Xmacros -Ymacro-copypaste -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
-//  public static String scalaopts = "-deprecation -unchecked -Xexperimental -Xmacros -Yreify-debug -Ymacro-copypaste -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+  public static String scalaopts = "-deprecation -unchecked -Xexperimental -Xmacros -Xlog-implicits -Ymacro-copypaste -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+  public static String upstreamscalaopts = "-deprecation -unchecked -Xexperimental -g:vars";
 
   public static Dictionary<String, String> profiles = new Dictionary<String, String>();
   static App() {
@@ -23,7 +24,9 @@ public class App {
     var matches = profiles.ToDictionary(kvp => kvp.Key, kvp => args.Contains("/" + kvp.Key));
     matches = matches.Where(kvp => kvp.Value).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     var reg = args.Contains("/reg") || args.Contains("/register");
-    args = args.Where(arg => arg != "/reg" && arg != "/register" && !args.Contains("/" + arg)).ToArray();
+    var upstream = args.Contains("/upstream");
+    var noupstream = args.Contains("/noupstream");
+    args = args.Where(arg => arg != "/reg" && arg != "/register" && arg != "/upstream" && arg != "/noupstream" && !args.Contains("/" + arg)).ToArray();
     if (matches.Count() > 1) {
       Console.WriteLine(String.Format("error: multiple profiles {0} specified on the command line contradict each other.", String.Join(", ", matches.Keys.ToArray())));
       return -1;
@@ -36,9 +39,15 @@ public class App {
       return 0;
     }
 
-    profile = profile.Replace("$CLASSPATH$", classpath);
-    profile = profile.Replace("$JAVAOPTS$", javaopts);
-    profile = profile.Replace("$SCALAOPTS$", scalaopts);
+    if ((upstream || Environment.CurrentDirectory.Contains(@"%PROJECTS%\ScalaUpstream".Expand())) && !noupstream) {
+      profile = profile.Replace("$CLASSPATH$", upstreamclasspath);
+      profile = profile.Replace("$JAVAOPTS$", javaopts);
+      profile = profile.Replace("$SCALAOPTS$", upstreamscalaopts);
+    } else {
+      profile = profile.Replace("$CLASSPATH$", classpath);
+      profile = profile.Replace("$JAVAOPTS$", javaopts);
+      profile = profile.Replace("$SCALAOPTS$", scalaopts);
+    }
 
     if (args.Contains("-nouniqid")) {
       args = args.Where(arg => arg != "-uniqid" && arg != "-nouniqid").ToArray();
@@ -60,7 +69,6 @@ public class App {
     return p.ExitCode;
   }
 }
-
 
 public static class Env {
   public static String Expand(this String s) {

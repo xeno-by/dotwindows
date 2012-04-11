@@ -17,7 +17,8 @@ using ZetaLongPaths;
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
-  public virtual String profile { get { return "fastlocker"; } }
+  //public virtual String profile { get { return "fastlocker"; } }
+  public virtual String profile { get { return "locker.unlock locker.done"; } }
 
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
@@ -95,7 +96,21 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode rebuildAlt() {
-    return Console.batch("ant all.clean build -buildfile build.xml", home: root);
+    return rebuildAltLibrary();
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltLibrary() {
+    return Console.batch("ant clean build -buildfile build.xml", home: root);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltCompiler() {
+    var compilerClasses = new DirectoryInfo(project + "\\build\\quick\\classes\\compiler");
+    if (compilerClasses.Exists) ZlpIOHelper.DeleteDirectory(compilerClasses.FullName, true);
+    var compilerToken = new FileInfo(project + "\\build\\quick\\compiler.complete");
+    if (compilerToken.Exists) compilerToken.Delete();
+    return Console.batch("ant build -buildfile build.xml", home: root);
   }
 
   [Default, Action]
@@ -155,24 +170,25 @@ public class Kep : Git {
       //options.Add("-e \"scala.reflect.mirror.reify{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
       //return Console.batch("scala " + String.Join(" ", options.ToArray()));
 
-      //var root = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
-      //var files = root.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
-      //if (files.Count == 0) {
-      //  println("error: nothing to run");
-      //  return -1;
-      //} else if (files.Count == 1) {
-      //  var toRun = files[0];
-      //  println("running {0}", toRun.FullName);
-      //  var scala = new Scala(toRun, arguments);
-      //  return scala.run();
-      //} else {
-      //  println("error: command is ambiguous");
-      //  files.Take(5).ToList().ForEach(file1 => println("    " + file1));
-      //  if (files.Count > 5) println("    ... " + (files.Count - 5) + " more");
-      //  return -1;
-      //}
-
-      return Console.batch("partest --debug --verbose files\\pos\\t1693.scala", home: root);
+/*
+      var root = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
+      var files = root.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
+      if (files.Count == 0) {
+        println("error: nothing to run");
+        return -1;
+      } else if (files.Count == 1) {
+        var toRun = files[0];
+        println("running {0}", toRun.FullName);
+        var scala = new Scala(toRun, arguments);
+        return scala.run();
+      } else {
+        println("error: command is ambiguous");
+        files.Take(5).ToList().ForEach(file1 => println("    " + file1));
+        if (files.Count > 5) println("    ... " + (files.Count - 5) + " more");
+        return -1;
+      }
+*/
+      return Console.batch("partest files\\pos\\t1693.scala", home: root);
     }
   }
 
@@ -254,8 +270,15 @@ public class Kep : Git {
     } else if (profile == "reify") {
       filter = (fullName, shortName, text0) => {
         var text = text0();
-        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("ClassTag") || text.Contains("TypeTag") || text.Contains("GroundTypeTag");
+        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("Manifest") || text.Contains("ClassTag") || text.Contains("TypeTag") || text.Contains("GroundTypeTag");
         var neg = shortName.StartsWith("test\\files\\run\\macro-def-path-dependent");
+        return pos && !neg;
+      };
+    } else if (profile == "array") {
+      filter = (fullName, shortName, text0) => {
+        var text = text0();
+        var pos = text.Contains("Array") || text.Contains("ClassTag") || text.Contains("ClassManifest");
+        var neg = false;
         return pos && !neg;
       };
     } else if (profile == "all") {

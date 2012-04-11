@@ -50,6 +50,31 @@ public class Donor : Kep {
       status = status && transplantDir("lib/msil.jar/ch/epfl/lamp/compiler/msil", "build/locker/classes/partest/ch/epfl/lamp/compiler/msil");
       status = status && transplantDir("lib/jline.jar/org/fusesource", "build/locker/classes/partest/org/fusesource");
       status = status && transplantDir("lib/jline.jar/scala/tools/jline", "build/locker/classes/partest/scala/tools/jline");
+
+      if (status) {
+        println();
+        println("Calculating longest path lengths in Kepler...");
+        var locker = new ZlpDirectoryInfo(new Kep().project + "\\build\\locker" );
+        var classes = locker.GetFiles("*.class", SearchOption.AllDirectories).ToList();
+        classes = classes.OrderByDescending(f => f.FullName.Length).ToList();
+        classes = classes.Take(5).Concat(classes.Skip(5).Where(f => f.FullName.Length > 260)).ToList();
+        classes.ForEach(f => println(String.Format("  * {0} {1}", f.FullName.Length, f.FullName)));
+        if (classes[0].FullName.Length > 260) {
+          println("WARNING: THERE ARE FILES WITH NAMES LONGER THAN 260 CHARACTERS, JVM WON'T BE ABLE TO LOAD THEM UNLESS THEY ARE PACKED INTO A JAR");
+          //return -1;
+        }
+
+        println();
+        println("Packing locker into jars...");
+        var classesDir = new Kep().project + @"\build\locker\classes";
+        var jarDir = new Kep().project + @"\build\locker\lib";
+        if (!Directory.Exists(jarDir)) Directory.CreateDirectory(jarDir);
+        status = status && print("  * scala-compiler... ") && Console.batch("jar cf ../lib/scala-compiler.jar -C compiler .", home: classesDir) && println("[  OK  ]");
+        status = status && print("  * scala-library... ") && Console.batch("jar cf ../lib/scala-library.jar -C library .", home: classesDir) && println("[  OK  ]");
+        status = status && print("  * scala-partest... ") && Console.batch("jar cf ../lib/scala-partest.jar -C partest .", home: classesDir) && println("[  OK  ]");
+        if (!status) println("[FAILED]");
+      }
+
       return status;
     }
   }

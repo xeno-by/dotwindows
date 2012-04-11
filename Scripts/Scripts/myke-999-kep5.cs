@@ -15,7 +15,8 @@ using System.Xml.XPath;
 
 public class Kep5 : Kep {
   public override String project { get { return @"%PROJECTS%\Kepler5".Expand(); } }
-  public override String profile { get { return "fastlocker"; } }
+  //public override String profile { get { return "fastlocker"; } }
+  public virtual String profile { get { return "locker.unlock locker.done"; } }
   //public override String profile { get { return "build"; } }
 
   public Kep5() : base() {}
