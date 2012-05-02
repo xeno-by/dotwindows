@@ -538,6 +538,19 @@ public static class Console {
     }
   }
 
+  [DllImport("Kernel32")]
+  public static extern bool SetConsoleCtrlHandler(HandlerRoutine Handler, bool Add);
+
+  public delegate bool HandlerRoutine(CtrlTypes CtrlType);
+
+  public enum CtrlTypes{
+      CTRL_C_EVENT = 0,
+      CTRL_BREAK_EVENT,
+      CTRL_CLOSE_EVENT,
+      CTRL_LOGOFF_EVENT = 5,
+      CTRL_SHUTDOWN_EVENT
+  }
+
   private static ExitCode cmd(String command, DirectoryInfo home = null, bool trace = false) {
     //var script = Path.GetTempFileName() + ".bat";
     //if (!Config.verbose) File.AppendAllText(script, "@echo off" + "\r\n");
@@ -582,6 +595,7 @@ public static class Console {
       }
 
       if (p.Start()) {
+        //SetConsoleCtrlHandler(ctype => { System.Console.WriteLine("received CTRL_EVENT: " + ctype); return true; }, true);
         if (trace) { p.BeginOutputReadLine(); p.BeginErrorReadLine(); }
         p.WaitForExit();
         return p.ExitCode;
