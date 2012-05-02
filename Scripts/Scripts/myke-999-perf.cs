@@ -19,6 +19,11 @@ public class KepPerfGood : Kep {
   public KepPerfGood() : base() {}
   public KepPerfGood(FileInfo file, Arguments arguments) : base(file, arguments) {}
   public KepPerfGood(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
+
+  [Action]
+  public override ExitCode runTest() {
+    return rebuildAltCompiler();
+  }
 }
 
 [Connector(name = "perf_bad", priority = 999, description =
@@ -30,6 +35,11 @@ public class KepPerfBad : Kep {
   public KepPerfBad() : base() {}
   public KepPerfBad(FileInfo file, Arguments arguments) : base(file, arguments) {}
   public KepPerfBad(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
+
+  [Action]
+  public override ExitCode runTest() {
+    return rebuildAltCompiler();
+  }
 }
 
 [Connector(name = "perf_quickcomp", priority = 999, description =
@@ -41,6 +51,11 @@ public class KepPerfQuickComp : Kep {
   public KepPerfQuickComp() : base() {}
   public KepPerfQuickComp(FileInfo file, Arguments arguments) : base(file, arguments) {}
   public KepPerfQuickComp(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
+
+  [Action]
+  public override ExitCode runTest() {
+    return rebuildAltCompiler();
+  }
 }
 
 [Connector(name = "perf_quicklib", priority = 999, description =
@@ -52,4 +67,9 @@ public class KepPerfQuickLib : Kep {
   public KepPerfQuickLib() : base() {}
   public KepPerfQuickLib(FileInfo file, Arguments arguments) : base(file, arguments) {}
   public KepPerfQuickLib(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
+
+  [Action]
+  public override ExitCode runTest() {
+    return rebuildAltCompiler();
+  }
 }

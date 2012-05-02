@@ -10,7 +10,8 @@ public class App {
   public static int Main(String[] args) {
     var psi = new ProcessStartInfo();
     psi.FileName = "cmd.exe";
-    psi.Arguments = String.Join(" ", args);
+//    psi.Arguments = String.Join(" ", args);
+    psi.Arguments = "/C cmd.exe 2>&1";
     psi.WorkingDirectory = Directory.GetCurrentDirectory();
     psi.UseShellExecute = false;
     psi.RedirectStandardInput = true;
