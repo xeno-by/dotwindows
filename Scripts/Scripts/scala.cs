@@ -10,7 +10,7 @@ public class App {
   public static String classpath = @"%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library";
   public static String upstreamclasspath = @"%PROJECTS%\ScalaUpstream\lib\jline.jar;%PROJECTS%\ScalaUpstream\lib\fjbg.jar;%PROJECTS%\ScalaUpstream\build\locker\classes\compiler;%PROJECTS%\ScalaUpstream\build\locker\classes\library";
   public static String javaopts = "-Dscala.usejavacp=true";
-  public static String scalaopts = "-deprecation -unchecked -Xexperimental -Xmacros -Ymacro-copypaste -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+  public static String scalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-lite -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
   public static String upstreamscalaopts = "-deprecation -unchecked -Xexperimental -g:vars";
 
   public static Dictionary<String, String> profiles = new Dictionary<String, String>();

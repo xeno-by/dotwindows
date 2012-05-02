@@ -17,8 +17,14 @@ using ZetaLongPaths;
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
-  //public virtual String profile { get { return "fastlocker"; } }
   public virtual String profile { get { return "locker.unlock locker.done"; } }
+  public virtual String profileAlt { get { return "build"; } }
+  public virtual String profileClean { get { return "locker.clean"; } }
+  public virtual String profileAltClean { get { return "all.clean"; } }
+  public virtual String profileLibrary { get { return "locker.unlock locker.lib"; } }
+  public virtual String profileCompiler { get { return "locker.unlock locker.comp"; } }
+  public virtual String profileAltLibrary { get { return "quick.lib"; } }
+  public virtual String profileAltCompiler { get { return "quick.comp"; } }
 
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
@@ -76,41 +82,114 @@ public class Kep : Git {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.rebuild();
     } else {
-      return Console.batch("ant all.clean " + profile + " -buildfile build.xml", home: root);
+      return Console.batch("ant " + profileClean + " " + profile + " -buildfile build.xml", home: root);
+    }
+  }
+
+  [Action]
+  public virtual ExitCode rebuildWithYourkit() {
+    if (inPlayground || inTest) {
+      var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
+      return scala.rebuild();
+    } else {
+      return Console.batch("ant /yourkit " + profileClean + " " + profile + " -buildfile build.xml", home: root);
     }
   }
 
   [Action]
   public virtual ExitCode rebuildLibrary() {
-    return Console.batch("ant all.clean " + profile + " -buildfile build.xml", home: root);
+    return rebuildLibraryInternal(false);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildLibraryWithYourkit() {
+    return rebuildLibraryInternal(true);
+  }
+
+  private ExitCode rebuildLibraryInternal(bool yourkit) {
+    var libraryClasses = new DirectoryInfo(project + "\\build\\locker\\classes\\library");
+    if (libraryClasses.Exists) ZlpIOHelper.DeleteDirectory(libraryClasses.FullName, true);
+    var libraryToken = new FileInfo(project + "\\build\\locker\\library.complete");
+    if (libraryToken.Exists) libraryToken.Delete();
+    var flags = yourkit ? "/yourkit " : "";
+    return Console.batch("ant " + flags + profileLibrary + " -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode rebuildCompiler() {
+    return rebuildCompilerInternal(false);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildCompilerWithYourkit() {
+    return rebuildCompilerInternal(true);
+  }
+
+  private ExitCode rebuildCompilerInternal(bool yourkit) {
     var compilerClasses = new DirectoryInfo(project + "\\build\\locker\\classes\\compiler");
     if (compilerClasses.Exists) ZlpIOHelper.DeleteDirectory(compilerClasses.FullName, true);
     var compilerToken = new FileInfo(project + "\\build\\locker\\compiler.complete");
     if (compilerToken.Exists) compilerToken.Delete();
-    return Console.batch("ant " + profile + " -buildfile build.xml", home: root);
+    var flags = yourkit ? "/yourkit " : "";
+    return Console.batch("ant " + flags + profileCompiler + " -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode rebuildAlt() {
-    return rebuildAltLibrary();
+    return Console.batch("ant " + profileAltClean + " " + profileAlt + " -buildfile build.xml", home: root);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltWithYourkit() {
+    return Console.batch("ant /yourkit " + profileAltClean + " " + profileAlt + " -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode rebuildAltLibrary() {
-    return Console.batch("ant clean build -buildfile build.xml", home: root);
+    return rebuildAltLibraryInternal(false);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltLibraryWithYourkit() {
+    return rebuildAltLibraryInternal(true);
+  }
+
+  private ExitCode rebuildAltLibraryInternal(bool yourkit) {
+    var libraryClasses = new DirectoryInfo(project + "\\build\\quick\\classes\\library");
+    if (libraryClasses.Exists) ZlpIOHelper.DeleteDirectory(libraryClasses.FullName, true);
+    var libraryToken = new FileInfo(project + "\\build\\quick\\library.complete");
+    if (libraryToken.Exists) libraryToken.Delete();
+    var flags = yourkit ? "/yourkit " : "";
+    return Console.batch("ant " + flags + profileAltLibrary + " -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode rebuildAltCompiler() {
+    return rebuildAltCompilerInternal(false);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltCompilerWithYourkit() {
+    return rebuildAltCompilerInternal(true);
+  }
+
+  private ExitCode rebuildAltCompilerInternal(bool yourkit) {
     var compilerClasses = new DirectoryInfo(project + "\\build\\quick\\classes\\compiler");
     if (compilerClasses.Exists) ZlpIOHelper.DeleteDirectory(compilerClasses.FullName, true);
     var compilerToken = new FileInfo(project + "\\build\\quick\\compiler.complete");
     if (compilerToken.Exists) compilerToken.Delete();
-    return Console.batch("ant build -buildfile build.xml", home: root);
+    var flags = yourkit ? "/yourkit " : "";
+    return Console.batch("ant " + flags + profileAltCompiler + " -buildfile build.xml", home: root);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAll() {
+    return Console.batch("ant all.clean build -buildfile build.xml", home: root);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAllWithYourkit() {
+    return Console.batch("ant all.clean build -buildfile build.xml", home: root);
   }
 
   [Default, Action]
@@ -188,7 +267,9 @@ public class Kep : Git {
         return -1;
       }
 */
-      return Console.batch("partest files\\pos\\t1693.scala", home: root);
+      //return Console.batch("partest files\\pos\\t1693.scala", home: root);
+      println("don't know how to run");
+      return -1;
     }
   }
 
@@ -270,7 +351,7 @@ public class Kep : Git {
     } else if (profile == "reify") {
       filter = (fullName, shortName, text0) => {
         var text = text0();
-        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("Manifest") || text.Contains("ClassTag") || text.Contains("TypeTag") || text.Contains("GroundTypeTag");
+        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("Manifest") || text.Contains("ClassTag") || text.Contains("TypeTag") || text.Contains("ConcreteTypeTag");
         var neg = shortName.StartsWith("test\\files\\run\\macro-def-path-dependent");
         return pos && !neg;
       };
@@ -400,17 +481,34 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode deploy() {
+    return deployStarr();
+//    return deployMaven();
+  }
+
+  [Action]
+  public virtual ExitCode deployMaven() {
+    var result = new Donor().compile();
+    result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-library.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-library\2.10.0-SNAPSHOT\scala-library-2.10.0-20120417.011253-317.jar");
+    result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-compiler.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-compiler\2.10.0-SNAPSHOT\scala-compiler-2.10.0-20120417.011253-314.jar");
+    return result;
+  }
+
+  [Action]
+  public virtual ExitCode deployStarr() {
+    var loloLibraryJar = new FileInfo(root + @"\build\locker\lib\scala-library.jar");
+    var loloCompilerJar = new FileInfo(root + @"\build\locker\lib\scala-compiler.jar");
     var paloLibraryJar = new FileInfo(root + @"\build\palo\lib\scala-library.jar");
     var paloCompilerJar = new FileInfo(root + @"\build\palo\lib\scala-compiler.jar");
     var packLibraryJar = new FileInfo(root + @"\build\pack\lib\scala-library.jar");
     var packCompilerJar = new FileInfo(root + @"\build\pack\lib\scala-compiler.jar");
+    var loloModTime = loloLibraryJar.Exists && loloCompilerJar.Exists ? (loloLibraryJar.LastWriteTime > loloCompilerJar.LastWriteTime ? loloLibraryJar.LastWriteTime : loloCompilerJar.LastWriteTime) : DateTime.MinValue;
     var paloModTime = paloLibraryJar.Exists && paloCompilerJar.Exists ? (paloLibraryJar.LastWriteTime > paloCompilerJar.LastWriteTime ? paloLibraryJar.LastWriteTime : paloCompilerJar.LastWriteTime) : DateTime.MinValue;
     var packModTime = packLibraryJar.Exists && packCompilerJar.Exists ? (packLibraryJar.LastWriteTime > packCompilerJar.LastWriteTime ? packLibraryJar.LastWriteTime : packCompilerJar.LastWriteTime) : DateTime.MinValue;
-    var source = paloModTime > packModTime ? "build/palo/" : "build/pack/";
+    var source = (loloModTime > paloModTime && loloModTime > packModTime) ? "build/locker/" : (paloModTime > loloModTime && paloModTime > packModTime) ? "build/palo/" : "build/pack/";
 
-    var status = (paloModTime != DateTime.MinValue || packModTime != DateTime.MinValue) ? (ExitCode)0 : (ExitCode)(-1);
+    var status = (loloModTime != DateTime.MinValue || paloModTime != DateTime.MinValue || packModTime != DateTime.MinValue) ? (ExitCode)0 : (ExitCode)(-1);
     if (!status) {
-      println("Couldn't find neither pack nor palo to deploy as a starr");
+      println("Couldn't find neither pack nor palo nor lolo to deploy as a starr");
       return status;
     }
 

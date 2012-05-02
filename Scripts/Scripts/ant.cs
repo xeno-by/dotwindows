@@ -34,6 +34,11 @@ public class App {
       return 0;
     }
 
+    var yourkit = args.Contains("/yourkit");
+    if (yourkit) {
+      profile += @" -agentpath:""C:\Program Files (x86)\YourKit Java Profiler 11.0.0\bin\win64\yjpagent.dll=sampling""";
+    }
+
     var ant_args = new List<String>();
     ant_args.Add("-classpath \"" + ant_launcher + "\"");
     ant_args.Add("org.apache.tools.ant.launch.Launcher");

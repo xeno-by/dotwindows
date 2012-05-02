@@ -16,7 +16,10 @@ using ZetaLongPaths;
 
 public class Donor : Kep {
   public override String project { get { return @"%PROJECTS%\Donor".Expand(); } }
-  public override String profile { get { return "build"; } }
+  public override String profile { get { return profileAlt; } }
+  public override String profileClean { get { return profileAltClean; } }
+  public override String profileLibrary { get { return profileAltLibrary; } }
+  public override String profileCompiler { get { return profileAltCompiler; } }
 
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
@@ -38,18 +41,18 @@ public class Donor : Kep {
       println();
       println("Transplanting partest to Kepler...");
       status = status && transplantDir("build/quick/classes/partest", "build/locker/classes/partest");
-      status = status && transplantDir("build/quick/classes/library/scala/actors", "build/locker/classes/partest/scala/actors");
+      status = status && transplantDir("build/quick/classes/library/scala/actors", "build/locker/classes/library/scala/actors");
       status = status && transplantDir("build/quick/classes/scalap/scala/tools/scalap", "build/locker/classes/partest/scala/tools/scalap");
       status = status && transplantDir("build/quick/classes/scalacheck/org/scalacheck", "build/locker/classes/partest/org/scalacheck");
       status = status && transplantFile("build/pack/misc/scala-devel/plugins/continuations.jar", "build/locker/classes/continuations.jar");
       status = status && transplantDir("build/pack/misc/scala-devel/plugins/continuations.jar", "build/locker/classes/continuations");
       status = status && transplantDir("build/quick/classes/library/scala/util/continuations", "build/locker/classes/library/scala/util/continuations");
-      status = status && transplantDir("lib/forkjoin.jar/scala/concurrent/forkjoin", "build/locker/classes/partest/scala/concurrent/forkjoin");
-      status = status && transplantDir("lib/fjbg.jar/ch/epfl/lamp/fjbg", "build/locker/classes/partest/ch/epfl/lamp/fjbg");
-      status = status && transplantDir("lib/fjbg.jar/ch/epfl/lamp/util", "build/locker/classes/partest/ch/epfl/lamp/util");
-      status = status && transplantDir("lib/msil.jar/ch/epfl/lamp/compiler/msil", "build/locker/classes/partest/ch/epfl/lamp/compiler/msil");
-      status = status && transplantDir("lib/jline.jar/org/fusesource", "build/locker/classes/partest/org/fusesource");
-      status = status && transplantDir("lib/jline.jar/scala/tools/jline", "build/locker/classes/partest/scala/tools/jline");
+      status = status && transplantDir("lib/forkjoin.jar/scala/concurrent/forkjoin", "build/locker/classes/library/scala/concurrent/forkjoin");
+      status = status && transplantDir("lib/fjbg.jar/ch/epfl/lamp/fjbg", "build/locker/classes/compiler/ch/epfl/lamp/fjbg");
+      status = status && transplantDir("lib/fjbg.jar/ch/epfl/lamp/util", "build/locker/classes/compiler/ch/epfl/lamp/util");
+      status = status && transplantDir("lib/msil.jar/ch/epfl/lamp/compiler/msil", "build/locker/classes/compiler/ch/epfl/lamp/compiler/msil");
+      status = status && transplantDir("lib/jline.jar/org/fusesource", "build/locker/classes/library/org/fusesource");
+      status = status && transplantDir("lib/jline.jar/scala/tools/jline", "build/locker/classes/library/scala/tools/jline");
 
       if (status) {
         println();

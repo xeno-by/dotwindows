@@ -15,7 +15,10 @@ using System.Xml.XPath;
 
 public class Upstream : Kep {
   public override String project { get { return @"%PROJECTS%\ScalaUpstream".Expand(); } }
-  public override String profile { get { return "build"; } }
+  public override String profile { get { return profileAlt; } }
+  public override String profileClean { get { return profileAltClean; } }
+  public override String profileLibrary { get { return profileAltLibrary; } }
+  public override String profileCompiler { get { return profileAltCompiler; } }
 
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
