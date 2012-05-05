@@ -1,0 +1,410 @@
+ VisRen
+
+ Timestamp is 4c15bf5e (Mon Jun 14 12:34:22 2010)
+
+ Preferred load address is 10000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00007186H .text                   CODE
+ 0002:00000000 0000009cH .idata$5                DATA
+ 0002:0000009c 00000a1eH .rdata                  DATA
+ 0002:00000abc 0000003cH .idata$2                DATA
+ 0002:00000af8 00000014H .idata$3                DATA
+ 0002:00000b0c 0000009cH .idata$4                DATA
+ 0002:00000ba8 00000268H .idata$6                DATA
+ 0002:00000e10 000000abH .edata                  DATA
+ 0003:00000000 000002e0H .data                   DATA
+ 0003:000002e0 0000026cH .bss                    DATA
+ 0004:00000000 00000058H .rsrc$01                DATA
+ 0004:00000060 00000340H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base     Lib:Object
+
+ 0000:00000000       ___safe_se_handler_count   00000000     <absolute>
+ 0000:00000000       ___safe_se_handler_table   00000000     <absolute>
+ 0001:00000000       ??0StrOptions@@QAE@XZ      10001000 f i VisRen.obj
+ 0001:0000002c       ??1StrOptions@@QAE@XZ      1000102c f i VisRen.obj
+ 0001:00000057       _malloc                    10001057 f   VisRen.obj
+ 0001:0000006b       _free                      1000106b f   VisRen.obj
+ 0001:00000086       _realloc                   10001086 f   VisRen.obj
+ 0001:000000d7       ??2@YAPAXI@Z               100010d7 f   VisRen.obj
+ 0001:000000dc       ??3@YAXPAX@Z               100010dc f   VisRen.obj
+ 0001:000000e1       ?FreeUndo@@YIXXZ           100010e1 f   VisRen.obj
+ 0001:0000014b       ?GetMsg@@YIPBGH@Z          1000114b f   VisRen.obj
+ 0001:00000159       ?ErrorMsg@@YIXKK@Z         10001159 f   VisRen.obj
+ 0001:000001a0       ?YesNoMsg@@YI_NKK@Z        100011a0 f   VisRen.obj
+ 0001:000001dd       _GetMinFarVersionW@0       100011dd f   VisRen.obj
+ 0001:000001e3       _SetStartupInfoW@4         100011e3 f   VisRen.obj
+ 0001:00000221       _GetPluginInfoW@4          10001221 f   VisRen.obj
+ 0001:0000024f       _ExitFARW@0                1000124f f   VisRen.obj
+ 0001:00000254       ??0RenFile@@QAE@XZ         10001254 f i VisRen.obj
+ 0001:0000027e       ??1RenFile@@QAE@XZ         1000127e f i VisRen.obj
+ 0001:000002a7       ??0VisRenDlg@@QAE@XZ       100012a7 f i VisRen.obj
+ 0001:000002be       ??1VisRenDlg@@QAE@XZ       100012be f i VisRen.obj
+ 0001:000002d4       _OpenPluginW@8             100012d4 f   VisRen.obj
+ 0001:0000037b       ?AllocNode@?$DList@UFile@@@@EAEPAUNode@CDList@@PAX@Z 1000137b f i VisRen.obj
+ 0001:000003b2       ??0File@@QAE@XZ            100013b2 f i VisRen.obj
+ 0001:000003e0       ??4File@@QAEABU0@ABU0@@Z   100013e0 f i VisRen.obj
+ 0001:00000411       ?DeleteNode@?$DList@UFile@@@@EAEXPAUNode@CDList@@@Z 10001411 f i VisRen.obj
+ 0001:00000423       ??_GTNode@?$DList@UFile@@@@QAEPAXI@Z 10001423 f i VisRen.obj
+ 0001:0000044e       ??0CDList@@IAE@XZ          1000144e f   DList.obj
+ 0001:00000463       ?Clear@CDList@@QAEXXZ      10001463 f   DList.obj
+ 0001:0000048c       ?CInsertBefore@CDList@@IAEPAXPAX0@Z 1000148c f   DList.obj
+ 0001:000004c3       ?CInsertAfter@CDList@@IAEPAXPAX0@Z 100014c3 f   DList.obj
+ 0001:000004e5       ?CDelete@CDList@@IAEPAXPAX@Z 100014e5 f   DList.obj
+ 0001:0000051a       ?init@string@@AAEXXZ       1000151a f   string.obj
+ 0001:00000536       ?enlarge@string@@AAE_NI@Z  10001536 f   string.obj
+ 0001:00000595       ??0string@@QAE@XZ          10001595 f   string.obj
+ 0001:000005a1       ??1string@@QAE@XZ          100015a1 f   string.obj
+ 0001:000005b5       ??Bstring@@QBEPBGXZ        100015b5 f   string.obj
+ 0001:000005c0       ??Astring@@QAEAAGI@Z       100015c0 f   string.obj
+ 0001:000005d6       ?length@string@@QBEIXZ     100015d6 f   string.obj
+ 0001:000005e1       ?updsize@string@@QAEXXZ    100015e1 f   string.obj
+ 0001:000005fc       ?get@string@@QAEPAGI@Z     100015fc f   string.obj
+ 0001:00000625       ?clear@string@@QAEXXZ      10001625 f   string.obj
+ 0001:0000063d       ??Ystring@@QAEAAV0@G@Z     1000163d f   string.obj
+ 0001:0000068b       ??Ystring@@QAEAAV0@PBG@Z   1000168b f   string.obj
+ 0001:000006f4       ?copy@string@@AAEXABV1@@Z  100016f4 f   string.obj
+ 0001:00000750       ?copy@string@@AAEXPBG@Z    10001750 f   string.obj
+ 0001:00000799       ?copy@string@@AAEXPBGI@Z   10001799 f   string.obj
+ 0001:000007d4       ??0string@@QAE@PBG@Z       100017d4 f   string.obj
+ 0001:000007ed       ??4string@@QAEAAV0@ABV0@@Z 100017ed f   string.obj
+ 0001:00000805       ??4string@@QAEAAV0@PBG@Z   10001805 f   string.obj
+ 0001:00000817       ??Rstring@@QAEAAV0@PBGI@Z  10001817 f   string.obj
+ 0001:0000082d       ?GetDlgSize@VisRenDlg@@AAEXXZ 1000182d f   VisRenDlg.obj
+ 0001:000008b6       ?LenItems@VisRenDlg@@AAEXPBG_N@Z 100018b6 f   VisRenDlg.obj
+ 0001:00000984       ?SetMask@VisRenDlg@@AAE_NPAXKK@Z 10001984 f   VisRenDlg.obj
+ 0001:00000c93       ?ListMouseRightClick@VisRenDlg@@AAEHPAXKK@Z 10001c93 f   VisRenDlg.obj
+ 0001:00000d2b       ?Next@?$DList@UFile@@@@QAEPAUFile@@PBU2@@Z 10001d2b f i VisRenDlg.obj
+ 0001:00000d50       ?UpdateFarList@VisRenDlg@@AAE_NPAX_N1@Z 10001d50 f   VisRenDlg.obj
+ 0001:0000101b       ?DlgResize@VisRenDlg@@AAEXPAX_N@Z 1000201b f   VisRenDlg.obj
+ 0001:0000131e       ?MouseDragDrop@VisRenDlg@@AAEXPAXK@Z 1000231e f   VisRenDlg.obj
+ 0001:000014be       ?ShowName@VisRenDlg@@AAEXH@Z 100024be f   VisRenDlg.obj
+ 0001:000019e5       ?ShowDialogProc@VisRenDlg@@AAGJPAXHHJ@Z 100029e5 f   VisRenDlg.obj
+ 0001:00002cb5       ?ShowDialogProcThunk@VisRenDlg@@CGJPAXHHJ@Z 10003cb5 f   VisRenDlg.obj
+ 0001:00002cdd       ?ShowDialog@VisRenDlg@@QAEHXZ 10003cdd f   VisRenDlg.obj
+ 0001:00003629       @wmemchr@12                10004629 f i VisRenFile.obj
+ 0001:00003644       ?Strncmp@@YAHPBG0H@Z       10004644 f i VisRenFile.obj
+ 0001:00003664       ?doReadID3v11Tag@@YI_NPAXPAUID3v11TagReal@@AA_N@Z 10004664 f   VisRenFile.obj
+ 0001:000036bd       ?InitializeInternalTag1@@YIPAUID3TagInternal@@PAUID3v11TagReal@@@Z 100046bd f   VisRenFile.obj
+ 0001:000037e1       ?DecodeHeaderSize@@YIHH@Z  100047e1 f   VisRenFile.obj
+ 0001:00003809       ?doReadID3v2TagHeader@@YI_NPAXPAUID3v2TagHeader@@AA_N@Z 10004809 f   VisRenFile.obj
+ 0001:0000386c       ?I4@@YIHH@Z                1000486c f   VisRenFile.obj
+ 0001:00003880       ?doReadFrame@@YI_NPAXPAUID3v2TagFrame@@_N@Z 10004880 f   VisRenFile.obj
+ 0001:000038ec       ?doReadID3v2Tag@@YI_NPAXPAUID3v2TagReal@@AA_N@Z 100048ec f   VisRenFile.obj
+ 0001:000039a6       ?EncodeData@@YIXPADKPAPAGH@Z 100049a6 f   VisRenFile.obj
+ 0001:00003a27       ?ConvertFrameData@@YIXPAUID3v2TagFrame@@PAPAGH@Z 10004a27 f   VisRenFile.obj
+ 0001:00003a40       ?InitializeInternalTag2@@YIPAUID3TagInternal@@PAUID3v2TagReal@@@Z 10004a40 f   VisRenFile.obj
+ 0001:00003b0c       ?AnalyseMP3File@@YIPAUID3TagInternal@@PBG@Z 10004b0c f   VisRenFile.obj
+ 0001:00003ba4       ?Get16u@@YIHPAX@Z          10004ba4 f   VisRenFile.obj
+ 0001:00003bba       ?Get32s@@YIHPAX@Z          10004bba f   VisRenFile.obj
+ 0001:00003bf8       ?FileGetC@@YIHPAX@Z        10004bf8 f   VisRenFile.obj
+ 0001:00003c1f       ?ProcessExifDir@@YIXPAE0IH@Z 10004c1f f   VisRenFile.obj
+ 0001:00003ddf       ?process_EXIF@@YIXPAEI@Z   10004ddf f   VisRenFile.obj
+ 0001:00003e50       ?ReadJpegSections@@YI_NPAX@Z 10004e50 f   VisRenFile.obj
+ 0001:00003fb6       ?AnalyseImageFile@@YI_NPBGH@Z 10004fb6 f   VisRenFile.obj
+ 0001:00004235       ?InitUndoItem@RenFile@@AAE_NPBG0H@Z 10005235 f   VisRenFile.obj
+ 0001:00004312       ?CheckFileName@RenFile@@AAE_NPBG@Z 10005312 f   VisRenFile.obj
+ 0001:00004355       ?IsEmpty@RenFile@@AAE_NPBG@Z 10005355 f   VisRenFile.obj
+ 0001:000043a4       ?GetNewNameExt@RenFile@@AAE_NPBGAAVstring@@IPAKU_SYSTEMTIME@@_N@Z 100053a4 f   VisRenFile.obj
+ 0001:00004f42       ?Replase@RenFile@@AAE_NAAVstring@@@Z 10005f42 f   VisRenFile.obj
+ 0001:00005332       ?Translit@RenFile@@AAEXAAVstring@@0K@Z 10006332 f   VisRenFile.obj
+ 0001:00005c93       ?Case@RenFile@@AAEXPAG0K@Z 10006c93 f   VisRenFile.obj
+ 0001:00005fcb       ?CheckForEsc@RenFile@@AAE_NPAX@Z 10006fcb f   VisRenFile.obj
+ 0001:0000606d       ?InitFileList@RenFile@@QAE_NH@Z 1000706d f   VisRenFile.obj
+ 0001:000061b2       ?ProcessFileName@RenFile@@QAE_NXZ 100071b2 f   VisRenFile.obj
+ 0001:00006519       ?RenameFile@RenFile@@QAE_NHH@Z 10007519 f   VisRenFile.obj
+ 0001:00006c44       ?CreateList@RenFile@@AAEHPBG@Z 10007c44 f   VisRenFile.obj
+ 0001:00006e1a       ?ReadList@RenFile@@AAEHPBG@Z 10007e1a f   VisRenFile.obj
+ 0001:00006ff8       ?RenameInEditor@RenFile@@QAEXHH@Z 10007ff8 f   VisRenFile.obj
+ 0001:0000712e       __purecall                 1000812e f   MSVCRT60:MSVCRT.dll
+ 0001:00007134       _wcslen                    10008134 f   MSVCRT60:MSVCRT.dll
+ 0001:0000713a       _wcscpy                    1000813a f   MSVCRT60:MSVCRT.dll
+ 0001:00007140       _strncmp                   10008140 f   MSVCRT60:MSVCRT.dll
+ 0001:00007146       _wcsrchr                   10008146 f   MSVCRT60:MSVCRT.dll
+ 0001:00007150       __alloca_probe             10008150 f   MSVCRT60:chkstk.obj
+ 0001:00007150       __chkstk                   10008150 f   MSVCRT60:chkstk.obj
+ 0001:00007180       _isspace                   10008180 f   MSVCRT60:MSVCRT.dll
+ 0002:00000000       __imp__RegSetValueExW@24   10009000     advapi32:ADVAPI32.dll
+ 0002:00000004       __imp__RegCloseKey@4       10009004     advapi32:ADVAPI32.dll
+ 0002:00000008       __imp__RegOpenKeyExW@20    10009008     advapi32:ADVAPI32.dll
+ 0002:0000000c       __imp__RegQueryValueExW@24 1000900c     advapi32:ADVAPI32.dll
+ 0002:00000010       __imp__RegCreateKeyExW@36  10009010     advapi32:ADVAPI32.dll
+ 0002:00000014       \177ADVAPI32_NULL_THUNK_DATA 10009014     advapi32:ADVAPI32.dll
+ 0002:00000018       __imp__CreateFileW@28      10009018     kernel32:KERNEL32.dll
+ 0002:0000001c       __imp__lstrcpynW@12        1000901c     kernel32:KERNEL32.dll
+ 0002:00000020       __imp__CompareStringW@24   10009020     kernel32:KERNEL32.dll
+ 0002:00000024       __imp__ReadFile@20         10009024     kernel32:KERNEL32.dll
+ 0002:00000028       __imp__SetFilePointer@16   10009028     kernel32:KERNEL32.dll
+ 0002:0000002c       __imp__MultiByteToWideChar@24 1000902c     kernel32:KERNEL32.dll
+ 0002:00000030       __imp__ReadConsoleInputW@16 10009030     kernel32:KERNEL32.dll
+ 0002:00000034       __imp__PeekConsoleInputW@16 10009034     kernel32:KERNEL32.dll
+ 0002:00000038       __imp__GetTickCount@0      10009038     kernel32:KERNEL32.dll
+ 0002:0000003c       __imp__GetConsoleScreenBufferInfo@8 1000903c     kernel32:KERNEL32.dll
+ 0002:00000040       __imp__FileTimeToLocalFileTime@8 10009040     kernel32:KERNEL32.dll
+ 0002:00000044       __imp__MoveFileW@8         10009044     kernel32:KERNEL32.dll
+ 0002:00000048       __imp__GetLastError@0      10009048     kernel32:KERNEL32.dll
+ 0002:0000004c       __imp__SetLastError@4      1000904c     kernel32:KERNEL32.dll
+ 0002:00000050       __imp__WriteFile@20        10009050     kernel32:KERNEL32.dll
+ 0002:00000054       __imp__UnmapViewOfFile@4   10009054     kernel32:KERNEL32.dll
+ 0002:00000058       __imp__MapViewOfFile@20    10009058     kernel32:KERNEL32.dll
+ 0002:0000005c       __imp__CreateFileMappingW@24 1000905c     kernel32:KERNEL32.dll
+ 0002:00000060       __imp__DeleteFileW@4       10009060     kernel32:KERNEL32.dll
+ 0002:00000064       __imp__CloseHandle@4       10009064     kernel32:KERNEL32.dll
+ 0002:00000068       __imp__HeapReAlloc@16      10009068     kernel32:KERNEL32.dll
+ 0002:0000006c       __imp__HeapFree@12         1000906c     kernel32:KERNEL32.dll
+ 0002:00000070       __imp__GetProcessHeap@0    10009070     kernel32:KERNEL32.dll
+ 0002:00000074       __imp__FileTimeToSystemTime@8 10009074     kernel32:KERNEL32.dll
+ 0002:00000078       __imp__HeapAlloc@12        10009078     kernel32:KERNEL32.dll
+ 0002:0000007c       \177KERNEL32_NULL_THUNK_DATA 1000907c     kernel32:KERNEL32.dll
+ 0002:00000080       __imp__wcslen              10009080     MSVCRT60:MSVCRT.dll
+ 0002:00000084       __imp__wcscpy              10009084     MSVCRT60:MSVCRT.dll
+ 0002:00000088       __imp__strncmp             10009088     MSVCRT60:MSVCRT.dll
+ 0002:0000008c       __imp__wcsrchr             1000908c     MSVCRT60:MSVCRT.dll
+ 0002:00000090       __imp__isspace             10009090     MSVCRT60:MSVCRT.dll
+ 0002:00000094       __imp___purecall           10009094     MSVCRT60:MSVCRT.dll
+ 0002:00000098       \177MSVCRT_NULL_THUNK_DATA 10009098     MSVCRT60:MSVCRT.dll
+ 0002:0000009c       ??_7?$DList@UFile@@@@6B@   1000909c     VisRen.obj
+ 0002:000000a4       ??_C@_11LOCGONAA@?$AA?$AA@ 100090a4     VisRen.obj
+ 0002:000000a8       ??_7CDList@@6B@            100090a8     DList.obj
+ 0002:000000b0       ??_C@_1BA@BALFACEM@?$AAC?$AAO?$AAN?$AAO?$AAU?$AAT?$AA$?$AA?$AA@ 100090b0     VisRenDlg.obj
+ 0002:000000c0       ??_C@_17PEGDIDKG@?$AA?$FL?$AAE?$AA?$FN?$AA?$AA@ 100090c0     VisRenDlg.obj
+ 0002:000000c8       ??_C@_1BA@GKGHMKOF@?$AA?$FL?$AAE?$AA1?$AA?9?$AA?$CF?$AAd?$AA?$FN?$AA?$AA@ 100090c8     VisRenDlg.obj
+ 0002:000000d8       ??_C@_1O@NEOGIHDJ@?$AA?$FL?$AAC?$AA1?$AA?$CL?$AA1?$AA?$FN?$AA?$AA@ 100090d8     VisRenDlg.obj
+ 0002:000000e8       ??_C@_17NDGMNCGO@?$AA?$FL?$AAL?$AA?$FN?$AA?$AA@ 100090e8     VisRenDlg.obj
+ 0002:000000f0       ??_C@_17PHLFIBDN@?$AA?$FL?$AAU?$AA?$FN?$AA?$AA@ 100090f0     VisRenDlg.obj
+ 0002:000000f8       ??_C@_17HCPHPBAI@?$AA?$FL?$AAF?$AA?$FN?$AA?$AA@ 100090f8     VisRenDlg.obj
+ 0002:00000100       ??_C@_17DMOJFCJI@?$AA?$FL?$AAT?$AA?$FN?$AA?$AA@ 10009100     VisRenDlg.obj
+ 0002:00000108       ??_C@_19PEMMGJIJ@?$AA?$FL?$AAT?$AAR?$AA?$FN?$AA?$AA@ 10009108     VisRenDlg.obj
+ 0002:00000114       ??_C@_19MNBAAKGC@?$AA?$FL?$AAT?$AAL?$AA?$FN?$AA?$AA@ 10009114     VisRenDlg.obj
+ 0002:00000120       ??_C@_19GEMNJMH@?$AA?$FL?$AAT?$AAM?$AA?$FN?$AA?$AA@ 10009120     VisRenDlg.obj
+ 0002:0000012c       ??_C@_19HKPHOIOM@?$AA?$FL?$AAD?$AAM?$AA?$FN?$AA?$AA@ 1000912c     VisRenDlg.obj
+ 0002:00000138       ??_C@_17ONBMLELD@?$AA?$FL?$AAr?$AA?$FN?$AA?$AA@ 10009138     VisRenDlg.obj
+ 0002:00000140       ??_C@_17DIJDFFDF@?$AA?$FL?$AAd?$AA?$FN?$AA?$AA@ 10009140     VisRenDlg.obj
+ 0002:00000148       ??_C@_17BPJMAEPN@?$AA?$FL?$AAm?$AA?$FN?$AA?$AA@ 10009148     VisRenDlg.obj
+ 0002:00000150       ??_C@_17CFJGGFIN@?$AA?$FL?$AAc?$AA?$FN?$AA?$AA@ 10009150     VisRenDlg.obj
+ 0002:00000158       ??_C@_17LOAHCHJL@?$AA?$FL?$AAg?$AA?$FN?$AA?$AA@ 10009158     VisRenDlg.obj
+ 0002:00000160       ??_C@_17IHNLEEHA@?$AA?$FL?$AAy?$AA?$FN?$AA?$AA@ 10009160     VisRenDlg.obj
+ 0002:00000168       ??_C@_17NEMANHFI@?$AA?$FL?$AAl?$AA?$FN?$AA?$AA@ 10009168     VisRenDlg.obj
+ 0002:00000170       ??_C@_17GIFOMEIG@?$AA?$FL?$AAa?$AA?$FN?$AA?$AA@ 10009170     VisRenDlg.obj
+ 0002:00000178       ??_C@_17DLEFFHKO@?$AA?$FL?$AAt?$AA?$FN?$AA?$AA@ 10009178     VisRenDlg.obj
+ 0002:00000180       ??_C@_17CKMOGPOB@?$AA?$FL?$AA?$CD?$AA?$FN?$AA?$AA@ 10009180     VisRenDlg.obj
+ 0002:00000188       ??_C@_17BIDAABML@?$AA?$FL?$AAM?$AA?$FN?$AA?$AA@ 10009188     VisRenDlg.obj
+ 0002:00000190       ??_C@_1BA@CFFPPBAI@?$AA?$FL?$AAN?$AA1?$AA?9?$AA?$CF?$AAd?$AA?$FN?$AA?$AA@ 10009190     VisRenDlg.obj
+ 0002:000001a0       ??_C@_17JOKEHDGF@?$AA?$FL?$AAN?$AA?$FN?$AA?$AA@ 100091a0     VisRenDlg.obj
+ 0002:000001a8       ??_C@_1BO@MOFHFPFO@?$AA?$CF?$AA?9?$AA?$CK?$AA?4?$AA?$CK?$AAs?$AA?$CF?$AAc?$AA?$CF?$AA?9?$AA?$CK?$AA?4?$AA?$CK?$AAs?$AA?$AA@ 100091a8     VisRenDlg.obj
+ 0002:000001c8       ??_C@_1BC@ENICKDH@?$AAC?$AAo?$AAn?$AAt?$AAe?$AAn?$AAt?$AAs?$AA?$AA@ 100091c8     VisRenDlg.obj
+ 0002:000001dc       ??_C@_1BA@JPLAKNEN@?$AA?2?$AAV?$AAi?$AAs?$AAR?$AAe?$AAn?$AA?$AA@ 100091dc     VisRenDlg.obj
+ 0002:000001ec       ??_C@_1M@NCNHPIHD@?$AA?9?$AA?4?$AA?5?$AA_?$AA?$CG?$AA?$AA@ 100091ec     VisRenDlg.obj
+ 0002:000001f8       ??_C@_1BA@CAKIGJMA@?$AAW?$AAo?$AAr?$AAd?$AAD?$AAi?$AAv?$AA?$AA@ 100091f8     VisRenDlg.obj
+ 0002:00000208       ??_C@_1BM@IODKBJBM@?$AAV?$AAi?$AAs?$AAR?$AAe?$AAn?$AAW?$AAo?$AAr?$AAd?$AAD?$AAi?$AAv?$AA?$AA@ 10009208     VisRenDlg.obj
+ 0002:00000224       ??_C@_15EIDINHDC@?$AA?$CK?$AA?5?$AA?$AA@ 10009224     VisRenDlg.obj
+ 0002:0000022c       ??_C@_13HOIJIPNN@?$AA?5?$AA?$AA@ 1000922c     VisRenDlg.obj
+ 0002:00000230       ??_C@_17EEHDJIIP@?$AA?$FL?$AA?$BI?$AA?$FN?$AA?$AA@ 10009230     VisRenDlg.obj
+ 0002:00000238       ??_C@_17OFOILLOJ@?$AA?$FL?$AA?$BC?$AA?$FN?$AA?$AA@ 10009238     VisRenDlg.obj
+ 0002:00000240       ??_C@_1BM@ILBJHHNP@?$AAV?$AAi?$AAs?$AAR?$AAe?$AAn?$AAR?$AAe?$AAp?$AAl?$AAa?$AAc?$AAe?$AA?$AA@ 10009240     VisRenDlg.obj
+ 0002:0000025c       ??_C@_1BK@BGACKKLF@?$AAV?$AAi?$AAs?$AAR?$AAe?$AAn?$AAS?$AAe?$AAa?$AAr?$AAc?$AAh?$AA?$AA@ 1000925c     VisRenDlg.obj
+ 0002:00000278       ??_C@_1BM@JDLCMGOH@?$AAV?$AAi?$AAs?$AAR?$AAe?$AAn?$AAM?$AAa?$AAs?$AAk?$AAE?$AAx?$AAt?$AA?$AA@ 10009278     VisRenDlg.obj
+ 0002:00000294       ??_C@_1BO@NAANBEIJ@?$AAV?$AAi?$AAs?$AAR?$AAe?$AAn?$AAM?$AAa?$AAs?$AAk?$AAN?$AAa?$AAm?$AAe?$AA?$AA@ 10009294     VisRenDlg.obj
+ 0002:000002e4       ??_C@_08EMFANMN@Synthpop?$AA@ 100092e4     VisRenFile.obj
+ 0002:000002f0       ??_C@_04IMCHLCED@JPop?$AA@ 100092f0     VisRenFile.obj
+ 0002:000002f8       ??_C@_05LCJADBKB@Anime?$AA@ 100092f8     VisRenFile.obj
+ 0002:00000300       ??_C@_0N@MAEFEGK@Thrash?5Metal?$AA@ 10009300     VisRenFile.obj
+ 0002:00000310       ??_C@_05DLNELOKM@Salsa?$AA@ 10009310     VisRenFile.obj
+ 0002:00000318       ??_C@_08EHKNMNPK@Merengue?$AA@ 10009318     VisRenFile.obj
+ 0002:00000324       ??_C@_0P@GGLFOLPK@Christian?5Rock?$AA@ 10009324     VisRenFile.obj
+ 0002:00000334       ??_C@_0BH@IOJICMPF@Contemporary?5Christian?$AA@ 10009334     VisRenFile.obj
+ 0002:0000034c       ??_C@_09OIHDMKNE@Crossover?$AA@ 1000934c     VisRenFile.obj
+ 0002:00000358       ??_C@_0M@JNFPBAKG@Black?5Metal?$AA@ 10009358     VisRenFile.obj
+ 0002:00000364       ??_C@_0M@NEOMPHCK@Heavy?5Metal?$AA@ 10009364     VisRenFile.obj
+ 0002:00000370       ??_C@_0BG@JAFPOGFL@Christian?5Gangsta?5Rap?$AA@ 10009370     VisRenFile.obj
+ 0002:00000388       ??_C@_04BFFABJBP@Beat?$AA@ 10009388     VisRenFile.obj
+ 0002:00000390       ??_C@_0L@HKANPOAD@Polsk?5Punk?$AA@ 10009390     VisRenFile.obj
+ 0002:0000039c       ??_C@_09KOMLOGHM@Negerpunk?$AA@ 1000939c     VisRenFile.obj
+ 0002:000003a8       ??_C@_07OICMGNA@BritPop?$AA@ 100093a8     VisRenFile.obj
+ 0002:000003b0       ??_C@_05KLKAMDMN@Indie?$AA@ 100093b0     VisRenFile.obj
+ 0002:000003b8       ??_C@_06PBJGDPBN@Terror?$AA@ 100093b8     VisRenFile.obj
+ 0002:000003c0       ??_C@_08HKEHKPDB@Hardcore?$AA@ 100093c0     VisRenFile.obj
+ 0002:000003cc       ??_C@_0L@HMCMNNNL@Club?9House?$AA@ 100093cc     VisRenFile.obj
+ 0002:000003d8       ??_C@_0M@NPGHKLH@Drum?5?$CG?5Bass?$AA@ 100093d8     VisRenFile.obj
+ 0002:000003e4       ??_C@_03OHBFJGJM@Goa?$AA@  100093e4     VisRenFile.obj
+ 0002:000003e8       ??_C@_0L@LLLHEFCL@Dance?5Hall?$AA@ 100093e8     VisRenFile.obj
+ 0002:000003f4       ??_C@_0L@LAEGMFKC@Euro?9House?$AA@ 100093f4     VisRenFile.obj
+ 0002:00000400       ??_C@_0L@MNPOBBMF@A?5Cappella?$AA@ 10009400     VisRenFile.obj
+ 0002:0000040c       ??_C@_09ODFCHLIF@Drum?5Solo?$AA@ 1000940c     VisRenFile.obj
+ 0002:00000418       ??_C@_09LJCHIEBA@Punk?5Rock?$AA@ 10009418     VisRenFile.obj
+ 0002:00000424       ??_C@_04MNAABDPM@Duet?$AA@ 10009424     VisRenFile.obj
+ 0002:0000042c       ??_C@_09NOJFLNHA@Freestyle?$AA@ 1000942c     VisRenFile.obj
+ 0002:00000438       ??_C@_0O@NBAHAMNI@Rhythmic?5Soul?$AA@ 10009438     VisRenFile.obj
+ 0002:00000448       ??_C@_0N@BBLJBJNI@Power?5Ballad?$AA@ 10009448     VisRenFile.obj
+ 0002:00000458       ??_C@_06BHBJEFGN@Ballad?$AA@ 10009458     VisRenFile.obj
+ 0002:00000460       ??_C@_08ODOIKEAG@Folklore?$AA@ 10009460     VisRenFile.obj
+ 0002:0000046c       ??_C@_05JOIMBAIO@Samba?$AA@ 1000946c     VisRenFile.obj
+ 0002:00000474       ??_C@_05JHEGALN@Tango?$AA@ 10009474     VisRenFile.obj
+ 0002:0000047c       ??_C@_04FCIPMBFO@Club?$AA@ 1000947c     VisRenFile.obj
+ 0002:00000484       ??_C@_08BCJKABMD@Slow?5Jam?$AA@ 10009484     VisRenFile.obj
+ 0002:00000490       ??_C@_06LGIFNCAO@Satire?$AA@ 10009490     VisRenFile.obj
+ 0002:00000498       ??_C@_0M@BDIBAHFD@Porn?5Groove?$AA@ 10009498     VisRenFile.obj
+ 0002:000004a4       ??_C@_06MOKNPJA@Primus?$AA@ 100094a4     VisRenFile.obj
+ 0002:000004ac       ??_C@_0L@BMCAJHGC@Booty?5Bass?$AA@ 100094ac     VisRenFile.obj
+ 0002:000004b8       ??_C@_08HGMGMDPB@Symphony?$AA@ 100094b8     VisRenFile.obj
+ 0002:000004c4       ??_C@_06DIKKNAE@Sonata?$AA@ 100094c4     VisRenFile.obj
+ 0002:000004cc       ??_C@_0O@HPFNKIBK@Chamber?5Music?$AA@ 100094cc     VisRenFile.obj
+ 0002:000004dc       ??_C@_05GOIKOHMD@Opera?$AA@ 100094dc     VisRenFile.obj
+ 0002:000004e4       ??_C@_07KBEDDHIP@Chanson?$AA@ 100094e4     VisRenFile.obj
+ 0002:000004ec       ??_C@_06MBBDLFLA@Speech?$AA@ 100094ec     VisRenFile.obj
+ 0002:000004f4       ??_C@_06DEMGCIL@Humour?$AA@ 100094f4     VisRenFile.obj
+ 0002:000004fc       ??_C@_08PLJDJOCM@Acoustic?$AA@ 100094fc     VisRenFile.obj
+ 0002:00000508       ??_C@_0P@OGJNDFNF@Easy?5Listening?$AA@ 10009508     VisRenFile.obj
+ 0002:00000518       ??_C@_06HPKLMKFH@Chorus?$AA@ 10009518     VisRenFile.obj
+ 0002:00000520       ??_C@_08INPKNPNL@Big?5Band?$AA@ 10009520     VisRenFile.obj
+ 0002:0000052c       ??_C@_09DOKHDNBN@Slow?5Rock?$AA@ 1000952c     VisRenFile.obj
+ 0002:00000538       ??_C@_0P@FPGGCDAB@Symphonic?5Rock?$AA@ 10009538     VisRenFile.obj
+ 0002:00000548       ??_C@_0BB@BMPGIMDB@Psychedelic?5Rock?$AA@ 10009548     VisRenFile.obj
+ 0002:0000055c       ??_C@_0BB@GCFDGKOP@Progressive?5Rock?$AA@ 1000955c     VisRenFile.obj
+ 0002:00000570       ??_C@_0M@IELMFHHK@Gothic?5Rock?$AA@ 10009570     VisRenFile.obj
+ 0002:0000057c       ??_C@_0L@MJHGFLKD@Avantgarde?$AA@ 1000957c     VisRenFile.obj
+ 0002:00000588       ??_C@_09EGIPCOAF@Bluegrass?$AA@ 10009588     VisRenFile.obj
+ 0002:00000594       ??_C@_06POAALEMA@Celtic?$AA@ 10009594     VisRenFile.obj
+ 0002:0000059c       ??_C@_07NDAADGHD@Revival?$AA@ 1000959c     VisRenFile.obj
+ 0002:000005a4       ??_C@_05MKNAELPL@Latin?$AA@ 100095a4     VisRenFile.obj
+ 0002:000005ac       ??_C@_05NIBALHLG@Bebob?$AA@ 100095ac     VisRenFile.obj
+ 0002:000005b4       ??_C@_0M@CEPBINCO@Fast?9Fusion?$AA@ 100095b4     VisRenFile.obj
+ 0002:000005c0       ??_C@_05KBAOLLBJ@Swing?$AA@ 100095c0     VisRenFile.obj
+ 0002:000005c8       ??_C@_0O@OLFCHJHJ@National?5Folk?$AA@ 100095c8     VisRenFile.obj
+ 0002:000005d8       ??_C@_09FEMCKJPD@Folk?9Rock?$AA@ 100095d8     VisRenFile.obj
+ 0002:000005e4       ??_C@_04EKOPMCHG@Folk?$AA@ 100095e4     VisRenFile.obj
+ 0002:000005ec       ??_C@_09KBCOACPM@Hard?5Rock?$AA@ 100095ec     VisRenFile.obj
+ 0002:000005f8       ??_C@_0M@IIAEDJCA@Rock?5?$CG?5Roll?$AA@ 100095f8     VisRenFile.obj
+ 0002:00000604       ??_C@_07CGEPLPCE@Musical?$AA@ 10009604     VisRenFile.obj
+ 0002:0000060c       ??_C@_05POEPDAA@Retro?$AA@ 1000960c     VisRenFile.obj
+ 0002:00000614       ??_C@_05BAEFIAKL@Polka?$AA@ 10009614     VisRenFile.obj
+ 0002:0000061c       ??_C@_09KCHNDMFC@Acid?5Jazz?$AA@ 1000961c     VisRenFile.obj
+ 0002:00000628       ??_C@_09BPKAFLAF@Acid?5Punk?$AA@ 10009628     VisRenFile.obj
+ 0002:00000634       ??_C@_06HGLDOOOH@Tribal?$AA@ 10009634     VisRenFile.obj
+ 0002:0000063c       ??_C@_05LPLFCCKI@Lo?9Fi?$AA@ 1000963c     VisRenFile.obj
+ 0002:00000644       ??_C@_07EFCJIPGP@Trailer?$AA@ 10009644     VisRenFile.obj
+ 0002:0000064c       ??_C@_09LJJPFGGK@Showtunes?$AA@ 1000964c     VisRenFile.obj
+ 0002:00000658       ??_C@_04LAGCIPCP@Rave?$AA@ 10009658     VisRenFile.obj
+ 0002:00000660       ??_C@_0M@NADCKJBA@Psychedelic?$AA@ 10009660     VisRenFile.obj
+ 0002:0000066c       ??_C@_08PIJBHODF@New?5Wave?$AA@ 1000966c     VisRenFile.obj
+ 0002:00000678       ??_C@_07DFBJIPEL@Cabaret?$AA@ 10009678     VisRenFile.obj
+ 0002:00000680       ??_C@_0BA@CLMIBMOP@Native?5American?$AA@ 10009680     VisRenFile.obj
+ 0002:00000690       ??_C@_06LDDNPE@Jungle?$AA@ 10009690     VisRenFile.obj
+ 0002:00000698       ??_C@_08HKCHHHPC@Pop?9Funk?$AA@ 10009698     VisRenFile.obj
+ 0002:000006a4       ??_C@_0O@CMBOEJC@Christian?5Rap?$AA@ 100096a4     VisRenFile.obj
+ 0002:000006b4       ??_C@_06OJGPGEOE@Top?540?$AA@ 100096b4     VisRenFile.obj
+ 0002:000006bc       ??_C@_0M@JJBIHIMB@Gangsta?5Rap?$AA@ 100096bc     VisRenFile.obj
+ 0002:000006c8       ??_C@_04HAPBPEGD@Cult?$AA@ 100096c8     VisRenFile.obj
+ 0002:000006d0       ??_C@_06DCKLOHGE@Comedy?$AA@ 100096d0     VisRenFile.obj
+ 0002:000006d8       ??_C@_0O@KFCFCIGH@Southern?5Rock?$AA@ 100096d8     VisRenFile.obj
+ 0002:000006e8       ??_C@_05MMFIBGEF@Dream?$AA@ 100096e8     VisRenFile.obj
+ 0002:000006f0       ??_C@_09PDIMAOAM@Eurodance?$AA@ 100096f0     VisRenFile.obj
+ 0002:000006fc       ??_C@_08EGAHBEGH@Pop?9Folk?$AA@ 100096fc     VisRenFile.obj
+ 0002:00000708       ??_C@_0L@CHKMIMGG@Electronic?$AA@ 10009708     VisRenFile.obj
+ 0002:00000714       ??_C@_0BC@HKAKJIIF@Techno?9Industrial?$AA@ 10009714     VisRenFile.obj
+ 0002:00000728       ??_C@_08BPJDAAFN@Darkwave?$AA@ 10009728     VisRenFile.obj
+ 0002:00000734       ??_C@_06OBILIHNB@Gothic?$AA@ 10009734     VisRenFile.obj
+ 0002:0000073c       ??_C@_06JPHOEBPP@Ethnic?$AA@ 1000973c     VisRenFile.obj
+ 0002:00000744       ??_C@_0BC@HBBFDJBD@Instrumental?5Rock?$AA@ 10009744     VisRenFile.obj
+ 0002:00000758       ??_C@_0BB@LFDKKLIN@Instrumental?5Pop?$AA@ 10009758     VisRenFile.obj
+ 0002:0000076c       ??_C@_0L@KJEEODLG@Meditative?$AA@ 1000976c     VisRenFile.obj
+ 0002:00000778       ??_C@_05OMHELODH@Space?$AA@ 10009778     VisRenFile.obj
+ 0002:00000780       ??_C@_04JJGPMDMB@Punk?$AA@ 10009780     VisRenFile.obj
+ 0002:00000788       ??_C@_04LOFJNELM@Soul?$AA@ 10009788     VisRenFile.obj
+ 0002:00000790       ??_C@_04MKNBGPJB@Bass?$AA@ 10009790     VisRenFile.obj
+ 0002:00000798       ??_C@_08KFNOAEAE@Alt?5Rock?$AA@ 10009798     VisRenFile.obj
+ 0002:000007a4       ??_C@_05GIBOCELO@Noise?$AA@ 100097a4     VisRenFile.obj
+ 0002:000007ac       ??_C@_06EIIEMBBK@Gospel?$AA@ 100097ac     VisRenFile.obj
+ 0002:000007b4       ??_C@_0L@FEFCBAGD@Sound?5Clip?$AA@ 100097b4     VisRenFile.obj
+ 0002:000007c0       ??_C@_04IBBNLEM@Game?$AA@  100097c0     VisRenFile.obj
+ 0002:000007c8       ??_C@_05KEIICPIE@House?$AA@ 100097c8     VisRenFile.obj
+ 0002:000007d0       ??_C@_04DDEKHPPK@Acid?$AA@ 100097d0     VisRenFile.obj
+ 0002:000007d8       ??_C@_0N@FJCNDAAI@Instrumental?$AA@ 100097d8     VisRenFile.obj
+ 0002:000007e8       ??_C@_09KCDEIEAL@Classical?$AA@ 100097e8     VisRenFile.obj
+ 0002:000007f4       ??_C@_06NOFDHFLJ@Trance?$AA@ 100097f4     VisRenFile.obj
+ 0002:000007fc       ??_C@_06FOAOBEBC@Fusion?$AA@ 100097fc     VisRenFile.obj
+ 0002:00000804       ??_C@_0M@FGGHLBCE@Jazz?5?$CG?5Funk?$AA@ 10009804     VisRenFile.obj
+ 0002:00000810       ??_C@_05CGEGIIHL@Vocal?$AA@ 10009810     VisRenFile.obj
+ 0002:00000818       ??_C@_08MGHEAHLN@Trip?9Hop?$AA@ 10009818     VisRenFile.obj
+ 0002:00000824       ??_C@_07EBHHCJEE@Ambient?$AA@ 10009824     VisRenFile.obj
+ 0002:0000082c       ??_C@_0M@LPAFHLOI@Euro?9Techno?$AA@ 1000982c     VisRenFile.obj
+ 0002:00000838       ??_C@_0L@JMHFNCF@Soundtrack?$AA@ 10009838     VisRenFile.obj
+ 0002:00000844       ??_C@_06DIJHLFMF@Pranks?$AA@ 10009844     VisRenFile.obj
+ 0002:0000084c       ??_C@_0M@EPABKDJI@Death?5Metal?$AA@ 1000984c     VisRenFile.obj
+ 0002:00000858       ??_C@_03DPGHPOII@Ska?$AA@  10009858     VisRenFile.obj
+ 0002:0000085c       ??_C@_0M@GIKKCPNF@Alternative?$AA@ 1000985c     VisRenFile.obj
+ 0002:00000868       ??_C@_0L@BLDOBJBN@Industrial?$AA@ 10009868     VisRenFile.obj
+ 0002:00000874       ??_C@_06GNBMDAPP@Techno?$AA@ 10009874     VisRenFile.obj
+ 0002:0000087c       ??_C@_04NENDLEAJ@Rock?$AA@ 1000987c     VisRenFile.obj
+ 0002:00000884       ??_C@_06FCJMBMOE@Reggae?$AA@ 10009884     VisRenFile.obj
+ 0002:0000088c       ??_C@_03NJJFDPCL@Rap?$AA@  1000988c     VisRenFile.obj
+ 0002:00000890       ??_C@_03EBDAPABP@R?$CGB?$AA@ 10009890     VisRenFile.obj
+ 0002:00000894       ??_C@_03HJACNKKK@Pop?$AA@  10009894     VisRenFile.obj
+ 0002:00000898       ??_C@_05BBOGGNLJ@Other?$AA@ 10009898     VisRenFile.obj
+ 0002:000008a0       ??_C@_06MPHEKAMK@Oldies?$AA@ 100098a0     VisRenFile.obj
+ 0002:000008a8       ??_C@_07NOBIPMGJ@New?5Age?$AA@ 100098a8     VisRenFile.obj
+ 0002:000008b0       ??_C@_05MICJANKE@Metal?$AA@ 100098b0     VisRenFile.obj
+ 0002:000008b8       ??_C@_04CELCKEJG@Jazz?$AA@ 100098b8     VisRenFile.obj
+ 0002:000008c0       ??_C@_07HOOMJDLF@Hip?9Hop?$AA@ 100098c0     VisRenFile.obj
+ 0002:000008c8       ??_C@_06BKAMGKHE@Grunge?$AA@ 100098c8     VisRenFile.obj
+ 0002:000008d0       ??_C@_04HGMPKBOD@Funk?$AA@ 100098d0     VisRenFile.obj
+ 0002:000008d8       ??_C@_05JPKIAOHJ@Disco?$AA@ 100098d8     VisRenFile.obj
+ 0002:000008e0       ??_C@_05PHEECCHA@Dance?$AA@ 100098e0     VisRenFile.obj
+ 0002:000008e8       ??_C@_07HAAJMFIA@Country?$AA@ 100098e8     VisRenFile.obj
+ 0002:000008f0       ??_C@_0N@HMGLJNH@Classic?5Rock?$AA@ 100098f0     VisRenFile.obj
+ 0002:00000900       ??_C@_05EGIABMCH@Blues?$AA@ 10009900     VisRenFile.obj
+ 0002:00000908       ??_C@_03FELEIGCD@TAG?$AA@  10009908     VisRenFile.obj
+ 0002:0000090c       ??_C@_03LLFPHHHI@ID3?$AA@  1000990c     VisRenFile.obj
+ 0002:00000910       ??_C@_02DNCLAJDG@MM?$AA@   10009910     VisRenFile.obj
+ 0002:00000914       ??_C@_02FOEOGEOO@II?$AA@   10009914     VisRenFile.obj
+ 0002:00000918       ??_C@_04HDOEGLCG@Exif?$AA@ 10009918     VisRenFile.obj
+ 0002:00000920       ??_C@_1BO@PDDPFOKA@?$AA?$CF?$AA0?$AA2?$AAd?$AA?9?$AA?$CF?$AA0?$AA2?$AAd?$AA?9?$AA?$CF?$AA0?$AA2?$AAd?$AA?$AA@ 10009920     VisRenFile.obj
+ 0002:00000940       ??_C@_1BO@ICAHPMKB@?$AA?$CF?$AA0?$AA4?$AAd?$AA?4?$AA?$CF?$AA0?$AA2?$AAd?$AA?4?$AA?$CF?$AA0?$AA2?$AAd?$AA?$AA@ 10009940     VisRenFile.obj
+ 0002:00000960       ??_C@_1M@EACEEPIG@?$AA?$CF?$AAd?$AAx?$AA?$CF?$AAd?$AA?$AA@ 10009960     VisRenFile.obj
+ 0002:0000096c       ??_C@_1DM@KPCDNFFI@?$AA?$CF?$AA0?$AA4?$AAd?$AA?4?$AA?$CF?$AA0?$AA2?$AAd?$AA?4?$AA?$CF?$AA0?$AA2?$AAd?$AA?5?$AA?$CF?$AA0?$AA2?$AAd?$AA?9@ 1000996c     VisRenFile.obj
+ 0002:000009a8       ??_C@_19CCLPEKGE@?$AA?$CF?$AA0?$AA?$CK?$AAd?$AA?$AA@ 100099a8     VisRenFile.obj
+ 0002:000009b4       ??_C@_15KBNFFBLL@?$AA?$FL?$AAC?$AA?$AA@ 100099b4     VisRenFile.obj
+ 0002:000009bc       ??_C@_15IELOAOGH@?$AA?$FL?$AAE?$AA?$AA@ 100099bc     VisRenFile.obj
+ 0002:000009c4       ??_C@_15FDLPIJGG@?$AA?$FL?$AAN?$AA?$AA@ 100099c4     VisRenFile.obj
+ 0002:000009cc       ??_C@_17BLOGADFA@?$AA?$FL?$AA?$FN?$AA?$FN?$AA?$AA@ 100099cc     VisRenFile.obj
+ 0002:000009d4       ??_C@_17MNLPOAEN@?$AA?$FL?$AA?$FL?$AA?$FN?$AA?$AA@ 100099d4     VisRenFile.obj
+ 0002:000009dc       ??_C@_1M@BPOHAJGK@?$AA?$CK?$AA?4?$AAp?$AAn?$AAg?$AA?$AA@ 100099dc     VisRenFile.obj
+ 0002:000009e8       ??_C@_1M@MMCAGGIF@?$AA?$CK?$AA?4?$AAg?$AAi?$AAf?$AA?$AA@ 100099e8     VisRenFile.obj
+ 0002:000009f4       ??_C@_1M@GKCDCCLE@?$AA?$CK?$AA?4?$AAb?$AAm?$AAp?$AA?$AA@ 100099f4     VisRenFile.obj
+ 0002:00000a00       ??_C@_1M@MLEAEHGC@?$AA?$CK?$AA?4?$AAj?$AAp?$AAg?$AA?$AA@ 10009a00     VisRenFile.obj
+ 0002:00000a0c       ??_C@_1M@IFOKNGIO@?$AA?$CK?$AA?4?$AAm?$AAp?$AA3?$AA?$AA@ 10009a0c     VisRenFile.obj
+ 0002:00000a18       ??_C@_13JIJFJIGK@?$AAi?$AA?$AA@ 10009a18     VisRenFile.obj
+ 0002:00000a1c       ??_C@_13CGOKJPIL@?$AA?1?$AA?$AA@ 10009a1c     VisRenFile.obj
+ 0002:00000a20       ??_C@_15DOMPPMEE@?$AAc?$AAh?$AA?$AA@ 10009a20     VisRenFile.obj
+ 0002:00000a28       ??_C@_15OIJGBPFJ@?$AAe?$AAh?$AA?$AA@ 10009a28     VisRenFile.obj
+ 0002:00000a30       ??_C@_15GEMIOCAG@?$AAj?$AAa?$AA?$AA@ 10009a30     VisRenFile.obj
+ 0002:00000a38       ??_C@_15IEBHJFDF@?$AAj?$AAo?$AA?$AA@ 10009a38     VisRenFile.obj
+ 0002:00000a40       ??_C@_15LLLDCCMO@?$AAj?$AAu?$AA?$AA@ 10009a40     VisRenFile.obj
+ 0002:00000a48       ??_C@_15NCJMHOCJ@?$AAk?$AAh?$AA?$AA@ 10009a48     VisRenFile.obj
+ 0002:00000a50       ??_C@_15DNBJPONP@?$AAs?$AAh?$AA?$AA@ 10009a50     VisRenFile.obj
+ 0002:00000a58       ??_C@_17KCDHOEDO@?$AAs?$AAh?$AAh?$AA?$AA@ 10009a58     VisRenFile.obj
+ 0002:00000a60       ??_C@_15BKBGKPBH@?$AAz?$AAh?$AA?$AA@ 10009a60     VisRenFile.obj
+ 0002:00000a68       ??_C@_17DOIHMIOA@?$AA_?$AA?9?$AA_?$AA?$AA@ 10009a68     VisRenFile.obj
+ 0002:00000a70       ??_C@_17HIKLPLBG@?$AA?5?$AA?9?$AA?5?$AA?$AA@ 10009a70     VisRenFile.obj
+ 0002:00000a78       ??_C@_1O@PNMIMBDD@?$AAC?$AAO?$AAN?$AAI?$AAN?$AA$?$AA?$AA@ 10009a78     VisRenFile.obj
+ 0002:00000a88       ??_C@_1M@NOFCGGEJ@?$AA?$CC?$AA?$CF?$AAs?$AA?$CC?$AA?6?$AA?$AA@ 10009a88     VisRenFile.obj
+ 0002:00000a94       ??_C@_1BK@COOBCCDO@?$AA?$CC?$AA?$CF?$AAs?$AA?$CC?$AA?$CF?$AA?$CK?$AAc?$AA?$CC?$AA?$CF?$AAs?$AA?$CC?$AA?6?$AA?$AA@ 10009a94     VisRenFile.obj
+ 0002:00000ab0       ??_C@_19BLBCAKAM@?$AAF?$AAR?$AAe?$AAn?$AA?$AA@ 10009ab0     VisRenFile.obj
+ 0002:00000abc       __IMPORT_DESCRIPTOR_KERNEL32 10009abc     kernel32:KERNEL32.dll
+ 0002:00000ad0       __IMPORT_DESCRIPTOR_ADVAPI32 10009ad0     advapi32:ADVAPI32.dll
+ 0002:00000ae4       __IMPORT_DESCRIPTOR_MSVCRT 10009ae4     MSVCRT60:MSVCRT.dll
+ 0002:00000af8       __NULL_IMPORT_DESCRIPTOR   10009af8     kernel32:KERNEL32.dll
+ 0003:00000000       ?Opt@@3UOptions@@A         1000a000     VisRen.obj
+ 0003:00000040       ?DlgSize@@3U0@A            1000a040     VisRen.obj
+ 0003:00000068       ?Genres@@3PAPBDA           1000a068     VisRenFile.obj
+ 0003:000002e0       ?Info@@3UPluginStartupInfo@@A 1000a2e0     VisRen.obj
+ 0003:00000364       ?Undo@@3UUndoFileName@@A   1000a364     VisRen.obj
+ 0003:00000378       ?FSF@@3UFarStandardFunctions@@A 1000a378     VisRen.obj
+ 0003:00000468       ?ImageInfo@@3UImageInfo_t@@A 1000a468     VisRenFile.obj
+ 0003:00000528       ?MotorolaOrder@@3HA        1000a528     VisRenFile.obj
+
+ entry point at        0000:00000000
+
+ Static symbols
+

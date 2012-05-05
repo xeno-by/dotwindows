@@ -1,0 +1,4 @@
+RegEditorH64.dll CrtlJ for x64
+RegEditorH32.dll CrtlJ for x86
+deploy.bat deploy.bat 1.1.25
+RegEditor_ru._lng This is Russian OEM language file, rename it to RegEditor_ru.lng when using Far 1.7x

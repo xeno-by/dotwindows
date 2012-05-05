@@ -1,6 +1,6 @@
 ﻿.Language=Hungarian,Hungarian (Magyar)
 
-//Version: 2.0 build 1807
+//Version: 2.1 build 1807
 
 "Igen"
 "Nem"
@@ -275,6 +275,7 @@
 "Gördítőn&yilak mutatva"
 "&Maradó blokkok"
 "Fájlok eredeti megnyitása ANS&I kódlappal"
+"Autorefresh on removable drives"
 
 "Szerkesztő"
 "Alt-F4 helyett F4 indítja a külső szerkesztőt"
@@ -341,8 +342,8 @@
 "másolása"
 "átnevezése-mozgatása"
 "Create link to"
-" %d elem másolása"
-" %d elem átnevezése-mozgatása"
+" %d elem másolása%s"
+" %d elem átnevezése-mozgatása%s"
 "Create links to %d item%s"
 " ide:"
 " &in:"
@@ -551,10 +552,14 @@
 "Sorra ugrás"
 
 "Mappa gyorsbillentyűk"
+"Szerk.: Del,Ins,ShiftIns,F4"
 "Szerk.: Del,Ins,F4"
 "<nincs>"
 "<plugin>"
 "A gyorsbillentyűhöz rendelt mappa:"
+"Plugin:"
+"File:"
+"Data:"
 "Ugrás a legközelebbi létező mappára?"
 "Mentsem a gyorsbillentyűket?"
 
@@ -815,6 +820,7 @@
 "Show"
 
 "Név"
+"Extension"
 "Méret"
 "TMéret"
 "Dátum"
@@ -1459,6 +1465,7 @@
 "Show size in &Windows Explorer style"
 "Show &removable drive parameters"
 "Show &plugins"
+"Sort plugins by hotkey"
 "Show &CD drive parameters"
 "Show ne&twork drive parameters"
 "Del,Shift-Del,F4,F9"
@@ -1688,7 +1695,7 @@
 "OEM plugins support"
 "Szimbolikus linkek &vizsgálata"
 "Saját plu&ginek útvonala:"
-"&Fájl feldolgozása (OpenFilePlugin)"
+"&Fájl feldolgozása"
 "Szabvány társítás megjelenítése"
 "Akkor is, ha csak egy plugin van"
 "Keresés eredménye (SetFindList)"
@@ -1812,6 +1819,7 @@
 "Mappák NAG&YBETŰVEL mutatva"
 "Fájlok kis&betűvel mutatva"
 "NAGYBETŰS fájl&nevek kisbetűvel"
+"Preload C&0 data for all files"
 " Tanácsokat a súgóban talál (F1) "
 
 "Mappa megjegyzésfájlok"
@@ -2484,5 +2492,7 @@
 "to open this object:"
 "Do this for &all current objects"
 "Do not ask again in the current session"
+"History"
+"Files"
 
 "?Új fájl?"

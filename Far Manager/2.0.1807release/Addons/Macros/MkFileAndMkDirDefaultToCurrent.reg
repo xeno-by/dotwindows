@@ -1,0 +1,11 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell]
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\F7]
+"Sequence"="clip(5, 2)\nclip(1, APanel.Current)\nF7\nCtrlV\nclip(5, 1)\nHome\neditor.sel(2, 0)\nEnd\neditor.sel(2, 1)"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\ShiftF4]
+"Sequence"="clip(5, 2)\nclip(1, APanel.Current)\nShiftF4\nCtrlV\nclip(5, 1)\nHome\neditor.sel(2, 0)\nEnd\neditor.sel(2, 1)"
+"DisableOutput"=dword:00000001

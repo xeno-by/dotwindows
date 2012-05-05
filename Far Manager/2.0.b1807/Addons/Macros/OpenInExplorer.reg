@@ -1,5 +1,0 @@
-REGEDIT4
-
-[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\CtrlE]
-"Sequence"="e x p l o r e r Space CtrlShift[ Enter"
-"DisableOutput"=dword:00000001

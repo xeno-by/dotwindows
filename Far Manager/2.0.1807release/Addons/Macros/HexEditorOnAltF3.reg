@@ -1,0 +1,13 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltF3]
+"Sequence"="F11 h"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\AltF3]
+"Sequence"="F11 h"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Viewer\AltF3]
+"Sequence"="F11 h"
+"DisableOutput"=dword:00000001

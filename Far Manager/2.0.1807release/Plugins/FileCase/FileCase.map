@@ -1,0 +1,90 @@
+ FileCase
+
+ Timestamp is 4d49e332 (Thu Feb 03 00:05:22 2011)
+
+ Preferred load address is 10000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00000038H .idata$5                CODE
+ 0001:00000038 00000102H .rdata                  CODE
+ 0001:00000140 00001095H .text                   CODE
+ 0001:000011d8 00000028H .idata$2                CODE
+ 0001:00001200 00000014H .idata$3                CODE
+ 0001:00001214 00000038H .idata$4                CODE
+ 0001:0000124c 000000ccH .idata$6                CODE
+ 0001:00001320 0000009aH .edata                  CODE
+ 0002:00000000 00000000H .data                   DATA
+ 0002:00000000 0000062cH .bss                    DATA
+ 0003:00000000 00000058H .rsrc$01                DATA
+ 0003:00000060 00000390H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base       Lib:Object
+
+ 0000:00000000       ___safe_se_handler_table   00000000     <absolute>
+ 0000:00000000       ___safe_se_handler_count   00000000     <absolute>
+ 0001:00000000       __imp__RegSetValueExW@24   10001000     advapi32:ADVAPI32.dll
+ 0001:00000004       __imp__RegCloseKey@4       10001004     advapi32:ADVAPI32.dll
+ 0001:00000008       __imp__RegOpenKeyExW@20    10001008     advapi32:ADVAPI32.dll
+ 0001:0000000c       __imp__RegCreateKeyExW@36  1000100c     advapi32:ADVAPI32.dll
+ 0001:00000010       __imp__RegQueryValueExW@24 10001010     advapi32:ADVAPI32.dll
+ 0001:00000014       \177ADVAPI32_NULL_THUNK_DATA 10001014     advapi32:ADVAPI32.dll
+ 0001:00000018       __imp__HeapFree@12         10001018     kernel32:KERNEL32.dll
+ 0001:0000001c       __imp__MoveFileW@8         1000101c     kernel32:KERNEL32.dll
+ 0001:00000020       __imp__lstrcatW@8          10001020     kernel32:KERNEL32.dll
+ 0001:00000024       __imp__lstrcpyW@8          10001024     kernel32:KERNEL32.dll
+ 0001:00000028       __imp__HeapAlloc@12        10001028     kernel32:KERNEL32.dll
+ 0001:0000002c       __imp__GetProcessHeap@0    1000102c     kernel32:KERNEL32.dll
+ 0001:00000030       __imp__lstrlenW@4          10001030     kernel32:KERNEL32.dll
+ 0001:00000034       \177KERNEL32_NULL_THUNK_DATA 10001034     kernel32:KERNEL32.dll
+ 0001:00000038       ??_C@_15NKPPEEJO@?$AA?5?$AA_?$AA?$AA@ 10001038     FileCase.obj
+ 0001:00000040       ??_C@_13FPGAJAPJ@?$AA?2?$AA?$AA@ 10001040     FileCase.obj
+ 0001:00000044       ??_C@_13JOFGPIOO@?$AA?4?$AA?$AA@ 10001044     FileCase.obj
+ 0001:00000048       ??_C@_1BA@CAKIGJMA@?$AAW?$AAo?$AAr?$AAd?$AAD?$AAi?$AAv?$AA?$AA@ 10001048     FileCase.obj
+ 0001:00000058       ??_C@_1BG@DFJACJCJ@?$AAP?$AAr?$AAo?$AAc?$AAe?$AAs?$AAs?$AAD?$AAi?$AAr?$AA?$AA@ 10001058     FileCase.obj
+ 0001:00000070       ??_C@_1BM@BNELJCPP@?$AAP?$AAr?$AAo?$AAc?$AAe?$AAs?$AAs?$AAS?$AAu?$AAb?$AAD?$AAi?$AAr?$AA?$AA@ 10001070     FileCase.obj
+ 0001:0000008c       ??_C@_1BM@HMLICANP@?$AAS?$AAk?$AAi?$AAp?$AAM?$AAi?$AAx?$AAe?$AAd?$AAC?$AAa?$AAs?$AAe?$AA?$AA@ 1000108c     FileCase.obj
+ 0001:000000a8       ??_C@_1BO@IKHLKIJC@?$AAC?$AAo?$AAn?$AAv?$AAe?$AAr?$AAt?$AAM?$AAo?$AAd?$AAe?$AAE?$AAx?$AAt?$AA?$AA@ 100010a8     FileCase.obj
+ 0001:000000c8       ??_C@_1BI@NPBILFDJ@?$AAC?$AAo?$AAn?$AAv?$AAe?$AAr?$AAt?$AAM?$AAo?$AAd?$AAe?$AA?$AA@ 100010c8     FileCase.obj
+ 0001:000000e0       ??_C@_11LOCGONAA@?$AA?$AA@ 100010e0     FileCase.obj
+ 0001:000000e4       ??_C@_1CA@DJIPFGBF@?$AA?2?$AAC?$AAa?$AAs?$AAe?$AAC?$AAo?$AAn?$AAv?$AAe?$AAr?$AAt?$AAi?$AAo?$AAn?$AA?$AA@ 100010e4     FileCase.obj
+ 0001:00000104       ??_C@_1BC@ENICKDH@?$AAC?$AAo?$AAn?$AAt?$AAe?$AAn?$AAt?$AAs?$AA?$AA@ 10001104     FileCase.obj
+ 0001:00000140       __alloca_probe             10001140     chkstk.obj
+ 0001:00000140       __chkstk                   10001140 f   chkstk.obj
+ 0001:0000016b       _wmemchr                   1000116b f i FileCase.obj
+ 0001:0000018c       ?GetMsg@@YIPB_WH@Z         1000118c f   FileCase.obj
+ 0001:0000019a       ?InitDialogItems@@YIXPBUInitDialogItem@@PAUFarDialogItem@@H@Z 1000119a f   FileCase.obj
+ 0001:00000211       ?IsCaseMixed@@YIHPB_W@Z    10001211 f   FileCase.obj
+ 0001:0000026a       ?GetOnlyName@@YIPB_WPB_W@Z 1000126a f   FileCase.obj
+ 0001:00000284       ?GetFullName@@YIPA_WPA_WPB_W1@Z 10001284 f   FileCase.obj
+ 0001:000002d2       ?IsWordDiv@@YIHH@Z         100012d2 f   FileCase.obj
+ 0001:000002ed       ?CaseWord@@YIXPA_WH@Z      100012ed f   FileCase.obj
+ 0001:00000365       ?DlgProc@@YGJPAXHHJ@Z      10001365 f   FileCase.obj
+ 0001:00000397       ?CreateRegKey@@YIPAUHKEY__@@PAU1@PB_W@Z 10001397 f   FileCase.obj
+ 0001:00000408       ?OpenRegKey@@YIPAUHKEY__@@PAU1@PB_W@Z 10001408 f   FileCase.obj
+ 0001:00000472       ?ProcessName@@YIXPB_WK@Z   10001472 f   FileCase.obj
+ 0001:00000678       _GetMinFarVersionW@0       10001678 f   FileCase.obj
+ 0001:0000067e       _GetPluginInfoW@4          1000167e f   FileCase.obj
+ 0001:000006ae       ?SetRegKey@@YIXPAUHKEY__@@PB_W1K@Z 100016ae f   FileCase.obj
+ 0001:000006d7       ?SetRegKey@@YIXPAUHKEY__@@PB_W1PA_W@Z 100016d7 f   FileCase.obj
+ 0001:0000070c       ?GetRegKey@@YIHPAUHKEY__@@PB_W1AAHK@Z 1000170c f   FileCase.obj
+ 0001:0000075e       ?GetRegKey@@YIHPAUHKEY__@@PB_W1PA_W1K@Z 1000175e f   FileCase.obj
+ 0001:000007c4       _SetStartupInfoW@4         100017c4 f   FileCase.obj
+ 0001:000008ce       ?CaseConvertion@@YIXXZ     100018ce f   FileCase.obj
+ 0001:00001117       _OpenPluginW@8             10002117 f   FileCase.obj
+ 0001:00001130       _wcsrchr                   10002130 f   libCRT:strrchr.obj
+ 0001:00001160       ??_V@YAXPAX@Z              10002160 f   libCRT:delete_array.obj
+ 0001:00001170       _free                      10002170 f   libCRT:free.obj
+ 0001:00001190       _malloc                    10002190 f   libCRT:malloc.obj
+ 0001:000011b0       ??_U@YAPAXI@Z              100021b0 f   libCRT:new_array.obj
+ 0001:000011c0       ??3@YAXPAX@Z               100021c0 f   libCRT:delete.obj
+ 0001:000011d0       ??2@YAPAXI@Z               100021d0 f   libCRT:new.obj
+ 0001:000011d8       __IMPORT_DESCRIPTOR_KERNEL32 100021d8     kernel32:KERNEL32.dll
+ 0001:000011ec       __IMPORT_DESCRIPTOR_ADVAPI32 100021ec     advapi32:ADVAPI32.dll
+ 0001:00001200       __NULL_IMPORT_DESCRIPTOR   10002200     kernel32:KERNEL32.dll
+ 0002:00000088       ?PluginRootKey@@3PA_WA     10003088     FileCase.obj
+ 0002:00000210       ?Opt@@3UOptions@@A         10003210     FileCase.obj
+
+ entry point at        0000:00000000
+
+ Static symbols
+

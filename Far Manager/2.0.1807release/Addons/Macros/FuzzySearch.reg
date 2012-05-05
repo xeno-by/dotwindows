@@ -1,0 +1,145 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltA]
+"Sequence"="AltA BS * a"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltB]
+"Sequence"="AltB BS * b"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltC]
+"Sequence"="AltC BS * c"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltD]
+"Sequence"="AltD BS * d"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltE]
+"Sequence"="AltE BS * e"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltF]
+"Sequence"="AltF BS * f"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltG]
+"Sequence"="AltG BS * g"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltH]
+"Sequence"="AltH BS * h"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltI]
+"Sequence"="AltI BS * i"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltJ]
+"Sequence"="AltJ BS * j"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltK]
+"Sequence"="AltK BS * k"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltL]
+"Sequence"="AltL BS * l"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltM]
+"Sequence"="AltM BS * m"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltN]
+"Sequence"="AltN BS * n"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltO]
+"Sequence"="AltO BS * o"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltP]
+"Sequence"="AltP BS * p"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltQ]
+"Sequence"="AltQ BS * q"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltR]
+"Sequence"="AltR BS * r"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltS]
+"Sequence"="AltS BS * s"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltT]
+"Sequence"="AltT BS * t"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltU]
+"Sequence"="AltU BS * u"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltV]
+"Sequence"="AltV BS * v"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltW]
+"Sequence"="AltW BS * w"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltX]
+"Sequence"="AltX BS * x"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltY]
+"Sequence"="AltY BS * y"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltZ]
+"Sequence"="AltZ BS * z"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt0]
+"Sequence"="Alt0 BS * 0"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt1]
+"Sequence"="Alt1 BS * 1"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt2]
+"Sequence"="Alt2 BS * 2"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt3]
+"Sequence"="Alt3 BS * 3"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt4]
+"Sequence"="Alt4 BS * 4"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt5]
+"Sequence"="Alt5 BS * 5"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt6]
+"Sequence"="Alt6 BS * 6"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt7]
+"Sequence"="Alt7 BS * 7"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt8]
+"Sequence"="Alt8 BS * 8"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\Alt9]
+"Sequence"="Alt9 BS * 9"
+"DisableOutput"=dword:00000001

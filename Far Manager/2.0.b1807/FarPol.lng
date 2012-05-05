@@ -1,6 +1,6 @@
 ﻿.Language=Polish,Polish (Polski)
 
-//Version: 2.0 build 1807
+//Version: 2.1 build 1807
 
 "Tak"
 "Nie"
@@ -275,6 +275,7 @@
 "Pokaż strzał&ki przewijania"
 "T&rwałe zaznaczenie"
 "&Otwieraj pliki w kodowaniu Windows"
+"Autorefresh on removable drives"
 
 "Edytor"
 "Use external editor for F4 instead of Alt-F4"
@@ -297,7 +298,7 @@
 "Nie edytuj plików tylko do odczytu"
 "&Ostrzeż przed otwieraniem plików tylko do odczytu"
 "Rozmiar ta&bulatora"
-"Pokaż %pasek przewijania"
+"Pokaż &pasek przewijania"
 "Show white space"
 "Pick &up the word"
 "&Próbuj otwierać pliki w kodowaniu Windows"
@@ -341,8 +342,8 @@
 "Skopiuj"
 "Zmień nazwę lub przenieś"
 "Create link to"
-"Skopiuj %d plików"
-"Zmień nazwę lub przenieś %d plików"
+"Skopiuj %d plików%s"
+"Zmień nazwę lub przenieś %d plików%s"
 "Create links to %d item%s"
 " d&o:"
 " &in:"
@@ -551,10 +552,14 @@
 "Idź do linii"
 
 "Skróty katalogów"
+"Edycja: Del,Ins,ShiftIns,F4"
 "Edycja: Del,Ins,F4"
 "<brak>"
 "<plugin>"
 "Wprowadź nowy skrót:"
+"Plugin:"
+"File:"
+"Data:"
 "Przejść do najbliższego istniejącego folderu?"
 "Zapisać skróty?"
 
@@ -815,6 +820,7 @@
 "Show"
 
 "Nazwa"
+"Extension"
 "Rozmiar"
 "Spakowany"
 "Data"
@@ -1459,6 +1465,7 @@
 "Show size in &Windows Explorer style"
 "Show &removable drive parameters"
 "Show &plugins"
+"Sort plugins by hotkey"
 "Show &CD drive parameters"
 "Show ne&twork drive parameters"
 "Del,Shift-Del,F4,F9"
@@ -1688,7 +1695,7 @@
 "OEM plugins support"
 "Skanuj linki s&ymboliczne"
 "Ś&cieżka do własnych pluginów:"
-"&File processing (OpenFilePlugin)"
+"&File processing"
 "Show standard &association item"
 "Even if only &one plugin found"
 "Search &results (SetFindList)"
@@ -1812,6 +1819,7 @@
 "Nazwy katalogów &WIELKIMI LITERAMI"
 "&Nazwy plików małymi literami"
 "Wyświetl NAZWY_PLIKÓW &jako nazwy_plików"
+"Preload C&0 data for all files"
 " Instrukcje zawarte są w pomocy podręcznej "
 
 "Pliki opisu katalogu"
@@ -2484,5 +2492,7 @@
 "to open this object:"
 "Do this for &all current objects"
 "Do not ask again in the current session"
+"History"
+"Files"
 
 "?Nowy plik?"

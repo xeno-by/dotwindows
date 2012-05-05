@@ -1,6 +1,6 @@
 ﻿.Language=Czech,Czech (Čeština)
 
-//Version: 2.0 build 1807
+//Version: 2.1 build 1807
 
 "Ano"
 "Ne"
@@ -275,6 +275,7 @@
 "Zobrazovat &skrolovací šipky"
 "Trvalé &výběry"
 "Automaticky otevírat soubory ve &WIN kódování"
+"Autorefresh on removable drives"
 
 "Editor"
 "Use external editor for F4 instead of Alt-F4"
@@ -551,10 +552,14 @@
 "Jít na pozici"
 
 "Adresářové zkratky"
+"Edit: Del,Ins,ShiftIns,F4"
 "Edit: Del,Ins,F4"
 "<není>"
 "<plugin>"
 "Zadejte novou zkratku:"
+"Plugin:"
+"File:"
+"Data:"
 "Skočit na nejbližší existující adresář?"
 "Uložit tyto zkratky?"
 
@@ -815,6 +820,7 @@
 "Show"
 
 "Název"
+"Extension"
 "Velikost"
 "Komprimovaný"
 "Datum"
@@ -1459,6 +1465,7 @@
 "Show size in &Windows Explorer style"
 "Show &removable drive parameters"
 "Show &plugins"
+"Sort plugins by hotkey"
 "Show &CD drive parameters"
 "Show ne&twork drive parameters"
 "Del,Shift-Del,F4,F9"
@@ -1688,7 +1695,7 @@
 "OEM plugins support"
 "Prohledávat s&ymbolické linky"
 "&Cesta k vlastním pluginům:"
-"&File processing (OpenFilePlugin)"
+"&File processing"
 "Show standard &association item"
 "Even if only &one plugin found"
 "Search &results (SetFindList)"
@@ -1812,6 +1819,7 @@
 "Zobrazit adresáře &velkými písmeny"
 "Zobrazit soubory ma&lými písmeny"
 "Zobrazit velké znaky ve jménech souborů jako &malá písmena"
+"Preload C&0 data for all files"
 " Pro instrukce si přečtěte online nápovědu "
 
 "Soubory s popiskem adresáře"
@@ -2484,5 +2492,7 @@
 "to open this object:"
 "Do this for &all current objects"
 "Do not ask again in the current session"
+"History"
+"Files"
 
 "?Nový soubor?"

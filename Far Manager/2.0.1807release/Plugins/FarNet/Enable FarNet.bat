@@ -1,0 +1,1 @@
+copy /Y FarNetMan.dll_ FarNetMan.dll

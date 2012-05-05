@@ -4,9 +4,9 @@
 
 @Contents
 $^#Fájl- és archívumkezelő program#
-$^#2.0 build 1807 x86#
+$^#2.1 build 1807 bis29 x86#
 $^#Copyright (C) 1996-2000 Eugene Roshal#
-$^#Copyright (C) 2000-2011 FAR Group#
+$^#Copyright (C) 2000-2012 FAR Group#
 $^(help file last translated for build 882)
    ~A súgó betűrendes tartalomjegyzéke~@Index@
    ~A súgó használata~@Help@
@@ -4066,4 +4066,121 @@ adatbázisából kiolvasott leírásaikkal együtt:
 
 @Index
 $ #A súgó betűrendes tartalomjegyzéke#
-<%INDEX%>
+   ~Fájl- és archívumkezelő program~@Contents@
+   ~FAR: License~@License@
+   ~FAR: a FAR parancssori kapcsolói~@CmdLine@
+   ~FAR: a programról~@About@
+   ~FAR: a súgó használata~@Help@
+
+   ~A parancssor parancsai~@CmdLineCmd@
+   ~A parancssori prompt formátuma~@CommandPrompt@
+   ~A pluginek képességeinek áttekintése~@PluginsReviews@
+
+   ~Beállítások: kezelőfelület beállítások~@InterfSettings@
+   ~Beállítások: nézőke beállítások~@ViewerSettings@
+   ~Beállítások: panel beállítások~@PanelSettings@
+   ~Beállítások: párbeszédablak beállítások~@DialogSettings@
+   ~Beállítások: rendszer beállítások~@SystemSettings@
+   ~Beállítások: szerkesztő beállítások~@EditorSettings@
+   ~Billentyűparancsok~@KeyRef@
+
+   ~Editor: search/replace~@EditorSearch@
+   ~Egér: görgő támogatása~@MsWheel@
+   ~Előzmények: mappa előzmények~@HistoryFolders@
+   ~Előzmények: megnézett és szerkesztett fájlok előzménye~@HistoryViews@
+
+   ~Felhasználói menü~@UserMenu@
+   ~Figyelem: A fájlt egy külső program megváltoztatta~@WarnEditorSavedEx@
+   ~Figyelem: A szerkesztendő fájl célmappája még nem létezik...~@WarnEditorPath@
+   ~Figyelem: A szerkesztendő fájlnak nevet kell adni~@WarnEditorPluginName@
+   ~Figyelem: a titkosítás el fog veszni~@WarnCopyEncrypt@
+   ~Figyelem: több streamet tartalmazó fájl másolása vagy mozgatása~@WarnCopyStream@
+   ~Futó programok~@TaskList@
+   ~Fájl attribútumok párbeszédablak~@FileAttrDlg@
+   ~Fájlkeresés haladó beállításai~@FindFileAdvanced@
+   ~Fájlkeresés: vezérlőgombok~@FindFileResult@
+   ~Fájlkeresés~@FindFile@
+   ~Fájlkiemelések, rendezési csoportok: szerkesztés~@HighlightEdit@
+   ~Fájlkiemelések, rendezési csoportok: vezérlőbillentyűk~@HighlightList@
+   ~Fájlkiemelések, rendezési csoportok~@Highlight@
+   ~Fájlmaszkok~@FileMasks@
+   ~Fájlmegjegyzések~@FileDiz@
+   ~Fájlok kijelölése~@SelectFiles@
+   ~Fájlok és mappák törlése és kisöprése~@DeleteFile@
+   ~Fájlpanel nézet módok testreszabása~@PanelViewModes@
+   ~Fájltársítások: szerkesztés~@FileAssocModify@
+   ~Fájltársítások~@FileAssoc@
+
+   ~Gyorskeresés a paneleken~@FastFind@
+
+   ~Hardlinkek és szimbolikus linkek~@HardSymLink@
+   ~Hiba: nem másolható vagy mozgatható önmagára~@ErrCopyItSelf@
+   ~Hiba: nem végrehajtható~@ErrCannotExecute@
+   ~Hiba: plugin betöltési hiba~@ErrLoadPlugin@
+   ~Hotplug eszközök~@HotPlugList@
+   ~Hálózati meghajtó leválasztása~@DisconnectDrive@
+
+   ~Képernyők váltása~@ScrSwitch@
+   ~Kódlapok automatikus felismerése~@Codepage@
+   ~Környezeti változók~@FAREnv@
+   ~Különleges szimbólumok~@MetaSymbols@
+
+   ~Makrók: a nézőke makrói~@KeyMacroViewerList@
+   ~Makrók: a szerkesztő makrói~@KeyMacroEditList@
+   ~Makrók: a végrehajtás hatóköre~@KeyMacroArea@
+   ~Makrók: beállítások~@KeyMacroSetting@
+   ~Makrók: gyorsbillentyűk~@KeyMacroAssign@
+   ~Makrók: makró törlése~@KeyMacroDelete@
+   ~Makrók: makrónyelv~@KeyMacroLang@
+   ~Makrók: rögzítés és visszajátszás~@KeyMacroRecPlay@
+   ~Makrók~@KeyMacro@
+   ~Mappa gyorsbillentyűk~@FolderShortcuts@
+   ~Mappakeresés~@FindFolder@
+   ~Mappák összehasonlítása~@CompFolders@
+   ~Megerősítések~@ConfirmDlg@
+   ~Meghajtóváltás (Meghajtók menü)~@DriveDlg@
+   ~Menük: Bal és Jobb menü~@LeftRightMenu@
+   ~Menük: Beállítások menü~@OptMenu@
+   ~Menük: Fájlok menü~@FilesMenu@
+   ~Menük: Parancsok menü~@CmdMenu@
+   ~Menük~@Menus@
+   ~Másolás, mozgatás, átnevezés és linkek létrehozása~@CopyFiles@
+   ~Másolás: húzd és ejtsd művelet fájlokon~@DragAndDrop@
+   ~Másolás: megerősítés felülírás előtt~@CopyAskOverwrite@
+   ~Másolás: szabályok~@CopyRule@
+
+   ~Nézőke: keresés~@ViewerSearch@
+   ~Nézőke: ugrás a megadott pozícióba~@ViewerGotoPos@
+   ~Nézőke: vezérlőbillentyűk~@Viewer@
+
+   ~Operációs rendszer parancsok~@OSCommands@
+
+   ~Panelek: fastruktúra panel~@TreePanel@
+   ~Panelek: fájlpanel~@FilePanel@
+   ~Panelek: gyorsnézet panel~@QViewPanel@
+   ~Panelek: info panel~@InfoPanel@
+   ~Panelek~@Panels@
+   ~Panelvezérlő parancsok - egyebek~@MiscCmd@
+   ~Panelvezérlő parancsok - rendszerparancsok~@FuncCmd@
+   ~Panelvezérlő parancsok~@PanelCmd@
+   ~Parancs előzmények~@History@
+   ~Parancs végrehajtása~@ApplyCmd@
+   ~Plugin beállítások~@PluginsConfig@
+   ~Pluginek támogatása~@Plugins@
+
+   ~Regular expressions~@RegExp@
+   ~Rendezési csoportok~@SortGroups@
+   ~Rendezési elv~@PanelCmdSort@
+
+   ~Szerkesztő: fájl megnyitása/létrehozása~@FileOpenCreate@
+   ~Szerkesztő: fájl mentése másként~@FileSaveAs@
+   ~Szerkesztő: szerkesztett fájl újbóli betöltése~@EditorReload@
+   ~Szerkesztő: ugrás megadott sorra és oszlopra~@EditorGotoPos@
+   ~Szerkesztő~@Editor@
+   ~Szűrők menü~@FiltersMenu@
+   ~Szűrő~@Filter@
+
+   ~Új mappa~@MakeFolder@
+
+   ~Запрос привилегий алминистратора~@ElevationDlg@
+   ~Настройка информационной панели~@InfoPanelSettings@

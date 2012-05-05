@@ -1,8 +1,0 @@
-REGEDIT4
-
-[-HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltShiftBackSlash]
-[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Shell\AltShiftBackSlash]
-"Sequence"="Ctrl3 Home $While(!APanel.Eof) $If(APanel.Folder) F3 $End Down $End Home"
-"DisableOutput"=dword:00000001
-"EmptyCommandLine"=dword:00000000
-"NotEmptyCommandLine"=dword:00000000

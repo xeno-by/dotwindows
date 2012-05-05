@@ -1,6 +1,6 @@
 ﻿.Language=Spanish,Spanish (Español)
 
-//Version: 2.0 build 1807
+//Version: 2.1 build 1807
 
 "Si"
 "No"
@@ -275,6 +275,7 @@
 "Mostrar flechas de despla&zamiento"
 "Selección &persistente"
 "Usar código ANS&I por defecto"
+"Autorefresh on removable drives"
 
 "Editor"
 "Usar editor externo con F4 en lugar de Alt-F4"
@@ -416,10 +417,10 @@
 "O&mitir todos"
 "&Cancelar"
 
-"No se puede copiar %s"
-"No se puede mover %s"
-"No se puede enlazar %s"
-"hacia %s"
+"No se puede copiar"
+"No se puede mover"
+"No se puede enlazar"
+"hacia"
 "El archivo"
 "no puede copiarse o moverse sin perder el cifrado."
 "Usted puede ignorar este error y continuar, o cancelar."
@@ -551,10 +552,14 @@
 "Ir a posición"
 
 "Accesos a directorio"
+"Editar: Del,Ins,ShiftIns,F4"
 "Editar: Del,Ins,F4"
 "<nada>"
 "<plugin>"
 "Ingrése nuevo acceso:"
+"Plugin:"
+"File:"
+"Data:"
 "Saltar al próximo directorio existente"
 "Guardar estos accesos"
 
@@ -815,6 +820,7 @@
 "Mostrar"
 
 "Nombre"
+"Extension"
 "Tamaño"
 "Comprs"
 "Fecha"
@@ -1459,6 +1465,7 @@
 "Mostrar tamaño estilo &Windows Explorer"
 "Mostrar parámetros de unidad removible"
 "Mostrar &plugins"
+"Sort plugins by hotkey"
 "Mostrar parámetros unidad de &CD"
 "Mostrar parámetros unidades de red"
 "Del,Shift-Del,F4,F9"
@@ -1688,7 +1695,7 @@
 "OEM plugins support"
 "Explorar enlaces simbólicos"
 "Ruta para pl&ugins personales:
-"Proceso de archivo (OpenFilePlugin)"
+"Proceso de archivo"
 "Mostrar asociaciones normales de ítems"
 "Aún si solo se encontr un plugin"
 "Resultados de búsqueda (SetFindList)"
@@ -1768,7 +1775,7 @@
 "No se puede imprimir"
 
 "Describir archivos"
-"Entrar descripción de %s"
+"Entrar descripción de"
 
 "Leyendo descripción de archivos"
 "No se puede actualizar descripción de archivos"
@@ -1812,6 +1819,7 @@
 "Directorios en mayú&sculas"
 "archivos en minúscu&las"
 "archivos en mayúsculas mostrarlos con minús&culas"
+"Preload C&0 data for all files"
 " Para instrucciones leer ayuda en línea "
 
 "Descripciones de directorio"
@@ -1860,7 +1868,7 @@
 "Selección de bloque presente"
 
 // for <!Macro:Vars!> and <!Macro:Consts!>, count formats = 1
-"%s"
+""%s""
 // for <!Macro:Vars!> and <!Macro:Consts!>, count formats = 2
 "%d / 0x%X"
 // for <!Macro:Vars!> and <!Macro:Consts!>, count formats = 2
@@ -2484,5 +2492,7 @@
 "para abrir este objeto:"
 "Hacer esto para todos los objetos actuales"
 "No preguntar nuevamente en la sesión actual"
+"History"
+"Files"
 
 "?Nuevoi Archivo?"

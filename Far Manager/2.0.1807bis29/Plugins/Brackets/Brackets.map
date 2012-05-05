@@ -1,0 +1,67 @@
+ Brackets
+
+ Timestamp is 4d49e2db (Thu Feb 03 00:03:55 2011)
+
+ Preferred load address is 10000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00000030H .idata$5                CODE
+ 0001:00000030 000000a2H .rdata                  CODE
+ 0001:000000e0 00000beaH .text                   CODE
+ 0001:00000ccc 0000003cH .idata$2                CODE
+ 0001:00000d08 00000014H .idata$3                CODE
+ 0001:00000d1c 00000030H .idata$4                CODE
+ 0001:00000d4c 000000b0H .idata$6                CODE
+ 0001:00000e00 000000afH .edata                  CODE
+ 0002:00000000 000002b0H .data                   DATA
+ 0002:000002b0 000001e8H .bss                    DATA
+ 0003:00000000 00000058H .rsrc$01                DATA
+ 0003:00000060 00000380H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base       Lib:Object
+
+ 0000:00000000       ___safe_se_handler_count   00000000     <absolute>
+ 0000:00000000       ___safe_se_handler_table   00000000     <absolute>
+ 0001:00000000       __imp__RegCloseKey@4       10001000     advapi32:ADVAPI32.dll
+ 0001:00000004       __imp__RegOpenKeyExW@20    10001004     advapi32:ADVAPI32.dll
+ 0001:00000008       __imp__RegQueryValueExW@24 10001008     advapi32:ADVAPI32.dll
+ 0001:0000000c       __imp__RegCreateKeyExW@36  1000100c     advapi32:ADVAPI32.dll
+ 0001:00000010       __imp__RegSetValueExW@24   10001010     advapi32:ADVAPI32.dll
+ 0001:00000014       \177ADVAPI32_NULL_THUNK_DATA 10001014     advapi32:ADVAPI32.dll
+ 0001:00000018       __imp__lstrcatW@8          10001018     kernel32:KERNEL32.dll
+ 0001:0000001c       __imp__lstrlenW@4          1000101c     kernel32:KERNEL32.dll
+ 0001:00000020       __imp__lstrcpyW@8          10001020     kernel32:KERNEL32.dll
+ 0001:00000024       \177KERNEL32_NULL_THUNK_DATA 10001024     kernel32:KERNEL32.dll
+ 0001:00000028       __imp__MessageBeep@4       10001028     user32:USER32.dll
+ 0001:0000002c       \177USER32_NULL_THUNK_DATA 1000102c     user32:USER32.dll
+ 0001:00000030       ??_C@_1BA@BBLONAFB@?$AAO?$AAp?$AAt?$AAi?$AAo?$AAn?$AAs?$AA?$AA@ 10001030     Brackets.obj
+ 0001:00000040       ??_C@_1O@BJPKKLLM@?$AAC?$AAo?$AAn?$AAf?$AAi?$AAg?$AA?$AA@ 10001040     Brackets.obj
+ 0001:00000050       ??_C@_11LOCGONAA@?$AA?$AA@ 10001050     Brackets.obj
+ 0001:00000054       ??_C@_1BK@EKFLELHE@?$AA?1?$AA?$CK?$AA?$CK?$AA?1?$AA?$DM?$AA?$DP?$AA?$DP?$AA?$DO?$AA?$DM?$AA?$CF?$AA?$CF?$AA?$DO?$AA?$AA@ 10001054     Brackets.obj
+ 0001:00000070       ??_C@_1BO@BPKELOJL@?$AA?$DM?$AA?$DO?$AA?$HL?$AA?$HN?$AA?$FL?$AA?$FN?$AA?$CI?$AA?$CJ?$AA?$CC?$AA?$CC?$AA?8?$AA?8?$AA?$CF?$AA?$CF?$AA?$AA@ 10001070     Brackets.obj
+ 0001:00000090       ??_C@_1BC@HMMGPJK@?$AA?8?$AA?8?$AA?$CC?$AA?$CC?$AA?$GA?$AA?8?$AA?$GA?$AA?$GA?$AA?$AA@ 10001090     Brackets.obj
+ 0001:000000a4       ??_C@_1BE@HJGBOGJ@?$AA?2?$AAB?$AAr?$AAa?$AAc?$AAk?$AAe?$AAt?$AAs?$AA?$AA@ 100010a4     Brackets.obj
+ 0001:000000b8       ??_C@_19MGMPFFIA@?$AAF?$AAi?$AAn?$AAd?$AA?$AA@ 100010b8     Brackets.obj
+ 0001:000000c4       ??_C@_1O@MDCABJAO@?$AAD?$AAi?$AAr?$AAe?$AAc?$AAt?$AA?$AA@ 100010c4     Brackets.obj
+ 0001:000000e0       __chkstk                   100010e0 f   chkstk.obj
+ 0001:000000e0       __alloca_probe             100010e0     chkstk.obj
+ 0001:0000010b       ?GetMsg@@YIPB_WH@Z         1000110b f   Brackets.obj
+ 0001:00000119       ?InitDialogItems@@YIXPBUInitDialogItem@@PAUFarDialogItem@@H@Z 10001119 f   Brackets.obj
+ 0001:00000189       ?Config@@YIHXZ             10001189 f   Brackets.obj
+ 0001:00000347       _GetMinFarVersionW@0       10001347 f   Brackets.obj
+ 0001:0000034d       _SetStartupInfoW@4         1000134d f   Brackets.obj
+ 0001:0000041f       _GetPluginInfoW@4          1000141f f   Brackets.obj
+ 0001:00000478       _ConfigureW@4              10001478 f   Brackets.obj
+ 0001:0000048b       ?ShowMenu@@YIHH@Z          1000148b f   Brackets.obj
+ 0001:0000053a       _OpenPluginW@8             1000153a f   Brackets.obj
+ 0001:00000c90       _memset                    10001c90 f   libCRT:memset.obj
+ 0001:00000ccc       __IMPORT_DESCRIPTOR_KERNEL32 10001ccc     kernel32:KERNEL32.dll
+ 0001:00000ce0       __IMPORT_DESCRIPTOR_USER32 10001ce0     user32:USER32.dll
+ 0001:00000cf4       __IMPORT_DESCRIPTOR_ADVAPI32 10001cf4     advapi32:ADVAPI32.dll
+ 0001:00000d08       __NULL_IMPORT_DESCRIPTOR   10001d08     kernel32:KERNEL32.dll
+ 0002:000003d8       ?Opt@@3UOptions@@A         100023d8     Brackets.obj
+
+ entry point at        0000:00000000
+
+ Static symbols
+

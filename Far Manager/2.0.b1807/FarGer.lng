@@ -1,6 +1,6 @@
 ﻿.Language=German,German (Deutsch)
 
-//Version: 2.0 build 1807
+//Version: 2.1 build 1807
 
 "Ja"
 "Nein"
@@ -275,6 +275,7 @@
 "P&feile bei Scrollbalken zeigen"
 "Dauerhafte Text&markierungen"
 "Dateien standardmäßig mit Windows-Kod&ierung öffnen"
+"Autorefresh on removable drives"
 
 "Editor"
 "Use external editor for F4 instead of Alt-F4"
@@ -551,10 +552,14 @@
 "Gehe zu Zeile"
 
 "Ordnerschnellzugriff"
+"Bearb.: Entf,Einf,ShiftEinf,F4"
 "Bearb.: Entf,Einf,F4"
 "<keiner>"
 "<Plugin>"
 "Neue Verknüpfung:"
+"Plugin:"
+"File:"
+"Data:"
 "Zum nahesten existierenden Ordner springen?"
 "Verknüpfung speichern?"
 
@@ -815,6 +820,7 @@
 "Show"
 
 "Name"
+"Extension"
 "Größe"
 "Kompr."
 "Datum"
@@ -1459,6 +1465,7 @@
 "Show size in &Windows Explorer style"
 "Show &removable drive parameters"
 "Show &plugins"
+"Sort plugins by hotkey"
 "Show &CD drive parameters"
 "Show ne&twork drive parameters"
 "Del,Shift-Del,F4,F9"
@@ -1688,7 +1695,7 @@
 "OEM plugins support"
 "S&ymbolische Links scannen"
 "&Pfad für eigene Plugins:"
-"&File processing (OpenFilePlugin)"
+"&File processing"
 "Show standard &association item"
 "Even if only &one plugin found"
 "Search &results (SetFindList)"
@@ -1812,6 +1819,7 @@
 "Ordner in Großb&uchstaben zeigen"
 "Dateien in K&leinbuchstaben zeigen"
 "G&roßgeschriebene Dateinamen in Kleinbuchstaben zeigen"
+"Preload C&0 data for all files"
 " Siehe Hilfe für Anweisungen "
 
 "Ordnerbeschreibungen"
@@ -2484,5 +2492,7 @@
 "to open this object:"
 "Do this for &all current objects"
 "Do not ask again in the current session"
+"History"
+"Files"
 
 "?Neue Datei?"
