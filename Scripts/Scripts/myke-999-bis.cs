@@ -33,4 +33,40 @@ public class Bis : Git {
     env["meaningful"] = "0";
     return Console.ui("Far.exe", home: root + @"\Release.32.vc");
   }
+
+  [Action]
+  public virtual ExitCode deploy() {
+    var status = println("Deploying Far Manager 2.1 bis...");
+    status = status && transplantFile("Release.32.vc/Far.exe", "Far.exe");
+//    status = status && transplantFile("Release.32.vc/Far.map", "Far.map");
+    return status;
+  }
+
+  private ExitCode transplantFile(String from, String to) {
+    from = project + "\\" + from.Replace("/", "\\");
+    to = "%FAR_HOME%".Expand() + "\\" + to.Replace("/", "\\");
+    print("  * Copying {0} to {1}... ", from, to);
+
+    try {
+      ExitCode status = -1;
+      if (File.Exists(from)) status = CopyFile(from, to);
+      if (status) println("[  OK  ]");
+      return status;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  private static ExitCode CopyFile(string sourceFile, string destFile) {
+    try {
+      File.Copy(sourceFile, destFile, true);
+      return 0;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
 }
