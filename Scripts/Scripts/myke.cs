@@ -70,14 +70,23 @@ public class App {
           Console.print("* {0}... ", t_conn.name());
         }
 
-        var conn = (Prj)t_conn.instantiate();
-        var accepts = conn != null && conn.accept();
-        if (Config.verbose) {
-          if (accepts) Console.println("[A]");
-          else Console.println("[R]");
-        }
+        Func<Prj> loadConn = () => {
+          try {
+            var myconn = (Prj)t_conn.instantiate();
+            var accepts = myconn != null && myconn.accept() && (Config.requestedConn == null || Config.requestedConn == myconn.name().ToUpper());
+            if (Config.verbose) {
+              if (accepts) Console.println("[A]");
+              else Console.println("[R]");
+            }
+            return accepts ? myconn : null;
+          } catch {
+            Console.println("[R]");
+            return null;
+          }
+        };
+        var conn = loadConn();
 
-        if (accepts) {
+        if (conn != null) {
           Config.conn = conn;
 
           var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
@@ -987,6 +996,7 @@ public static class Config {
   public static String action;
   public static String originalTarget;
   public static String target;
+  public static String requestedConn;
   public static Arguments args;
   public static Prj conn;
   public static MethodInfo conn_action;
@@ -1001,6 +1011,8 @@ public static class Config {
       Config.sublime = Config.sublime || systemFlags.Contains("/S");
       Config.dryrun = Config.dryrun || systemFlags.Contains("/D");
       Config.verbose = Config.verbose || systemFlags.Contains("/V");
+      var f_requestedConn = systemFlags.LastOrDefault(flag => flag.StartsWith("/C:"));
+      if (f_requestedConn != null) Config.requestedConn = f_requestedConn.Substring(3);
       return 0;
     };
 

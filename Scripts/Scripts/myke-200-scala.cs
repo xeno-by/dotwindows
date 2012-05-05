@@ -17,7 +17,7 @@ using Microsoft.Win32.SafeHandles;
 public class Scala : Git {
 //  public static String defaultJavaopts = "-Dscala.usejavacp=true -Dscala.timings=true";
   public static String defaultJavaopts = "-Dscala.usejavacp=true";
-  public static String defaultScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Yreify-debug -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+  public static String defaultScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-lite -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
 //  public static String defaultScalaopts = "";
 
   public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }
@@ -49,7 +49,7 @@ public class Scala : Git {
   }
 
   public override bool accept() {
-    return sources.Count() > 0 && compiler != null;
+    return (Config.action == "compile" && sources.Count() > 0 && compiler != null) || Config.action == "run" || Config.action == "repl";
   }
 
   public virtual String compiler { get {
@@ -88,6 +88,58 @@ public class Scala : Git {
 
     return inferred ?? defaultCompiler();
   } }
+
+  public virtual String buildCompilerInvocation(String command) {
+    command = command.Expand();
+
+    var magicPrefix = "scalac ";
+    if (!command.StartsWith(magicPrefix)) { println("scalac: compiler command must start from \"" + magicPrefix + "\""); return null; }
+    command = command.Substring(magicPrefix.Length);
+
+    var javaParts = command.Split(' ').Where(part => part.StartsWith("-D")).ToList();
+    var javaNoDefaults = javaParts.Contains("-Dnodefault") || javaParts.Contains("-Dnodefaults");
+    javaParts = javaParts.Where(part => part != "-Dnodefault" && part != "-Dnodefaults").ToList();
+    if (!javaNoDefaults) javaParts = Enumerable.Concat(defaultJavaopts.Split(' '), javaParts).ToList();
+    javaParts.ToList().ForEach(part => {
+      if (part.StartsWith("-Dno")) {
+        var negation = "-D" + part.Substring(4);
+        javaParts.Remove(part);
+        javaParts.Remove(negation);
+      }
+    });
+    var javaOpts = String.Join(" ", javaParts.ToArray());
+    if (Config.sublime) javaOpts += " -Djline.terminal=scala.tools.jline.UnsupportedTerminal";
+
+    var scalaParts = command.Split(' ').Where(part => !part.StartsWith("-D")).ToList();
+    var scalaNoDefaults = scalaParts.Contains("-nodefault") || scalaParts.Contains("-nodefaults");
+    scalaParts = scalaParts.Where(part => part != "-nodefault" && part != "-nodefaults").ToList();
+    if (!scalaNoDefaults) scalaParts = Enumerable.Concat(defaultScalaopts.Split(' '), scalaParts).ToList();
+    scalaParts.ToList().ForEach(part => {
+      if (part.StartsWith("-no")) {
+        var negation = "-" + part.Substring(3);
+        scalaParts.Remove(part);
+        scalaParts.Remove(negation);
+      }
+    });
+    var scalaOpts = String.Join(" ", scalaParts.ToArray());
+
+    command = @"%JAVA_HOME%\bin\java.exe -cp ""$CLASSPATH$"" $JAVAOPTS$ scala.tools.nsc.Main $SCALAOPTS$";
+    command = command.Replace("$CLASSPATH$", inferScalaClasspath());
+    command = command.Replace("$JAVAOPTS$", javaOpts);
+    command = command.Replace("$SCALAOPTS$", scalaOpts);
+
+    return command.Expand();
+  }
+
+  public virtual String buildRunnerInvocation(String mainClass, String arguments) {
+    var invocation = buildCompilerInvocation("scalac " + " " + mainClass + " " + arguments);
+    return invocation.Replace(" scala.tools.nsc.Main ", " scala.tools.nsc.MainGenericRunner ");
+  }
+
+  public virtual String buildReplInvocation() {
+    var invocation = buildCompilerInvocation("scalac " + String.Join(" ", flags.ToArray()));
+    return invocation.Replace(" scala.tools.nsc.Main ", " scala.tools.nsc.MainGenericRunner ");
+  }
 
   public virtual String inferScalaHome() {
     return @"%PROJECTS%\Kepler\build\locker\classes".Expand();
@@ -250,46 +302,7 @@ public class Scala : Git {
       watcher.EnableRaisingEvents = true;
 
       var compilers = compiler.Split(new []{Environment.NewLine}, StringSplitOptions.None).ToList();
-      status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => {
-        if (!curr) return curr;
-
-        var magicPrefix = "scalac ";
-        if (!compiler1.StartsWith(magicPrefix)) { println("scalac: compiler shebang must start from \"" + magicPrefix + "\""); return -1; }
-        compiler1 = compiler1.Substring(magicPrefix.Length);
-
-        var javaParts = compiler1.Split(' ').Where(part => part.StartsWith("-D")).ToList();
-        var javaNoDefaults = javaParts.Contains("-Dnodefault") || javaParts.Contains("-Dnodefaults");
-        javaParts = javaParts.Where(part => part != "-Dnodefault" && part != "-Dnodefaults").ToList();
-        if (!javaNoDefaults) javaParts = Enumerable.Concat(defaultJavaopts.Split(' '), javaParts).ToList();
-        javaParts.ToList().ForEach(part => {
-          if (part.StartsWith("-Dno")) {
-            var negation = "-D" + part.Substring(4);
-            javaParts.Remove(part);
-            javaParts.Remove(negation);
-          }
-        });
-        var javaOpts = String.Join(" ", javaParts.ToArray());
-
-        var scalaParts = compiler1.Split(' ').Where(part => !part.StartsWith("-D")).ToList();
-        var scalaNoDefaults = scalaParts.Contains("-nodefault") || scalaParts.Contains("-nodefaults");
-        scalaParts = scalaParts.Where(part => part != "-nodefault" && part != "-nodefaults").ToList();
-        if (!scalaNoDefaults) scalaParts = Enumerable.Concat(defaultScalaopts.Split(' '), scalaParts).ToList();
-        scalaParts.ToList().ForEach(part => {
-          if (part.StartsWith("-no")) {
-            var negation = "-" + part.Substring(3);
-            scalaParts.Remove(part);
-            scalaParts.Remove(negation);
-          }
-        });
-        var scalaOpts = String.Join(" ", scalaParts.ToArray());
-
-        var incantation = @"%JAVA_HOME%\bin\java.exe -cp ""$CLASSPATH$"" $JAVAOPTS$ scala.tools.nsc.Main $SCALAOPTS$";
-        incantation = incantation.Replace("$CLASSPATH$", inferScalaClasspath());
-        incantation = incantation.Replace("$JAVAOPTS$", javaOpts);
-        incantation = incantation.Replace("$SCALAOPTS$", scalaOpts);
-
-        return Console.batch(incantation.Expand(), home: root);
-      });
+      status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => curr ? Console.batch(buildCompilerInvocation(compiler1), home: root) : curr);
 
       var parent_reg = Registry.CurrentUser.OpenSubKey(parent_key, true) ?? Registry.CurrentUser.CreateSubKey(parent_key);
       parent_reg.DeleteSubKey(short_key);
@@ -337,14 +350,20 @@ public class Scala : Git {
   }
 
   public virtual String inferArguments() {
-    return sources.SelectMany(fi => fi.Exists ? File.ReadAllLines(fi.FullName) : new String[]{}).Any(line => Regex.Match(line, @"\Bargs\B").Success) ? null : "";
+    var needsArgs = sources.SelectMany(fi => fi.Exists ? File.ReadAllLines(fi.FullName) : new String[]{}).Any(line => Regex.Match(line, @"\Bargs\B").Success && !line.Contains("args: ") && !line.Contains("args:"));
+    return needsArgs ? null : "";
   }
 
   [Action]
   public virtual ExitCode run() {
     Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", compiler));
     Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", compiler));
-//    return compile() && Console.interactive("scala " + " " + readMainclass() + " " + readArguments(), home: root);
-    return compile() && Console.batch("scala " + " " + readMainclass() + " " + readArguments(), home: root);
+//    return compile() && Console.interactive(buildRunnerInvocation(readMainclass(), readArguments()), home: root);
+    return compile() && Console.batch(buildRunnerInvocation(readMainclass(), readArguments()), home: root);
+  }
+
+  [Action]
+  public virtual ExitCode repl() {
+    return Console.interactive(buildReplInvocation(), home: inferScalaHome());
   }
 }
