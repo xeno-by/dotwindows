@@ -13,7 +13,7 @@ public class App {
     var mine = args[1];
 
     var kdiff3 = @"C:\Program Files (x86)\Kdiff3\Kdiff3.exe";
-    var p = Process.Start(kdiff3, String.Join(" ", new []{@base, mine}));
+    var p = Process.Start(kdiff3, String.Join(" ", new []{"\""+@base+"\"", "\""+mine+"\""}));
     //var winmerge = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
     //var p = Process.Start(winmerge, String.Join(" ", new []{"-dl", "Mine", "-dr", "Base", mine, @base}));
 
