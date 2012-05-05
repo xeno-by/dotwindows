@@ -26,6 +26,20 @@ public class Kep : Git {
   public virtual String profileAltLibrary { get { return "quick.lib"; } }
   public virtual String profileAltCompiler { get { return "quick.comp"; } }
 
+  public virtual String antExecutable() { return "ant"; }
+//  public virtual String antExecutable() { return "ant -Djavac.args=-Dmyke.comments=" + mykeComments().Replace(" ", "_"); }
+//  public virtual String mykeComments() {
+//    var dotCommentsName = ".comments";
+//    var dotTest = new FileInfo(root + "\\" + dotCommentsName);
+//    if (dotTest.Exists) {
+//      return File.ReadAllText(dotTest.FullName);
+//    } else {
+//      var implicits = File.ReadAllLines(root + "\\" + @"src\compiler\scala\tools\nsc\typechecker\Implicits.scala");
+//      if (implicits.Any(line => line.Contains("if (false)") && !line.Contains("//"))) return "macro materializers disabled";
+//      else return "macro materializers enabled";
+//    }
+//  }
+
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
     return dir.IsChildOrEquivalentTo(project);
@@ -70,7 +84,7 @@ public class Kep : Git {
       dir.GetFiles("*.log").ToList().ForEach(file1 => file1.Delete());
       return 0;
     } else {
-      //return Console.batch("ant all.clean -buildfile build.xml", home: root);
+      //return Console.batch(antExecutable() + " all.clean -buildfile build.xml", home: root);
       println("error: clean for kepler is disabled to prevent occasional loss of work");
       return -1;
     }
@@ -82,7 +96,7 @@ public class Kep : Git {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.rebuild();
     } else {
-      return Console.batch("ant " + profileClean + " " + profile + " -buildfile build.xml", home: root);
+      return Console.batch(antExecutable() + " " + profileClean + " " + profile + " -buildfile build.xml", home: root);
     }
   }
 
@@ -92,7 +106,7 @@ public class Kep : Git {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.rebuild();
     } else {
-      return Console.batch("ant /yourkit " + profileClean + " " + profile + " -buildfile build.xml", home: root);
+      return Console.batch(antExecutable() + " /yourkit " + profileClean + " " + profile + " -buildfile build.xml", home: root);
     }
   }
 
@@ -112,7 +126,7 @@ public class Kep : Git {
     var libraryToken = new FileInfo(project + "\\build\\locker\\library.complete");
     if (libraryToken.Exists) libraryToken.Delete();
     var flags = yourkit ? "/yourkit " : "";
-    return Console.batch("ant " + flags + profileLibrary + " -buildfile build.xml", home: root);
+    return Console.batch(antExecutable() + " " + flags + profileLibrary + " -buildfile build.xml", home: root);
   }
 
   [Action]
@@ -131,17 +145,17 @@ public class Kep : Git {
     var compilerToken = new FileInfo(project + "\\build\\locker\\compiler.complete");
     if (compilerToken.Exists) compilerToken.Delete();
     var flags = yourkit ? "/yourkit " : "";
-    return Console.batch("ant " + flags + profileCompiler + " -buildfile build.xml", home: root);
+    return Console.batch(antExecutable() + " " + flags + profileCompiler + " -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode rebuildAlt() {
-    return Console.batch("ant " + profileAltClean + " " + profileAlt + " -buildfile build.xml", home: root);
+    return Console.batch(antExecutable() + " " + profileAltClean + " " + profileAlt + " -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode rebuildAltWithYourkit() {
-    return Console.batch("ant /yourkit " + profileAltClean + " " + profileAlt + " -buildfile build.xml", home: root);
+    return Console.batch(antExecutable() + " /yourkit " + profileAltClean + " " + profileAlt + " -buildfile build.xml", home: root);
   }
 
   [Action]
@@ -160,7 +174,7 @@ public class Kep : Git {
     var libraryToken = new FileInfo(project + "\\build\\quick\\library.complete");
     if (libraryToken.Exists) libraryToken.Delete();
     var flags = yourkit ? "/yourkit " : "";
-    return Console.batch("ant " + flags + profileAltLibrary + " -buildfile build.xml", home: root);
+    return Console.batch(antExecutable() + " " + flags + profileAltLibrary + " -buildfile build.xml", home: root);
   }
 
   [Action]
@@ -179,17 +193,17 @@ public class Kep : Git {
     var compilerToken = new FileInfo(project + "\\build\\quick\\compiler.complete");
     if (compilerToken.Exists) compilerToken.Delete();
     var flags = yourkit ? "/yourkit " : "";
-    return Console.batch("ant " + flags + profileAltCompiler + " -buildfile build.xml", home: root);
+    return Console.batch(antExecutable() + " " + flags + profileAltCompiler + " -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode rebuildAll() {
-    return Console.batch("ant all.clean build -buildfile build.xml", home: root);
+    return Console.batch(antExecutable() + " all.clean build -buildfile build.xml", home: root);
   }
 
   [Action]
   public virtual ExitCode rebuildAllWithYourkit() {
-    return Console.batch("ant all.clean build -buildfile build.xml", home: root);
+    return Console.batch(antExecutable() + " all.clean build -buildfile build.xml", home: root);
   }
 
   [Default, Action]
@@ -198,7 +212,7 @@ public class Kep : Git {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.compile();
     } else {
-      var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);
+      var status = Console.batch(antExecutable() + " " + profile + " -buildfile build.xml", home: root);
       if (!status) return status;
 
       var partest = project + @"\build\locker\classes\partest";
@@ -217,7 +231,7 @@ public class Kep : Git {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.compile();
     } else {
-      var status = Console.batch("ant build -buildfile build.xml", home: root);
+      var status = Console.batch(antExecutable() + " build -buildfile build.xml", home: root);
       if (!status) return status;
 
       var partest = project + @"\build\locker\classes\partest";
@@ -330,11 +344,11 @@ public class Kep : Git {
 
   [Action]
   public ExitCode runAllTests() {
-    var status = Console.batch("ant build -buildfile build.xml", home: root);
+    var status = Console.batch(antExecutable() + " build -buildfile build.xml", home: root);
     if (status) {
       var tests = calculateTestSuiteTests("all").Select(test => test.Substring((project + "\\test\\").Length)).ToList();
       traceln("[myke] testing: {0}", String.Join(" ", tests.ToArray()));
-      status = Console.batch("ant test", home: root);
+      status = Console.batch(antExecutable() + " test", home: root);
     }
     return status;
   }
@@ -468,6 +482,23 @@ public class Kep : Git {
     }
   }
 
+  private ExitCode transplantFileToKur(String from, String to) {
+    from = project + "\\" + from.Replace("/", "\\");
+    to = new Kur().project + "\\" + to.Replace("/", "\\");
+    print("  * Copying {0} to {1}... ", from, to);
+
+    try {
+      ExitCode status = -1;
+      if (File.Exists(from)) status = CopyFile(from, to);
+      if (status) println("[  OK  ]");
+      return status;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
   private static ExitCode CopyFile(string sourceFile, string destFile) {
     try {
       File.Copy(sourceFile, destFile, true);
@@ -481,7 +512,8 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode deploy() {
-    return deployStarr();
+//    return deployStarr();
+    return deployStarrToKur();
 //    return deployMaven();
   }
 
@@ -515,6 +547,20 @@ public class Kep : Git {
     println("Deploying starr upon ourselves...");
     status = status && transplantFile(source + "lib/scala-library.jar", "lib/scala-library.jar");
     status = status && transplantFile(source + "lib/scala-compiler.jar", "lib/scala-compiler.jar");
+    return status;
+  }
+
+  [Action]
+  public virtual ExitCode deployStarrToKur() {
+    var status1 = Console.batch("git add *", home: root);
+    status1 = status1 && Console.batch("git commit -m wip", home: root);
+    status1 = status1 && Console.batch("git push", home: root);
+//    status1 = status1 && Console.batch("git pull origin topic/typetags/v2", home: new Kep().root);
+    var status = println();
+    status = status && println("Transplanting starr to Kepler...");
+    status = status && Console.batch(antExecutable() + " locker.unlock palo.done -buildfile build.xml", home: root);
+    status = status && transplantFileToKur("build/palo/lib/scala-library.jar", "lib/scala-library.jar");
+    status = status && transplantFileToKur("build/palo/lib/scala-compiler.jar", "lib/scala-compiler.jar");
     return status;
   }
 }

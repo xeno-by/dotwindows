@@ -37,7 +37,7 @@ public class App {
     } finally {
       Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%MykeStatus", Environment.ExitCode.ToString());
       Func<String, String> capitalize = s => String.IsNullOrEmpty(s) ? s : Char.ToUpper(s[0]) + s.Substring(1);
-      Config.env.Keys.ToList().ForEach(key => Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%Myke" + capitalize(key), Config.env[key]));
+      if (Config.env != null) Config.env.Keys.ToList().ForEach(key => Registry.SetValue(@"HKEY_CURRENT_USER\Software\Far2\KeyMacros\Vars", "%%Myke" + capitalize(key), Config.env[key]));
     }
 
     return Environment.ExitCode;
@@ -993,37 +993,35 @@ public static class Config {
   public static Dictionary<String, String> env;
 
   public static ExitCode parse(String[] args) {
-    var flags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
-    args = args.SkipWhile(arg => arg.StartsWith("/")).ToArray();
-    Config.sublime = flags.Contains("/S");
-    Config.dryrun = flags.Contains("/D");
-    Config.verbose = flags.Contains("/V");
+    Func<ExitCode> extractSystemFlags = () => {
+      var systemFlags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
+      args = args.SkipWhile(arg => arg.StartsWith("/")).ToArray();
+      if (systemFlags.Where(flag => flag == "/?").Count() > 0) { Help.printUsage(); return -1; }
+      if (args.ElementAtOrDefault(0) == "-help" || args.ElementAtOrDefault(0) == "--help") { Help.printUsage(); return -1; }
+      Config.sublime = Config.sublime || systemFlags.Contains("/S");
+      Config.dryrun = Config.dryrun || systemFlags.Contains("/D");
+      Config.verbose = Config.verbose || systemFlags.Contains("/V");
+      return 0;
+    };
 
-    if (flags.Where(flag => flag == "/?").Count() > 0) {
-      Help.printUsage();
-      return -1;
-    }
-
-    var action = args.Take(1).ElementAtOrDefault(0) ?? "compile";
+    if (!extractSystemFlags()) return -1;
+    var action = args.ElementAtOrDefault(0);
     args = args.Skip(1).ToArray();
-    if (action == null || action == "/?" || action == "-help" || action == "--help") {
-      Help.printUsage();
-      return -1;
-    }
-
+    if (action == null) { Help.printUsage(); return -1; }
     Config.action = action;
+
+    if (!extractSystemFlags()) return -1;
+    var flags = args.TakeWhile(arg => arg.StartsWith("-")).ToList();
+    args = args.SkipWhile(arg => arg.StartsWith("-")).ToArray();
 
     var target = args.Take(1).ElementAtOrDefault(0) ?? ".";
     args = args.Skip(1).ToArray();
-    if (target == null || target == "/?" || target == "-help" || target == "--help") {
-      Help.printUsage(action);
-      return -1;
-    }
+    if (target == null || target == "/?" || target == "-help" || target == "--help") { Help.printUsage(action); return -1; }
 
     // don't check for file existence - connector might actually create that non-existent file/directory
     Config.originalTarget = Path.GetFullPath(target);
     Config.target = Path.GetFullPath(target);
-    Config.args = new Arguments(args.ToList());
+    Config.args = new Arguments(Enumerable.Concat(flags, args).ToList());
 
     // conn will be set elsewhere
     Config.conn = null;

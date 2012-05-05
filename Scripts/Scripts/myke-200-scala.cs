@@ -15,6 +15,11 @@ using Microsoft.Win32.SafeHandles;
   "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using sbt.")]
 
 public class Scala : Git {
+//  public static String defaultJavaopts = "-Dscala.usejavacp=true -Dscala.timings=true";
+  public static String defaultJavaopts = "-Dscala.usejavacp=true";
+  public static String defaultScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Yreify-debug -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+//  public static String defaultScalaopts = "";
+
   public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }
   public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { init(arguments); }
 
@@ -57,9 +62,9 @@ public class Scala : Git {
     };
 
     var inferreds = sources.Select(inferCompiler).Where(s => s != null).Distinct().ToList();
-    if (inferreds.Count > 1) { println("ambiguous compiler shebangs"); return null; }
-    if (inferreds.Count > 0 && sources.Count > 1) { println("cannot use compiler shebangs with multiple sources"); return null; }
-    if (inferreds.Count > 0 && flags.Count > 1) { println("cannot use compiler shebangs with non-empty flags"); return null; }
+    if (inferreds.Count > 1) { println("scalac: ambiguous compiler shebangs"); return null; }
+    if (inferreds.Count > 0 && sources.Count > 1) { println("scalac: cannot use compiler shebangs with multiple sources"); return null; }
+    if (inferreds.Count > 0 && flags.Count > 1) { println("scalac: cannot use compiler shebangs with non-empty flags"); return null; }
     var inferred = inferreds.SingleOrDefault();
 
     Func<String> defaultCompiler = () => {
@@ -84,6 +89,14 @@ public class Scala : Git {
     return inferred ?? defaultCompiler();
   } }
 
+  public virtual String inferScalaHome() {
+    return @"%PROJECTS%\Kepler\build\locker\classes".Expand();
+  }
+
+  public virtual String inferScalaClasspath() {
+    return @"%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library".Expand();
+  }
+
   [Action]
   public virtual ExitCode clean() {
     dir.GetFiles("*.class").ToList().ForEach(file1 => file1.Delete());
@@ -98,15 +111,11 @@ public class Scala : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    if (!accept()) { println("don't know how to compile the stuff you asked"); return -1; }
+    if (!accept()) { println("scalac: don't know how to compile the stuff you asked"); return -1; }
     ExitCode status = null;
 
-    var eval = Console.eval("scalahome");
-    var scalaHome = eval == null ? null : eval.FirstOrDefault();
-    if (scalaHome == null) {
-      println("scala home not found");
-      return -1;
-    }
+    var scalaHome = inferScalaHome();
+    if (scalaHome == null) { println("scalac: don't know how to infer my home"); return -1; }
 
     var classes = scalaHome.EndsWith("classes");
     classes = classes || scalaHome.EndsWith("classes\\");
@@ -116,7 +125,7 @@ public class Scala : Git {
     var compVer = null as String;
     try {
       if (!status || !File.Exists(compVerFile)) {
-        println("scalac version not found: bad unzip @ scala-compiler.jar");
+        println("scalac: bad unzip @ scala-compiler.jar");
         return -1;
       } else {
         compVer = File.ReadAllLines(compVerFile).Select(line => {
@@ -125,7 +134,7 @@ public class Scala : Git {
         }).Where(ver => ver != null).FirstOrDefault();
 
         if (compVer == null) {
-          println("scalac version not found: bad jar contents @ scala-compiler.jar");
+          println("scalac: bad jar contents @ scala-compiler.jar");
           return -1;
         } else {
           compVer += (" @ " + File.ReadAllLines(compVerFile).First().Substring(1));
@@ -140,7 +149,7 @@ public class Scala : Git {
     var libVer = null as String;
     try {
       if (!status || !File.Exists(libVerFile)) {
-        println("scalac version not found: bad unzip @ scala-library.jar");
+        println("scalac: bad unzip @ scala-library.jar");
         return -1;
       } else {
         libVer = File.ReadAllLines(libVerFile).Select(line => {
@@ -149,7 +158,7 @@ public class Scala : Git {
         }).Where(ver => ver != null).FirstOrDefault();
 
         if (libVer == null) {
-          println("scalac version not found: bad jar contents @ scala-library.jar");
+          println("scalac: bad jar contents @ scala-library.jar");
           return -1;
         } else {
           libVer += (" @ " + File.ReadAllLines(libVerFile).First().Substring(1));
@@ -241,7 +250,46 @@ public class Scala : Git {
       watcher.EnableRaisingEvents = true;
 
       var compilers = compiler.Split(new []{Environment.NewLine}, StringSplitOptions.None).ToList();
-      status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => curr ? Console.batch(compiler1, home: root) : curr);
+      status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => {
+        if (!curr) return curr;
+
+        var magicPrefix = "scalac ";
+        if (!compiler1.StartsWith(magicPrefix)) { println("scalac: compiler shebang must start from \"" + magicPrefix + "\""); return -1; }
+        compiler1 = compiler1.Substring(magicPrefix.Length);
+
+        var javaParts = compiler1.Split(' ').Where(part => part.StartsWith("-D")).ToList();
+        var javaNoDefaults = javaParts.Contains("-Dnodefault") || javaParts.Contains("-Dnodefaults");
+        javaParts = javaParts.Where(part => part != "-Dnodefault" && part != "-Dnodefaults").ToList();
+        if (!javaNoDefaults) javaParts = Enumerable.Concat(defaultJavaopts.Split(' '), javaParts).ToList();
+        javaParts.ToList().ForEach(part => {
+          if (part.StartsWith("-Dno")) {
+            var negation = "-D" + part.Substring(4);
+            javaParts.Remove(part);
+            javaParts.Remove(negation);
+          }
+        });
+        var javaOpts = String.Join(" ", javaParts.ToArray());
+
+        var scalaParts = compiler1.Split(' ').Where(part => !part.StartsWith("-D")).ToList();
+        var scalaNoDefaults = scalaParts.Contains("-nodefault") || scalaParts.Contains("-nodefaults");
+        scalaParts = scalaParts.Where(part => part != "-nodefault" && part != "-nodefaults").ToList();
+        if (!scalaNoDefaults) scalaParts = Enumerable.Concat(defaultScalaopts.Split(' '), scalaParts).ToList();
+        scalaParts.ToList().ForEach(part => {
+          if (part.StartsWith("-no")) {
+            var negation = "-" + part.Substring(3);
+            scalaParts.Remove(part);
+            scalaParts.Remove(negation);
+          }
+        });
+        var scalaOpts = String.Join(" ", scalaParts.ToArray());
+
+        var incantation = @"%JAVA_HOME%\bin\java.exe -cp ""$CLASSPATH$"" $JAVAOPTS$ scala.tools.nsc.Main $SCALAOPTS$";
+        incantation = incantation.Replace("$CLASSPATH$", inferScalaClasspath());
+        incantation = incantation.Replace("$JAVAOPTS$", javaOpts);
+        incantation = incantation.Replace("$SCALAOPTS$", scalaOpts);
+
+        return Console.batch(incantation.Expand(), home: root);
+      });
 
       var parent_reg = Registry.CurrentUser.OpenSubKey(parent_key, true) ?? Registry.CurrentUser.CreateSubKey(parent_key);
       parent_reg.DeleteSubKey(short_key);

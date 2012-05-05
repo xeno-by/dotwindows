@@ -78,10 +78,14 @@ public class Starr : Kep {
 
   [Action]
   public override ExitCode deploy() {
-    var status = Console.batch("git add *", home: root);
-    status = status && Console.batch("git commit -m wip", home: root);
-    status = status && Console.batch("git push", home: root);
-    status = status && Console.batch("git pull origin topic/typetags/v2", home: new Kep().root);
+    var status1 = Console.batch("git add *", home: root);
+    status1 = status1 && Console.batch("git commit -m wip", home: root);
+    status1 = status1 && Console.batch("git push", home: root);
+//    status1 = status1 && Console.batch("git pull origin topic/typetags/v2", home: new Kep().root);
+    var status = println();
+    status = status && println("Transplanting starr to Kepler...");
+    status = status && transplantFile("build/palo/lib/scala-library.jar", "lib/scala-library.jar");
+    status = status && transplantFile("build/palo/lib/scala-compiler.jar", "lib/scala-compiler.jar");
     return status;
   }
 }
