@@ -1,0 +1,552 @@
+$(INTDIR)\elevation.obj: elevation.cpp headers.hpp elevation.hpp config.hpp lang.hpp language.hpp dialog.hpp pathmix.hpp colors.hpp palette.hpp lasterror.hpp privilege.hpp fileowner.hpp imports.hpp TaskBar.hpp synchro.hpp scrbuf.hpp event.hpp
+
+elevation.hpp: CriticalSections.hpp noncopyable.hpp
+
+array.hpp:
+
+BaseFileMask.hpp: noncopyable.hpp
+
+bitflags.hpp:
+
+$(INTDIR)\cache.obj: cache.cpp headers.hpp cache.hpp
+
+cache.hpp:
+
+$(INTDIR)\cddrv.obj: cddrv.cpp headers.hpp cddrv.hpp drivemix.hpp flink.hpp pathmix.hpp
+
+cddrv.hpp:
+
+$(INTDIR)\CFileMask.obj: CFileMask.cpp headers.hpp CFileMask.hpp FileMasksProcessor.hpp FileMasksWithExclude.hpp lang.hpp language.hpp message.hpp pathmix.hpp
+
+CFileMask.hpp: BaseFileMask.hpp noncopyable.hpp
+
+$(INTDIR)\chgmmode.obj: chgmmode.cpp headers.hpp chgmmode.hpp ctrlobj.hpp
+
+chgmmode.hpp:
+
+$(INTDIR)\chgprior.obj: chgprior.cpp headers.hpp chgprior.hpp
+
+chgprior.hpp:
+
+$(INTDIR)\clipboard.obj: clipboard.cpp headers.hpp clipboard.hpp console.hpp
+
+clipboard.hpp:
+
+$(INTDIR)\cmdline.obj: cmdline.cpp headers.hpp cmdline.hpp execute.hpp macroopcode.hpp keys.hpp lang.hpp ctrlobj.hpp manager.hpp history.hpp filepanels.hpp panel.hpp foldtree.hpp treelist.hpp fileview.hpp fileedit.hpp rdrwdsk.hpp savescr.hpp scrbuf.hpp interf.hpp syslog.hpp config.hpp usermenu.hpp datetime.hpp pathmix.hpp dirmix.hpp strmix.hpp keyboard.hpp vmenu.hpp
+
+cmdline.hpp: scrobj.hpp edit.hpp TStack.hpp
+
+colors.hpp:
+
+$(INTDIR)\config.obj: config.cpp headers.hpp config.hpp lang.hpp keys.hpp colors.hpp cmdline.hpp ctrlobj.hpp dialog.hpp filepanels.hpp filelist.hpp panel.hpp help.hpp filefilter.hpp poscache.hpp findfile.hpp hilight.hpp registry.hpp interf.hpp keyboard.hpp palette.hpp message.hpp stddlg.hpp pathmix.hpp panelmix.hpp strmix.hpp udlist.hpp FarDlgBuilder.hpp elevation.hpp
+
+config.hpp:
+
+$(INTDIR)\console.obj: console.cpp headers.hpp console.hpp imports.hpp config.hpp palette.hpp colors.hpp interf.hpp
+
+console.hpp:
+
+$(INTDIR)\constitle.obj: constitle.cpp headers.hpp constitle.hpp lang.hpp language.hpp interf.hpp config.hpp ctrlobj.hpp CriticalSections.hpp console.hpp
+
+constitle.hpp:
+
+$(INTDIR)\copy.obj: copy.cpp headers.hpp copy.hpp lang.hpp keys.hpp colors.hpp flink.hpp dialog.hpp ctrlobj.hpp filepanels.hpp panel.hpp filelist.hpp foldtree.hpp treelist.hpp chgprior.hpp scantree.hpp constitle.hpp filefilter.hpp imports.hpp fileview.hpp TPreRedrawFunc.hpp syslog.hpp TaskBar.hpp cddrv.hpp interf.hpp keyboard.hpp palette.hpp message.hpp config.hpp stddlg.hpp fileattr.hpp datetime.hpp dirinfo.hpp pathmix.hpp drivemix.hpp dirmix.hpp strmix.hpp panelmix.hpp processname.hpp mix.hpp DlgGuid.hpp console.hpp wakeful.hpp registry.hpp
+
+copy.hpp: dizlist.hpp udlist.hpp flink.hpp
+
+CriticalSections.hpp: noncopyable.hpp
+
+$(INTDIR)\ctrlobj.obj: ctrlobj.cpp headers.hpp ctrlobj.hpp lang.hpp manager.hpp cmdline.hpp hilight.hpp poscache.hpp history.hpp treelist.hpp filefilter.hpp filepanels.hpp syslog.hpp interf.hpp config.hpp fileowner.hpp dirmix.hpp console.hpp shortcuts.hpp
+
+ctrlobj.hpp: macro.hpp plugins.hpp
+
+$(INTDIR)\cvtname.obj: cvtname.cpp headers.hpp cvtname.hpp flink.hpp cddrv.hpp syslog.hpp pathmix.hpp drivemix.hpp network.hpp imports.hpp strmix.hpp elevation.hpp
+
+cvtname.hpp:
+
+$(INTDIR)\datetime.obj: datetime.cpp headers.hpp datetime.hpp lang.hpp language.hpp config.hpp strmix.hpp
+
+datetime.hpp:
+
+$(INTDIR)\delete.obj: delete.cpp headers.hpp lang.hpp flink.hpp panel.hpp chgprior.hpp filepanels.hpp scantree.hpp treelist.hpp savescr.hpp ctrlobj.hpp filelist.hpp manager.hpp constitle.hpp TPreRedrawFunc.hpp TaskBar.hpp cddrv.hpp interf.hpp keyboard.hpp message.hpp config.hpp pathmix.hpp dirmix.hpp strmix.hpp panelmix.hpp mix.hpp dirinfo.hpp elevation.hpp wakeful.hpp
+
+delete.hpp:
+
+$(INTDIR)\dialog.obj: dialog.cpp headers.hpp dialog.hpp lang.hpp keyboard.hpp macroopcode.hpp keys.hpp ctrlobj.hpp chgprior.hpp vmenu.hpp dlgedit.hpp help.hpp scrbuf.hpp manager.hpp savescr.hpp constitle.hpp lockscrn.hpp TPreRedrawFunc.hpp syslog.hpp registry.hpp TaskBar.hpp interf.hpp palette.hpp message.hpp strmix.hpp history.hpp plugapi.hpp
+
+dialog.hpp: frame.hpp plugin.hpp vmenu.hpp bitflags.hpp CriticalSections.hpp
+
+$(INTDIR)\dirinfo.obj: dirinfo.cpp headers.hpp dirinfo.hpp plugapi.hpp keys.hpp scantree.hpp savescr.hpp lang.hpp RefreshFrameManager.hpp TPreRedrawFunc.hpp ctrlobj.hpp filefilter.hpp interf.hpp message.hpp TaskBar.hpp constitle.hpp keyboard.hpp flink.hpp pathmix.hpp strmix.hpp wakeful.hpp
+
+dirinfo.hpp:
+
+$(INTDIR)\dirmix.obj: dirmix.cpp headers.hpp dirmix.hpp cvtname.hpp message.hpp lang.hpp language.hpp lasterror.hpp flink.hpp ctrlobj.hpp filepanels.hpp treelist.hpp config.hpp pathmix.hpp strmix.hpp interf.hpp elevation.hpp
+
+dirmix.hpp:
+
+$(INTDIR)\dizlist.obj: dizlist.cpp headers.hpp dizlist.hpp language.hpp lang.hpp savescr.hpp TPreRedrawFunc.hpp interf.hpp keyboard.hpp message.hpp config.hpp pathmix.hpp strmix.hpp filestr.hpp codepage.hpp cache.hpp
+
+dizlist.hpp:
+
+$(INTDIR)\DlgBuilder.obj: DlgBuilder.cpp headers.hpp lang.hpp FarDlgBuilder.hpp dialog.hpp language.hpp
+
+DlgBuilder.hpp:
+
+$(INTDIR)\dlgedit.obj: dlgedit.cpp headers.hpp dlgedit.hpp dialog.hpp history.hpp
+
+dlgedit.hpp: scrobj.hpp bitflags.hpp edit.hpp editor.hpp
+
+$(INTDIR)\DlgGuid.obj: DlgGuid.cpp headers.hpp DlgGuid.hpp
+
+DlgGuid.hpp:
+
+$(INTDIR)\DList.obj: DList.cpp headers.hpp DList.hpp
+
+DList.hpp:
+
+$(INTDIR)\drivemix.obj: drivemix.cpp headers.hpp drivemix.hpp config.hpp flink.hpp cddrv.hpp pathmix.hpp
+
+drivemix.hpp:
+
+$(INTDIR)\edit.obj: edit.cpp headers.hpp edit.hpp keyboard.hpp macroopcode.hpp keys.hpp editor.hpp ctrlobj.hpp filepanels.hpp filelist.hpp panel.hpp scrbuf.hpp interf.hpp palette.hpp clipboard.hpp xlat.hpp datetime.hpp shortcuts.hpp pathmix.hpp strmix.hpp panelmix.hpp RegExp.hpp history.hpp vmenu.hpp chgmmode.hpp lang.hpp
+
+edit.hpp: scrobj.hpp colors.hpp bitflags.hpp
+
+$(INTDIR)\editor.obj: editor.cpp headers.hpp editor.hpp edit.hpp keyboard.hpp lang.hpp macroopcode.hpp keys.hpp ctrlobj.hpp chgprior.hpp filestr.hpp dialog.hpp fileedit.hpp savescr.hpp scrbuf.hpp farexcpt.hpp TPreRedrawFunc.hpp syslog.hpp TaskBar.hpp interf.hpp message.hpp clipboard.hpp xlat.hpp datetime.hpp stddlg.hpp strmix.hpp palette.hpp FarDlgBuilder.hpp wakeful.hpp
+
+editor.hpp: scrobj.hpp plugin.hpp poscache.hpp bitflags.hpp config.hpp DList.hpp noncopyable.hpp
+
+$(INTDIR)\eject.obj: eject.cpp headers.hpp eject.hpp lang.hpp language.hpp imports.hpp cddrv.hpp message.hpp
+
+eject.hpp: drivemix.hpp
+
+event.hpp:
+
+$(INTDIR)\execute.obj: execute.cpp headers.hpp execute.hpp keyboard.hpp filepanels.hpp lang.hpp keys.hpp ctrlobj.hpp scrbuf.hpp savescr.hpp chgprior.hpp cmdline.hpp panel.hpp rdrwdsk.hpp udlist.hpp imports.hpp registry.hpp localOEM.hpp manager.hpp interf.hpp message.hpp config.hpp pathmix.hpp dirmix.hpp strmix.hpp panelmix.hpp syslog.hpp constitle.hpp console.hpp constitle.hpp palette.hpp
+
+execute.hpp:
+
+exitcode.hpp:
+
+FarDlgBuilder.hpp: DlgBuilder.hpp
+
+$(INTDIR)\farexcpt.obj: farexcpt.cpp headers.hpp farexcpt.hpp lang.hpp plugins.hpp macro.hpp filepanels.hpp ctrlobj.hpp manager.hpp registry.hpp config.hpp dialog.hpp colors.hpp palette.hpp keys.hpp
+
+farexcpt.hpp: plugins.hpp
+
+$(INTDIR)\farqueue.obj: farqueue.cpp headers.hpp farqueue.hpp
+
+farqueue.hpp:
+
+$(INTDIR)\farrtl.obj: farrtl.cpp headers.hpp savefpos.hpp console.hpp
+
+farrtl.hpp:
+
+$(INTDIR)\farwinapi.obj: farwinapi.cpp headers.hpp flink.hpp imports.hpp pathmix.hpp mix.hpp ctrlobj.hpp elevation.hpp config.hpp
+
+farwinapi.hpp: plugin.hpp UnicodeString.hpp noncopyable.hpp
+
+$(INTDIR)\ffolders.obj: ffolders.cpp
+
+ffolders.hpp:
+
+$(INTDIR)\fileattr.obj: fileattr.cpp headers.hpp fileattr.hpp lang.hpp flink.hpp language.hpp message.hpp pathmix.hpp fileowner.hpp
+
+fileattr.hpp:
+
+$(INTDIR)\fileedit.obj: fileedit.cpp headers.hpp fileedit.hpp keyboard.hpp codepage.hpp lang.hpp macroopcode.hpp keys.hpp ctrlobj.hpp poscache.hpp filepanels.hpp panel.hpp dialog.hpp fileview.hpp help.hpp ctrlobj.hpp manager.hpp namelist.hpp history.hpp cmdline.hpp scrbuf.hpp savescr.hpp chgprior.hpp filestr.hpp TPreRedrawFunc.hpp syslog.hpp TaskBar.hpp interf.hpp message.hpp config.hpp delete.hpp datetime.hpp pathmix.hpp dirmix.hpp strmix.hpp exitcode.hpp cache.hpp constitle.hpp wakeful.hpp DlgGuid.hpp
+
+fileedit.hpp: frame.hpp editor.hpp keybar.hpp
+
+$(INTDIR)\filefilter.obj: filefilter.cpp headers.hpp filefilter.hpp lang.hpp keys.hpp ctrlobj.hpp filepanels.hpp panel.hpp vmenu.hpp scantree.hpp array.hpp filelist.hpp registry.hpp message.hpp config.hpp pathmix.hpp strmix.hpp interf.hpp
+
+filefilter.hpp: plugin.hpp filefilterparams.hpp
+
+$(INTDIR)\filefilterparams.obj: filefilterparams.cpp headers.hpp colors.hpp CFileMask.hpp FileMasksWithExclude.hpp lang.hpp keys.hpp ctrlobj.hpp dialog.hpp filelist.hpp filefilterparams.hpp palette.hpp message.hpp interf.hpp setcolor.hpp datetime.hpp strmix.hpp
+
+filefilterparams.hpp: plugin.hpp CFileMask.hpp bitflags.hpp hilight.hpp
+
+$(INTDIR)\filelist.obj: filelist.cpp headers.hpp filelist.hpp keyboard.hpp flink.hpp keys.hpp macroopcode.hpp lang.hpp ctrlobj.hpp filefilter.hpp dialog.hpp vmenu.hpp cmdline.hpp manager.hpp filepanels.hpp help.hpp fileedit.hpp namelist.hpp savescr.hpp fileview.hpp copy.hpp history.hpp qview.hpp rdrwdsk.hpp plognmn.hpp scrbuf.hpp CFileMask.hpp cddrv.hpp syslog.hpp interf.hpp message.hpp clipboard.hpp delete.hpp stddlg.hpp print.hpp mkdir.hpp setattr.hpp filetype.hpp execute.hpp shortcuts.hpp fnparce.hpp datetime.hpp dirinfo.hpp pathmix.hpp network.hpp dirmix.hpp strmix.hpp exitcode.hpp panelmix.hpp processname.hpp mix.hpp constitle.hpp elevation.hpp
+
+filelist.hpp: panel.hpp dizlist.hpp filefilterparams.hpp DList.hpp panelctype.hpp plugins.hpp
+
+$(INTDIR)\FileMasksProcessor.obj: FileMasksProcessor.cpp headers.hpp FileMasksProcessor.hpp processname.hpp
+
+FileMasksProcessor.hpp: BaseFileMask.hpp
+
+$(INTDIR)\FileMasksWithExclude.obj: FileMasksWithExclude.cpp headers.hpp FileMasksWithExclude.hpp
+
+FileMasksWithExclude.hpp: FileMasksProcessor.hpp
+
+$(INTDIR)\fileowner.obj: fileowner.cpp headers.hpp fileowner.hpp pathmix.hpp DList.hpp privilege.hpp elevation.hpp
+
+fileowner.hpp:
+
+$(INTDIR)\filepanels.obj: filepanels.cpp headers.hpp filepanels.hpp keys.hpp macroopcode.hpp lang.hpp ctrlobj.hpp filelist.hpp rdrwdsk.hpp cmdline.hpp treelist.hpp qview.hpp infolist.hpp help.hpp filefilter.hpp findfile.hpp savescr.hpp manager.hpp syslog.hpp options.hpp pathmix.hpp dirmix.hpp interf.hpp
+
+filepanels.hpp: frame.hpp keybar.hpp menubar.hpp
+
+$(INTDIR)\filestr.obj: filestr.cpp headers.hpp filestr.hpp nsUniversalDetectorEx.hpp config.hpp
+
+filestr.hpp:
+
+$(INTDIR)\filetype.obj: filetype.cpp headers.hpp filetype.hpp lang.hpp keys.hpp dialog.hpp vmenu.hpp plognmn.hpp ctrlobj.hpp cmdline.hpp history.hpp filepanels.hpp panel.hpp rdrwdsk.hpp savescr.hpp CFileMask.hpp registry.hpp message.hpp interf.hpp config.hpp execute.hpp fnparce.hpp strmix.hpp
+
+filetype.hpp:
+
+$(INTDIR)\fileview.obj: fileview.cpp headers.hpp fileview.hpp lang.hpp keys.hpp ctrlobj.hpp filepanels.hpp panel.hpp history.hpp manager.hpp fileedit.hpp cmdline.hpp savescr.hpp syslog.hpp interf.hpp keyboard.hpp message.hpp config.hpp strmix.hpp mix.hpp
+
+fileview.hpp: frame.hpp viewer.hpp keybar.hpp
+
+$(INTDIR)\findfile.obj: findfile.cpp headers.hpp findfile.hpp flink.hpp lang.hpp keys.hpp ctrlobj.hpp dialog.hpp filepanels.hpp panel.hpp fileview.hpp fileedit.hpp filelist.hpp cmdline.hpp chgprior.hpp namelist.hpp scantree.hpp manager.hpp scrbuf.hpp CFileMask.hpp filefilter.hpp farexcpt.hpp syslog.hpp localOEM.hpp codepage.hpp registry.hpp cddrv.hpp TaskBar.hpp interf.hpp palette.hpp message.hpp delete.hpp datetime.hpp drivemix.hpp pathmix.hpp strmix.hpp mix.hpp constitle.hpp DlgGuid.hpp event.hpp console.hpp wakeful.hpp panelmix.hpp setattr.hpp udlist.hpp
+
+findfile.hpp:
+
+$(INTDIR)\flink.obj: flink.cpp headers.hpp copy.hpp flink.hpp imports.hpp cddrv.hpp config.hpp pathmix.hpp drivemix.hpp panelmix.hpp privilege.hpp message.hpp lang.hpp language.hpp dirmix.hpp treelist.hpp elevation.hpp
+
+flink.hpp:
+
+$(INTDIR)\flmodes.obj: flmodes.cpp headers.hpp filelist.hpp lang.hpp filepanels.hpp ctrlobj.hpp vmenu.hpp dialog.hpp registry.hpp interf.hpp strmix.hpp panelmix.hpp
+
+$(INTDIR)\flplugin.obj: flplugin.cpp headers.hpp lang.hpp filelist.hpp filepanels.hpp history.hpp ctrlobj.hpp syslog.hpp message.hpp config.hpp delete.hpp datetime.hpp dirmix.hpp pathmix.hpp panelmix.hpp mix.hpp
+
+$(INTDIR)\flshow.obj: flshow.cpp headers.hpp filelist.hpp colors.hpp lang.hpp filefilter.hpp cmdline.hpp filepanels.hpp ctrlobj.hpp syslog.hpp interf.hpp config.hpp datetime.hpp pathmix.hpp strmix.hpp flink.hpp panelmix.hpp
+
+$(INTDIR)\flupdate.obj: flupdate.cpp headers.hpp filelist.hpp flink.hpp colors.hpp lang.hpp filepanels.hpp cmdline.hpp filefilter.hpp hilight.hpp ctrlobj.hpp manager.hpp TPreRedrawFunc.hpp syslog.hpp TaskBar.hpp cddrv.hpp interf.hpp keyboard.hpp message.hpp config.hpp fileowner.hpp delete.hpp pathmix.hpp network.hpp dirmix.hpp strmix.hpp mix.hpp
+
+$(INTDIR)\fnparce.obj: fnparce.cpp headers.hpp fnparce.hpp panel.hpp keys.hpp ctrlobj.hpp flink.hpp cmdline.hpp filepanels.hpp dialog.hpp lang.hpp message.hpp pathmix.hpp strmix.hpp panelmix.hpp mix.hpp
+
+fnparce.hpp:
+
+$(INTDIR)\foldtree.obj: foldtree.cpp headers.hpp foldtree.hpp keyboard.hpp keys.hpp lang.hpp treelist.hpp edit.hpp ctrlobj.hpp filepanels.hpp help.hpp manager.hpp savescr.hpp interf.hpp config.hpp exitcode.hpp
+
+foldtree.hpp: frame.hpp keybar.hpp
+
+$(INTDIR)\format.obj: format.cpp headers.hpp format.hpp interf.hpp
+
+format.hpp:
+
+$(INTDIR)\frame.obj: frame.cpp headers.hpp frame.hpp keybar.hpp manager.hpp scrbuf.hpp syslog.hpp
+
+frame.hpp: scrobj.hpp
+
+$(INTDIR)\codepage.obj: codepage.cpp headers.hpp codepage.hpp lang.hpp vmenu.hpp savefpos.hpp keys.hpp registry.hpp language.hpp dialog.hpp interf.hpp config.hpp
+
+codepage.hpp:
+
+$(INTDIR)\global.obj: global.cpp headers.hpp bootstrap/copyright.inc bootstrap/farversion.inc
+
+global.hpp:
+
+$(INTDIR)\grabber.obj: grabber.cpp headers.hpp grabber.hpp keyboard.hpp colors.hpp keys.hpp savescr.hpp ctrlobj.hpp manager.hpp frame.hpp interf.hpp clipboard.hpp config.hpp
+
+grabber.hpp: modal.hpp
+
+$(INTDIR)\headers.obj: headers.cpp headers.hpp
+
+headers.hpp: SDK/sdk.common.h SDK/sdk.vc.h SDK/sdk.gcc.h farrtl.hpp UnicodeString.hpp format.hpp global.hpp local.hpp plugin.hpp farwinapi.hpp cvtname.hpp
+
+$(INTDIR)\help.obj: help.cpp headers.hpp help.hpp keyboard.hpp lang.hpp keys.hpp colors.hpp scantree.hpp savescr.hpp manager.hpp ctrlobj.hpp macroopcode.hpp syslog.hpp registry.hpp interf.hpp message.hpp config.hpp execute.hpp pathmix.hpp strmix.hpp exitcode.hpp filestr.hpp
+
+help.hpp: frame.hpp keybar.hpp array.hpp
+
+$(INTDIR)\hilight.obj: hilight.cpp headers.hpp colors.hpp hilight.hpp lang.hpp keys.hpp vmenu.hpp dialog.hpp filepanels.hpp panel.hpp filelist.hpp savescr.hpp ctrlobj.hpp scrbuf.hpp registry.hpp palette.hpp message.hpp config.hpp interf.hpp
+
+hilight.hpp: CFileMask.hpp array.hpp
+
+$(INTDIR)\history.obj: history.cpp headers.hpp history.hpp language.hpp keys.hpp vmenu.hpp lang.hpp registry.hpp message.hpp clipboard.hpp config.hpp strmix.hpp dialog.hpp interf.hpp
+
+history.hpp: DList.hpp
+
+$(INTDIR)\hmenu.obj: hmenu.cpp headers.hpp hmenu.hpp colors.hpp keys.hpp dialog.hpp vmenu.hpp ctrlobj.hpp filepanels.hpp macroopcode.hpp panel.hpp savescr.hpp lockscrn.hpp interf.hpp keyboard.hpp
+
+hmenu.hpp: modal.hpp frame.hpp CriticalSections.hpp
+
+$(INTDIR)\hook_wow64.obj: hook_wow64.c
+
+$(INTDIR)\hotplug.obj: hotplug.cpp headers.hpp hotplug.hpp lang.hpp language.hpp keys.hpp help.hpp vmenu.hpp imports.hpp message.hpp config.hpp pathmix.hpp strmix.hpp interf.hpp window.hpp
+
+hotplug.hpp:
+
+$(INTDIR)\imports.obj: imports.cpp headers.hpp imports.hpp
+
+imports.hpp: headers.hpp
+
+$(INTDIR)\infolist.obj: infolist.cpp headers.hpp imports.hpp infolist.hpp macroopcode.hpp flink.hpp colors.hpp lang.hpp keys.hpp ctrlobj.hpp filepanels.hpp panel.hpp help.hpp fileview.hpp fileedit.hpp manager.hpp cddrv.hpp syslog.hpp interf.hpp drivemix.hpp dirmix.hpp pathmix.hpp strmix.hpp mix.hpp
+
+infolist.hpp: panel.hpp viewer.hpp
+
+$(INTDIR)\interf.obj: interf.cpp headers.hpp interf.hpp keyboard.hpp keys.hpp colors.hpp ctrlobj.hpp filepanels.hpp panel.hpp fileedit.hpp manager.hpp scrbuf.hpp syslog.hpp registry.hpp palette.hpp strmix.hpp console.hpp
+
+interf.hpp: strmix.hpp
+
+$(INTDIR)\keybar.obj: keybar.cpp headers.hpp keybar.hpp colors.hpp keyboard.hpp keys.hpp manager.hpp syslog.hpp registry.hpp language.hpp interf.hpp config.hpp
+
+keybar.hpp: scrobj.hpp
+
+$(INTDIR)\keyboard.obj: keyboard.cpp headers.hpp keyboard.hpp keys.hpp farqueue.hpp lang.hpp ctrlobj.hpp filepanels.hpp panel.hpp cmdline.hpp grabber.hpp manager.hpp scrbuf.hpp savescr.hpp lockscrn.hpp imports.hpp TPreRedrawFunc.hpp syslog.hpp interf.hpp registry.hpp message.hpp config.hpp scrsaver.hpp strmix.hpp synchro.hpp constitle.hpp window.hpp console.hpp palette.hpp
+
+keyboard.hpp: farqueue.hpp
+
+keys.hpp:
+
+lang.hpp: bootstrap/lang.inc
+
+$(INTDIR)\language.obj: language.cpp headers.hpp language.hpp lang.hpp scantree.hpp vmenu.hpp manager.hpp message.hpp config.hpp strmix.hpp filestr.hpp interf.hpp lasterror.hpp
+
+language.hpp:
+
+lasterror.hpp:
+
+$(INTDIR)\local.obj: local.cpp headers.hpp local.hpp
+
+local.hpp:
+
+$(INTDIR)\localOEM.obj: localOEM.cpp headers.hpp localOEM.hpp syslog.hpp registry.hpp config.hpp
+
+localOEM.hpp:
+
+$(INTDIR)\lockscrn.obj: lockscrn.cpp headers.hpp lockscrn.hpp scrbuf.hpp
+
+lockscrn.hpp:
+
+$(INTDIR)\macro.obj: macro.cpp headers.hpp macro.hpp macroopcode.hpp keys.hpp keyboard.hpp lang.hpp lockscrn.hpp viewer.hpp fileedit.hpp fileview.hpp dialog.hpp dlgedit.hpp ctrlobj.hpp filepanels.hpp panel.hpp cmdline.hpp manager.hpp scrbuf.hpp udlist.hpp filelist.hpp treelist.hpp flink.hpp TStack.hpp syslog.hpp registry.hpp plugapi.hpp plugin.hpp plugins.hpp cddrv.hpp interf.hpp grabber.hpp message.hpp clipboard.hpp xlat.hpp datetime.hpp stddlg.hpp pathmix.hpp drivemix.hpp strmix.hpp panelmix.hpp constitle.hpp dirmix.hpp console.hpp imports.hpp CFileMask.hpp vmenu.hpp elevation.hpp
+
+macro.hpp: macrocompiler.hpp tvar.hpp macroopcode.hpp
+
+$(INTDIR)\macrocompiler.obj: macrocompiler.cpp headers.hpp macroopcode.hpp lang.hpp macrocompiler.hpp tvar.hpp syslog.hpp language.hpp keyboard.hpp macro.hpp udlist.hpp strmix.hpp
+
+macrocompiler.hpp:
+
+macroopcode.hpp: keys.hpp
+
+$(INTDIR)\main.obj: main.cpp headers.hpp lang.hpp keys.hpp chgprior.hpp colors.hpp filepanels.hpp panel.hpp fileedit.hpp fileview.hpp lockscrn.hpp hilight.hpp manager.hpp ctrlobj.hpp scrbuf.hpp language.hpp farexcpt.hpp imports.hpp syslog.hpp registry.hpp localOEM.hpp interf.hpp keyboard.hpp clipboard.hpp pathmix.hpp strmix.hpp dirmix.hpp elevation.hpp cmdline.hpp console.hpp
+
+$(INTDIR)\manager.obj: manager.cpp headers.hpp manager.hpp lang.hpp keys.hpp frame.hpp vmenu.hpp filepanels.hpp panel.hpp savescr.hpp cmdline.hpp ctrlobj.hpp syslog.hpp registry.hpp interf.hpp keyboard.hpp grabber.hpp message.hpp config.hpp plist.hpp pathmix.hpp strmix.hpp exitcode.hpp scrbuf.hpp console.hpp
+
+manager.hpp:
+
+$(INTDIR)\menubar.obj: menubar.cpp headers.hpp menubar.hpp lang.hpp colors.hpp language.hpp interf.hpp
+
+menubar.hpp: scrobj.hpp
+
+$(INTDIR)\message.obj: message.cpp headers.hpp message.hpp ctrlobj.hpp lang.hpp colors.hpp dialog.hpp scrbuf.hpp keys.hpp TaskBar.hpp interf.hpp palette.hpp config.hpp
+
+message.hpp:
+
+$(INTDIR)\mix.obj: mix.cpp headers.hpp mix.hpp CFileMask.hpp scantree.hpp config.hpp pathmix.hpp
+
+mix.hpp:
+
+$(INTDIR)\mkdir.obj: mkdir.cpp headers.hpp mkdir.hpp lang.hpp filepanels.hpp panel.hpp treelist.hpp ctrlobj.hpp udlist.hpp message.hpp config.hpp dialog.hpp pathmix.hpp strmix.hpp dirmix.hpp DlgGuid.hpp
+
+mkdir.hpp:
+
+$(INTDIR)\modal.obj: modal.cpp headers.hpp modal.hpp keys.hpp help.hpp lockscrn.hpp interf.hpp keyboard.hpp
+
+modal.hpp: frame.hpp
+
+$(INTDIR)\namelist.obj: namelist.cpp headers.hpp namelist.hpp pathmix.hpp
+
+namelist.hpp: DList.hpp plugin.hpp
+
+$(INTDIR)\network.obj: network.cpp headers.hpp network.hpp language.hpp lang.hpp registry.hpp message.hpp stddlg.hpp drivemix.hpp flink.hpp cddrv.hpp pathmix.hpp
+
+network.hpp:
+
+noncopyable.hpp:
+
+$(INTDIR)\nsUniversalDetectorEx.h: nsUniversalDetectorEx.h
+
+$(INTDIR)\options.obj: options.cpp headers.hpp options.hpp lang.hpp keys.hpp hmenu.hpp vmenu.hpp filepanels.hpp panel.hpp chgmmode.hpp filelist.hpp hilight.hpp cmdline.hpp manager.hpp ctrlobj.hpp history.hpp imports.hpp message.hpp hotplug.hpp config.hpp usermenu.hpp datetime.hpp setcolor.hpp plist.hpp filetype.hpp shortcuts.hpp strmix.hpp interf.hpp codepage.hpp
+
+options.hpp:
+
+$(INTDIR)\palette.obj: palette.cpp headers.hpp palette.hpp colors.hpp
+
+palette.hpp:
+
+$(INTDIR)\panel.obj: panel.cpp headers.hpp panel.hpp macroopcode.hpp keyboard.hpp flink.hpp lang.hpp keys.hpp vmenu.hpp filepanels.hpp cmdline.hpp chgmmode.hpp chgprior.hpp edit.hpp treelist.hpp filelist.hpp dialog.hpp savescr.hpp manager.hpp ctrlobj.hpp scrbuf.hpp array.hpp lockscrn.hpp help.hpp syslog.hpp plugapi.hpp network.hpp cddrv.hpp interf.hpp message.hpp hotplug.hpp eject.hpp clipboard.hpp config.hpp scrsaver.hpp execute.hpp shortcuts.hpp options.hpp pathmix.hpp dirmix.hpp imports.hpp constitle.hpp FarDlgBuilder.hpp setattr.hpp window.hpp palette.hpp
+
+panel.hpp: scrobj.hpp panelctype.hpp
+
+$(INTDIR)\panelmix.obj: panelmix.cpp headers.hpp panelmix.hpp strmix.hpp filepanels.hpp config.hpp panel.hpp ctrlobj.hpp keys.hpp treelist.hpp filelist.hpp pathmix.hpp panelctype.hpp lang.hpp datetime.hpp
+
+panelmix.hpp:
+
+$(INTDIR)\pathmix.obj: pathmix.cpp headers.hpp pathmix.hpp strmix.hpp imports.hpp
+
+pathmix.hpp:
+
+plclass.hpp: plugin.hpp
+
+$(INTDIR)\plist.obj: plist.cpp headers.hpp plist.hpp keys.hpp help.hpp lang.hpp vmenu.hpp language.hpp message.hpp config.hpp interf.hpp
+
+plist.hpp:
+
+$(INTDIR)\plognmn.obj: plognmn.cpp headers.hpp plognmn.hpp pathmix.hpp
+
+plognmn.hpp:
+
+$(INTDIR)\plugapi.obj: plugapi.cpp headers.hpp plugapi.hpp keys.hpp lang.hpp help.hpp vmenu.hpp dialog.hpp filepanels.hpp panel.hpp cmdline.hpp scantree.hpp rdrwdsk.hpp fileview.hpp fileedit.hpp plugins.hpp savescr.hpp flink.hpp manager.hpp ctrlobj.hpp frame.hpp scrbuf.hpp farexcpt.hpp lockscrn.hpp constitle.hpp TPreRedrawFunc.hpp syslog.hpp interf.hpp keyboard.hpp palette.hpp message.hpp eject.hpp filefilter.hpp fileowner.hpp stddlg.hpp pathmix.hpp exitcode.hpp processname.hpp synchro.hpp RegExp.hpp TaskBar.hpp console.hpp
+
+plugapi.hpp:
+
+plugin.hpp:
+
+$(INTDIR)\PluginA.obj: PluginA.cpp headers.hpp plugins.hpp lang.hpp keys.hpp codepage.hpp flink.hpp scantree.hpp chgprior.hpp constitle.hpp cmdline.hpp filepanels.hpp panel.hpp vmenu.hpp dialog.hpp rdrwdsk.hpp savescr.hpp ctrlobj.hpp scrbuf.hpp udlist.hpp farexcpt.hpp fileedit.hpp RefreshFrameManager.hpp plclass.hpp PluginA.hpp registry.hpp localOEM.hpp plugapi.hpp keyboard.hpp message.hpp interf.hpp clipboard.hpp xlat.hpp fileowner.hpp pathmix.hpp dirmix.hpp processname.hpp mix.hpp lasterror.hpp wrap.cpp
+
+PluginA.hpp: language.hpp bitflags.hpp plugin.hpp plclass.hpp pluginold.hpp
+
+pluginold.hpp:
+
+$(INTDIR)\plugins.obj: plugins.cpp headers.hpp plugins.hpp lang.hpp keys.hpp flink.hpp scantree.hpp chgprior.hpp constitle.hpp cmdline.hpp filepanels.hpp panel.hpp vmenu.hpp dialog.hpp rdrwdsk.hpp savescr.hpp ctrlobj.hpp scrbuf.hpp udlist.hpp farexcpt.hpp fileedit.hpp RefreshFrameManager.hpp registry.hpp plugapi.hpp TaskBar.hpp pathmix.hpp strmix.hpp processname.hpp interf.hpp filelist.hpp message.hpp
+
+plugins.hpp: language.hpp bitflags.hpp plugin.hpp plclass.hpp PluginA.hpp PluginW.hpp
+
+$(INTDIR)\PluginW.obj: PluginW.cpp headers.hpp plugins.hpp plugapi.hpp lang.hpp keys.hpp flink.hpp scantree.hpp chgprior.hpp constitle.hpp cmdline.hpp filepanels.hpp panel.hpp vmenu.hpp dialog.hpp rdrwdsk.hpp savescr.hpp ctrlobj.hpp scrbuf.hpp udlist.hpp farexcpt.hpp fileedit.hpp RefreshFrameManager.hpp plclass.hpp PluginW.hpp registry.hpp keyboard.hpp message.hpp clipboard.hpp xlat.hpp pathmix.hpp dirmix.hpp strmix.hpp processname.hpp mix.hpp lasterror.hpp
+
+PluginW.hpp: language.hpp bitflags.hpp plugin.hpp plclass.hpp
+
+$(INTDIR)\poscache.obj: poscache.cpp headers.hpp poscache.hpp udlist.hpp registry.hpp config.hpp
+
+poscache.hpp:
+
+$(INTDIR)\print.obj: print.cpp headers.hpp lang.hpp panel.hpp vmenu.hpp filelist.hpp savescr.hpp ctrlobj.hpp TPreRedrawFunc.hpp syslog.hpp interf.hpp message.hpp print.hpp delete.hpp pathmix.hpp mix.hpp
+
+print.hpp:
+
+$(INTDIR)\privilege.obj: privilege.cpp headers.hpp privilege.hpp lasterror.hpp
+
+privilege.hpp:
+
+$(INTDIR)\processname.obj: processname.cpp headers.hpp processname.hpp strmix.hpp pathmix.hpp
+
+processname.hpp:
+
+$(INTDIR)\qview.obj: qview.cpp headers.hpp qview.hpp macroopcode.hpp flink.hpp lang.hpp colors.hpp keys.hpp filepanels.hpp help.hpp viewer.hpp cmdline.hpp ctrlobj.hpp registry.hpp interf.hpp execute.hpp dirinfo.hpp pathmix.hpp mix.hpp constitle.hpp syslog.hpp
+
+qview.hpp: panel.hpp CriticalSections.hpp
+
+$(INTDIR)\rdrwdsk.obj: rdrwdsk.cpp headers.hpp manager.hpp keys.hpp rdrwdsk.hpp filepanels.hpp panel.hpp cmdline.hpp ctrlobj.hpp config.hpp
+
+rdrwdsk.hpp:
+
+$(INTDIR)\RefreshFrameManager.obj: RefreshFrameManager.cpp headers.hpp lockscrn.hpp frame.hpp manager.hpp savescr.hpp RefreshFrameManager.hpp interf.hpp
+
+RefreshFrameManager.hpp:
+
+$(INTDIR)\RegExp.obj: RegExp.cpp headers.hpp RegExp.hpp
+
+RegExp.hpp: plugin.hpp
+
+$(INTDIR)\registry.obj: registry.cpp headers.hpp registry.hpp array.hpp config.hpp pathmix.hpp
+
+registry.hpp:
+
+res.hpp:
+
+$(INTDIR)\savefpos.obj: savefpos.cpp headers.hpp savefpos.hpp
+
+savefpos.hpp:
+
+$(INTDIR)\savescr.obj: savescr.cpp headers.hpp savescr.hpp colors.hpp syslog.hpp interf.hpp palette.hpp console.hpp
+
+savescr.hpp:
+
+$(INTDIR)\scantree.obj: scantree.cpp headers.hpp scantree.hpp syslog.hpp config.hpp pathmix.hpp
+
+scantree.hpp: bitflags.hpp array.hpp
+
+$(INTDIR)\scrbuf.obj: scrbuf.cpp headers.hpp scrbuf.hpp colors.hpp ctrlobj.hpp syslog.hpp interf.hpp palette.hpp config.hpp DList.hpp elevation.hpp console.hpp
+
+scrbuf.hpp: bitflags.hpp CriticalSections.hpp
+
+$(INTDIR)\scrobj.obj: scrobj.cpp headers.hpp scrobj.hpp savescr.hpp interf.hpp
+
+scrobj.hpp: bitflags.hpp
+
+$(INTDIR)\scrsaver.obj: scrsaver.cpp headers.hpp colors.hpp chgprior.hpp savescr.hpp manager.hpp interf.hpp keyboard.hpp config.hpp scrsaver.hpp console.hpp
+
+scrsaver.hpp:
+
+$(INTDIR)\setattr.obj: setattr.cpp headers.hpp flink.hpp lang.hpp dialog.hpp chgprior.hpp scantree.hpp filepanels.hpp panel.hpp ctrlobj.hpp constitle.hpp TPreRedrawFunc.hpp TaskBar.hpp keyboard.hpp message.hpp config.hpp datetime.hpp fileattr.hpp setattr.hpp pathmix.hpp strmix.hpp lasterror.hpp network.hpp fileowner.hpp privilege.hpp wakeful.hpp DlgGuid.hpp
+
+setattr.hpp:
+
+$(INTDIR)\setcolor.obj: setcolor.cpp headers.hpp setcolor.hpp keys.hpp lang.hpp colors.hpp vmenu.hpp dialog.hpp filepanels.hpp ctrlobj.hpp savescr.hpp scrbuf.hpp panel.hpp chgmmode.hpp interf.hpp palette.hpp config.hpp
+
+setcolor.hpp:
+
+$(INTDIR)\stddlg.obj: stddlg.cpp headers.hpp stddlg.hpp lang.hpp keys.hpp dialog.hpp ctrlobj.hpp farexcpt.hpp registry.hpp strmix.hpp macro.hpp
+
+stddlg.hpp:
+
+$(INTDIR)\strmix.obj: strmix.cpp headers.hpp strmix.hpp lang.hpp language.hpp config.hpp pathmix.hpp
+
+strmix.hpp:
+
+$(INTDIR)\synchro.obj: synchro.cpp headers.hpp synchro.hpp plclass.hpp plugin.hpp ctrlobj.hpp elevation.hpp
+
+synchro.hpp: DList.hpp
+
+$(INTDIR)\macrocompiler.obj: macrocompiler.cpp
+
+macrocompiler.hpp:
+
+$(INTDIR)\syslog.obj: syslog.cpp headers.hpp syslog.hpp filelist.hpp manager.hpp frame.hpp macroopcode.hpp keyboard.hpp datetime.hpp pathmix.hpp strmix.hpp interf.hpp console.hpp
+
+syslog.hpp:
+
+$(INTDIR)\TaskBar.obj: TaskBar.cpp headers.hpp TaskBar.hpp console.hpp
+
+TaskBar.hpp:
+
+$(INTDIR)\TPreRedrawFunc.obj: TPreRedrawFunc.cpp headers.hpp TPreRedrawFunc.hpp
+
+TPreRedrawFunc.hpp:
+
+$(INTDIR)\treelist.obj: treelist.cpp headers.hpp treelist.hpp flink.hpp keyboard.hpp colors.hpp lang.hpp keys.hpp filepanels.hpp filelist.hpp cmdline.hpp chgprior.hpp scantree.hpp copy.hpp qview.hpp savescr.hpp ctrlobj.hpp help.hpp lockscrn.hpp macroopcode.hpp RefreshFrameManager.hpp scrbuf.hpp TPreRedrawFunc.hpp TaskBar.hpp cddrv.hpp interf.hpp message.hpp clipboard.hpp config.hpp delete.hpp mkdir.hpp setattr.hpp execute.hpp shortcuts.hpp dirmix.hpp pathmix.hpp processname.hpp constitle.hpp syslog.hpp cache.hpp filestr.hpp wakeful.hpp
+
+treelist.hpp: panel.hpp
+
+TStack.hpp: noncopyable.hpp
+
+$(INTDIR)\tvar.obj: tvar.cpp headers.hpp tvar.hpp config.hpp
+
+tvar.hpp:
+
+$(INTDIR)\udlist.obj: udlist.cpp headers.hpp udlist.hpp
+
+udlist.hpp: array.hpp noncopyable.hpp
+
+$(INTDIR)\UnicodeString.obj: UnicodeString.cpp headers.hpp
+
+UnicodeString.hpp: local.hpp
+
+$(INTDIR)\usermenu.obj: usermenu.cpp headers.hpp lang.hpp keys.hpp filepanels.hpp panel.hpp cmdline.hpp vmenu.hpp dialog.hpp fileedit.hpp plognmn.hpp savefpos.hpp ctrlobj.hpp manager.hpp constitle.hpp registry.hpp message.hpp usermenu.hpp filetype.hpp fnparce.hpp execute.hpp pathmix.hpp strmix.hpp panelmix.hpp filestr.hpp mix.hpp savescr.hpp syslog.hpp interf.hpp cache.hpp
+
+usermenu.hpp:
+
+$(INTDIR)\viewer.obj: viewer.cpp headers.hpp viewer.hpp codepage.hpp macroopcode.hpp keyboard.hpp flink.hpp lang.hpp colors.hpp keys.hpp help.hpp dialog.hpp panel.hpp filepanels.hpp fileview.hpp savefpos.hpp savescr.hpp ctrlobj.hpp scrbuf.hpp TPreRedrawFunc.hpp syslog.hpp TaskBar.hpp cddrv.hpp interf.hpp message.hpp clipboard.hpp delete.hpp dirmix.hpp pathmix.hpp filestr.hpp mix.hpp constitle.hpp console.hpp wakeful.hpp RegExp.hpp
+
+viewer.hpp: scrobj.hpp namelist.hpp plugin.hpp poscache.hpp config.hpp cache.hpp
+
+$(INTDIR)\vmenu.obj: vmenu.cpp headers.hpp vmenu.hpp keyboard.hpp lang.hpp keys.hpp macroopcode.hpp colors.hpp chgprior.hpp dialog.hpp savescr.hpp clipboard.hpp ctrlobj.hpp manager.hpp constitle.hpp syslog.hpp interf.hpp palette.hpp config.hpp processname.hpp pathmix.hpp cmdline.hpp strmix.hpp xlat.hpp
+
+vmenu.hpp: modal.hpp plugin.hpp manager.hpp frame.hpp bitflags.hpp CriticalSections.hpp CFileMask.hpp
+
+wakeful.hpp:
+
+$(INTDIR)\window.obj: window.cpp headers.hpp window.hpp config.hpp
+
+window.hpp: event.hpp
+
+$(INTDIR)\wrap.obj: wrap.cpp
+
+$(INTDIR)\xlat.obj: xlat.cpp headers.hpp registry.hpp config.hpp xlat.hpp console.hpp
+
+xlat.hpp:
+
+panelctype.hpp:
+
