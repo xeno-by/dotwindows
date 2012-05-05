@@ -26,7 +26,7 @@ public class Kep : Git {
   public virtual String profileAltLibrary { get { return "quick.lib"; } }
   public virtual String profileAltCompiler { get { return "quick.comp"; } }
 
-  public virtual String antExecutable() { return "ant"; }
+  public virtual String antExecutable() { return "ant" + " -Dscalac.args=" + arguments; }
 //  public virtual String antExecutable() { return "ant -Djavac.args=-Dmyke.comments=" + mykeComments().Replace(" ", "_"); }
 //  public virtual String mykeComments() {
 //    var dotCommentsName = ".comments";
