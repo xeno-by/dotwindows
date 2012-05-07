@@ -79,7 +79,7 @@ public class Scala : Git {
 
       if (indices.Where(i => i != null).Distinct().Count() == indices.Count()) {
         var ordered = indices.Zip(sources, (index, source) => new KeyValuePair<int, FileInfo>(index.Value, source)).OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList();
-        var compilers = ordered.Select(fi => "scalac " + fi.Name.ShellEscape() + (flags.Count() == 0 ? "" : " " + flags)).ToList();
+        var compilers = ordered.Select(fi => "scalac " + fi.Name.ShellEscape() + (flags.Count() == 0 ? "" : " " + String.Join(" ", flags.ToArray()))).ToList();
         return String.Join(Environment.NewLine, compilers.ToArray());
       } else {
         return "scalac " + String.Join(" ", flags.Concat(sources.Select(file => file.Name.ShellEscape())).ToArray());

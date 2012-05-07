@@ -96,7 +96,18 @@ public class Kep : Git {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.rebuild();
     } else {
-      return Console.batch(antExecutable() + " " + profileClean + " " + profile + " -buildfile build.xml", home: root);
+      var mods = arguments;
+      var library = mods.Count() == 0 || mods.Contains("library");
+      var compiler = mods.Contains("compiler");
+      var altLibrary = mods.Contains("alt") || mods.Contains("alt-library");
+      var altCompiler = mods.Contains("alt-compiler");
+      arguments = new Arguments(arguments.Where(arg => arg != "library" && arg != "compiler" && arg != "alt" && arg != "alt-library" && arg != "alt-compiler").ToList());
+
+      if (library) return Console.batch(antExecutable() + " " + profileClean + " " + profile + " -buildfile build.xml", home: root);
+      else if (compiler) return rebuildCompiler();
+      else if (altLibrary) return rebuildAltLibrary();
+      else if (altCompiler) return rebuildAltCompiler();
+      else throw new Exception("don't know how to rebuild the stuff you asked: " + mods);
     }
   }
 
@@ -212,16 +223,7 @@ public class Kep : Git {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.compile();
     } else {
-      var status = Console.batch(antExecutable() + " " + profile + " -buildfile build.xml", home: root);
-      if (!status) return status;
-
-      var partest = project + @"\build\locker\classes\partest";
-      if (!Directory.Exists(partest)) {
-        var donor = new Donor(new DirectoryInfo(new Donor().project), arguments);
-        return donor.compile();
-      } else {
-        return 0;
-      }
+      return Console.batch(antExecutable() + " " + profile + " -buildfile build.xml", home: root);
     }
   }
 
@@ -289,6 +291,13 @@ public class Kep : Git {
 
   [Action]
   public override ExitCode runTest() {
+    var partest1 = project + @"\build\locker\classes\partest";
+    if (!Directory.Exists(partest1)) {
+      var donor = new Donor(new DirectoryInfo(new Donor().project), arguments);
+      var status1 = donor.compile();
+      if (!status1) return status1;
+    }
+
     var prefix = project;
     prefix = prefix.Replace("/", "\\");
     if (!prefix.EndsWith("\\")) prefix += "\\";
