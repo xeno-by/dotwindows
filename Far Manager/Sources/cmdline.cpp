@@ -514,6 +514,20 @@ int CommandLine::ProcessMouse(MOUSE_EVENT_RECORD *MouseEvent)
 
 void CommandLine::GetPrompt(string &strDestStr)
 {
+//	HANDLE h = CreateFile(L"d:\\foo.txt", GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	STARTUPINFO info={sizeof(info)};
+//	info.dwFlags |= STARTF_USESTDHANDLES;
+//	info.hStdOutput = h;
+//	info.hStdError = h;
+	PROCESS_INFORMATION processInfo;
+	if (CreateProcess(L"C:\\Windows\\System32\\cmd.exe", L"/C git branch > d:\\foo.txt 2>&1", NULL, NULL, TRUE, 0, NULL, strCurDir, &info, &processInfo))
+	{
+	    ::WaitForSingleObject(processInfo.hProcess, INFINITE);
+	    CloseHandle(processInfo.hProcess);
+	    CloseHandle(processInfo.hThread);
+	}
+//	CloseHandle(h);
+
 	if (Opt.CmdLine.UsePromptFormat)
 	{
 		string strFormatStr, strExpandedFormatStr;

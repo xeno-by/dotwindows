@@ -70,9 +70,9 @@ public class App {
           Console.print("* {0}... ", t_conn.name());
         }
 
-        Func<Prj> loadConn = () => {
+        Func<Conn> loadConn = () => {
           try {
-            var myconn = (Prj)t_conn.instantiate();
+            var myconn = (Conn)t_conn.instantiate();
             var accepts = myconn != null && myconn.accept() && (Config.requestedConn == null || Config.requestedConn == myconn.name().ToUpper());
             if (Config.verbose) {
               if (accepts) Console.println("[A]");
@@ -80,7 +80,9 @@ public class App {
             }
             return accepts ? myconn : null;
           } catch {
-            Console.println("[R]");
+            if (Config.verbose) {
+              Console.println("[R]");
+            }
             return null;
           }
         };
@@ -998,7 +1000,7 @@ public static class Config {
   public static String target;
   public static String requestedConn;
   public static Arguments args;
-  public static Prj conn;
+  public static Conn conn;
   public static MethodInfo conn_action;
   public static Dictionary<String, String> env;
 
@@ -1033,6 +1035,7 @@ public static class Config {
     // don't check for file existence - connector might actually create that non-existent file/directory
     Config.originalTarget = Path.GetFullPath(target);
     Config.target = Path.GetFullPath(target);
+    args = args.Where(arg => arg.Trim() != String.Empty).ToArray();
     Config.args = new Arguments(Enumerable.Concat(flags, args).ToList());
 
     // conn will be set elsewhere
@@ -1362,40 +1365,7 @@ public class Arguments : BaseList<String> {
   }
 }
 
-
-public abstract class Prj {
-  public FileInfo file;
-  public DirectoryInfo dir;
-
-  public Prj() : this((DirectoryInfo)null) {}
-
-  public Prj(FileInfo file) {
-    this.file = file;
-    this.dir = file == null ? null : file.Directory;
-  }
-
-  public Prj(DirectoryInfo dir) {
-    this.file = null;
-    this.dir = dir ?? (project == null ? null : new DirectoryInfo(project));
-  }
-
-  public virtual String project { get { return null; } }
-
-  public virtual DirectoryInfo root { get {
-    if (project != null) {
-      return new DirectoryInfo(project);
-    }
-
-    return dir;
-  } }
-
-  [Action]
-  public virtual ExitCode console() {
-    return Console.interactive("mycmd.exe", home: root);
-  }
-
-  public abstract bool accept();
-
+public abstract class Base {
   protected static ExitCode print(String format, params Object[] objs) {
     Console.print(format, objs);
     return 0;
@@ -1469,10 +1439,78 @@ public abstract class Prj {
   protected static String readln(String prompt = null, String history = null) {
     return Console.readln(prompt, history);
   }
+}
+
+public abstract class Conn : Base {
+  public FileInfo file;
+  public DirectoryInfo dir;
+
+  public Conn() : this((DirectoryInfo)null) {}
+
+  public Conn(FileInfo file) {
+    this.file = file;
+    this.dir = file == null ? null : file.Directory;
+  }
+
+  public Conn(DirectoryInfo dir) {
+    this.file = null;
+    this.dir = dir;
+  }
+
+  public abstract bool accept();
+
+  public virtual DirectoryInfo root { get {
+    return dir;
+  } }
 
   public static Dictionary<String, String> env { get {
     return Config.env;
   } }
+}
+
+[Connector(name = "universal", priority = 0, description =
+  "Accepts any target, serves as a fallback for universally provided services such as `console` and `prompt`.")]
+
+public class Universal : Conn {
+  public Universal() : base() {}
+  public Universal(FileInfo file) : base(file) {}
+  public Universal(DirectoryInfo dir) : base(dir) {}
+
+  public override bool accept() {
+    return true;
+  }
+
+  [Action]
+  public virtual ExitCode console() {
+    return Console.interactive("mycmd.exe", home: dir);
+  }
+
+  [Action]
+  public virtual ExitCode prompt() {
+    println(dir.ToString() + ">");
+    return 0;
+  }
+}
+
+public abstract class Prj : Universal {
+  public Prj() : base() {}
+  public Prj(FileInfo file) : base(file) {}
+  public Prj(DirectoryInfo dir) : base(dir) { this.dir = this.dir ?? (project == null ? null : new DirectoryInfo(project)); }
+
+  public virtual String project { get { return null; } }
+
+  public override DirectoryInfo root { get {
+    if (project != null) {
+      return new DirectoryInfo(project);
+    }
+
+    return dir;
+  } }
+
+  [Action]
+  public override ExitCode console() {
+    return Console.interactive("mycmd.exe", home: root);
+  }
 
   [Action]
   public virtual ExitCode makeTestSuite(Arguments arguments) {
