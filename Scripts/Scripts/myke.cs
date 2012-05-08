@@ -130,7 +130,8 @@ public class App {
         }
       }
 
-      Config.target = Path.GetDirectoryName(Config.target);
+      try { Config.target = Path.GetDirectoryName(Config.target); }
+      catch { Config.target = null; }
     }
 
     if (Config.verbose) {
@@ -1047,8 +1048,13 @@ public static class Config {
     if (target == null || target == "/?" || target == "-help" || target == "--help") { Help.printUsage(action); return -1; }
 
     // don't check for file existence - connector might actually create that non-existent file/directory
-    Config.originalTarget = Path.GetFullPath(target);
-    Config.target = Path.GetFullPath(target);
+    try {
+      Config.originalTarget = Path.GetFullPath(target);
+      Config.target = Path.GetFullPath(target);
+    } catch {
+      Config.originalTarget = target;
+      Config.target = target;
+    }
     args = args.Where(arg => arg.Trim() != String.Empty).ToArray();
     Config.args = new Arguments(Enumerable.Concat(flags, args).ToList());
 
