@@ -1031,6 +1031,9 @@ public static class Config {
     args = args.SkipWhile(arg => arg.StartsWith("-")).ToArray();
 
     var rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
+    Config.rawTarget = rawTarget;
+    Config.rawCommandLine = rawTarget == "" && Config.args.Count() == 0 ? "" : (String.Join(" ", flags.ToArray()) + " " + String.Join(" ", args.ToArray()));
+
     var target = args.Take(1).ElementAtOrDefault(0) ?? ".";
     args = args.Skip(1).ToArray();
     if (target == null || target == "/?" || target == "-help" || target == "--help") { Help.printUsage(action); return -1; }
@@ -1040,9 +1043,6 @@ public static class Config {
     Config.target = Path.GetFullPath(target);
     args = args.Where(arg => arg.Trim() != String.Empty).ToArray();
     Config.args = new Arguments(Enumerable.Concat(flags, args).ToList());
-
-    Config.rawTarget = rawTarget;
-    Config.rawCommandLine = rawTarget == "" && Config.args.Count() == 0 ? "" : (rawTarget + " " + Config.args);
 
     // conn will be set elsewhere
     Config.conn = null;
@@ -1858,21 +1858,24 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git push", home: repo.GetRealPath());
+    return Console.interactive("git push " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
   [Action]
   public virtual ExitCode smartPush() {
     if (!verifyRepo()) return -1;
-    println("smart push: not implemented");
-    return -1;
+    var branch = Config.rawTarget;
+    if (branch == "") branch = getCurrentBranch();
+    return Console.batch("git push origin +" + branch, home: dir.GetRealPath());
   }
 
   [Action]
   public virtual ExitCode smartPullRequest() {
     if (!verifyRepo()) return -1;
-    println("pull request: not implemented");
-    return -1;
+    var branch = Config.rawTarget;
+    if (branch == "") branch = getCurrentBranch();
+    var url = getBranchPullRequestUrl(branch);
+    return Console.ui(url);
   }
 
   [Action]
@@ -1884,11 +1887,10 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartPull() {
     if (!verifyRepo()) return -1;
-    //gpo=myke smart-pull origin $*
-    //gpu=myke smart-pull upstream $*
-    //gpy=myke smart-pull odersky $*
-    println("smart pull: not implemented");
-    return -1;
+    var remoteAndBranch = Config.rawCommandLine;
+    if (remoteAndBranch == "") remoteAndBranch += "origin";
+    if (!remoteAndBranch.Contains(" ")) remoteAndBranch += (" " + getCurrentBranch());
+    return Console.batch("git pull " + remoteAndBranch, home: dir.GetRealPath());
   }
 
   [Action]
@@ -1898,17 +1900,20 @@ public abstract class Git : Prj {
   }
 
   [Action]
-  public virtual ExitCode smartBranchLocalDelete() {
+  public virtual ExitCode smartSmartBranchLocalDelete() {
     if (!verifyRepo()) return -1;
-    println("smart branch local delete: not implemented");
-    return -1;
+    var branch = Config.rawTarget;
+    ExitCode result = 0;
+    if (branch == getCurrentBranch()) result = Console.batch("git checkout master", home: dir.GetRealPath());
+    return result && Console.batch("git branch -D " + branch, home: dir.GetRealPath());
   }
 
   [Action]
-  public virtual ExitCode smartBranchRemoteDelete() {
+  public virtual ExitCode smartSmartBranchRemoteDelete() {
     if (!verifyRepo()) return -1;
-    println("smart branch remote delete: not implemented");
-    return -1;
+    var branch = Config.rawTarget;
+    var result = smartSmartBranchLocalDelete();
+    return result && Console.batch("git push origin :" + branch, home: dir.GetRealPath());
   }
 
   [Action]
@@ -1938,8 +1943,9 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartCheckout() {
     if (!verifyRepo()) return -1;
-    println("smart checkout: not implemented");
-    return -1;
+    var branch = Config.rawTarget;
+    if (branch.StartsWith("remotes/")) return Console.batch("git checkout -t " + branch, home: dir.GetRealPath());
+    else return Console.batch("git checkout " + branch, home: dir.GetRealPath());
   }
 
   [Action]
@@ -1954,8 +1960,42 @@ public abstract class Git : Prj {
     return Console.batch("git reset " + Config.rawCommandLine, home: dir.GetRealPath());
   }
 
-  public virtual String getCurrentRemote() {
-    return "origin";
+  public virtual String getBranchPullRequestUrl(String branch) {
+    Func<String, String> getRemotePullRequestUrl = remote1 => {
+      var lines = Console.eval("git remote -v");
+      var line1 = lines.Where(line2 => line2.StartsWith(remote1)).FirstOrDefault();
+      if (line1 == null) return null;
+      line1 = line1.Substring(remote1.Length).Trim();
+      line1 = line1.Substring(0, line1.LastIndexOf("(") - 1).Trim();
+      // https://github.com/scalamacros/kepler/pull/new/topic/reflection
+      var url1 = line1;
+      var re1 = "^git://github.com/(?<user>.*?)/(?<repo>.*).git$";
+      var m1 = Regex.Match(url1, re1);
+      if (m1.Success) {
+        return m1.Result("https://github.com/${user}/${repo}/pull/new");
+      } else {
+        var re2 = "^git@github.com:(?<user>.*?)/(?<repo>.*).git$";
+        var m2 = Regex.Match(url1, re2);
+        if (m2.Success) {
+          return m2.Result("https://github.com/${user}/${repo}/pull/new");
+        } else {
+          return null;
+        }
+      }
+    };
+
+    String remote = null;
+    if (branch.StartsWith("remotes/")) {
+      branch = branch.Substring("remotes/".Length);
+      remote = branch.Substring(0, branch.IndexOf("/") - 1);
+      branch = branch.Substring(branch.IndexOf("/") + 1);
+    } else {
+      remote = "origin";
+    }
+
+    var url = getRemotePullRequestUrl(remote);
+    if (url == null) return null;
+    else return url + "/" + branch;
   }
 
   public virtual String getCurrentBranch() {
