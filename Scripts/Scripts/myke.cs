@@ -1989,6 +1989,13 @@ public abstract class Git : Prj {
   }
 
   [Action]
+  public virtual ExitCode smartBranchNewSelect() {
+    if (!verifyRepo()) return -1;
+    var result = smartCheckout();
+    return result && Console.batch("git checkout -b " + Config.args, home: repo.GetRealPath());
+  }
+
+  [Action]
   public virtual ExitCode smartCheckout() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
