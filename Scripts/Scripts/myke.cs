@@ -2017,6 +2017,7 @@ public abstract class Git : Prj {
 
   [Action]
   public virtual ExitCode smartMixedReset() {
+
     if (!verifyRepo()) return -1;
     var commit = Config.rawTarget;
     return Console.batch("git reset --mixed " + commit, home: repo.GetRealPath());
