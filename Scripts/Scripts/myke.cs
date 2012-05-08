@@ -2021,14 +2021,18 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartListCommits() {
     if (!verifyRepo()) return -1;
-    return Console.batch("git log -g \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick --no-merges --all", home: dir.GetRealPath());
+    var shortHash = getCurrentHead().Substring(0, 10);
+    var filter = "sed -r 's/^" + shortHash + " (.*^)/* " + shortHash + " \\1/'";
+    return Console.batch("git log -g \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick --all | " + filter, home: dir.GetRealPath());
   }
 
   [Action]
   public virtual ExitCode smartListBranchCommits() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
-    return Console.batch("git log \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick --no-merges " + branch, home: dir.GetRealPath());
+    var shortHash = getCurrentHead().Substring(0, 10);
+    var filter = "sed -r 's/^" + shortHash + " (.*^)/* " + shortHash + " \\1/'";
+    return Console.batch("git log \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick " + branch + " | " + filter, home: dir.GetRealPath());
   }
 
   [Action]
