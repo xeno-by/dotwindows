@@ -1040,6 +1040,11 @@ public static class Config {
     args = args.SkipWhile(arg => arg.StartsWith("-")).ToArray();
 
     var rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
+    // hack for fargit
+    if (rawTarget == "*") {
+      args = args.Skip(1).ToArray();
+      rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
+    }
     Config.rawTarget = rawTarget;
     Config.rawCommandLine = rawTarget == "" ? "" : (String.Join(" ", flags.ToArray()) + " " + String.Join(" ", args.ToArray()));
 
