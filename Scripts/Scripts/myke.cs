@@ -998,6 +998,8 @@ public static class Config {
   public static String action;
   public static String originalTarget;
   public static String target;
+  public static String rawTarget;
+  public static String rawCommandLine;
   public static String requestedConn;
   public static Arguments args;
   public static Conn conn;
@@ -1028,6 +1030,7 @@ public static class Config {
     var flags = args.TakeWhile(arg => arg.StartsWith("-")).ToList();
     args = args.SkipWhile(arg => arg.StartsWith("-")).ToArray();
 
+    var rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
     var target = args.Take(1).ElementAtOrDefault(0) ?? ".";
     args = args.Skip(1).ToArray();
     if (target == null || target == "/?" || target == "-help" || target == "--help") { Help.printUsage(action); return -1; }
@@ -1037,6 +1040,9 @@ public static class Config {
     Config.target = Path.GetFullPath(target);
     args = args.Where(arg => arg.Trim() != String.Empty).ToArray();
     Config.args = new Arguments(Enumerable.Concat(flags, args).ToList());
+
+    Config.rawTarget = rawTarget;
+    Config.rawCommandLine = rawTarget == "" && Config.args.Count() == 0 ? "" : (rawTarget + " " + Config.args);
 
     // conn will be set elsewhere
     Config.conn = null;
@@ -1849,15 +1855,143 @@ public abstract class Git : Prj {
     return logall();
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
     return Console.interactive("git push", home: repo.GetRealPath());
   }
 
-  [Action, DontTrace]
+  [Action]
+  public virtual ExitCode smartPush() {
+    if (!verifyRepo()) return -1;
+    println("smart push: not implemented");
+    return -1;
+  }
+
+  [Action]
+  public virtual ExitCode smartPullRequest() {
+    if (!verifyRepo()) return -1;
+    println("pull request: not implemented");
+    return -1;
+  }
+
+  [Action]
   public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
-    return Console.interactive("git pull", home: repo.GetRealPath());
+    return Console.batch("git pull", home: repo.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartPull() {
+    if (!verifyRepo()) return -1;
+    //gpo=myke smart-pull origin $*
+    //gpu=myke smart-pull upstream $*
+    //gpy=myke smart-pull odersky $*
+    println("smart pull: not implemented");
+    return -1;
+  }
+
+  [Action]
+  public virtual ExitCode branch() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git branch " + Config.rawCommandLine, home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartBranchLocalDelete() {
+    if (!verifyRepo()) return -1;
+    println("smart branch local delete: not implemented");
+    return -1;
+  }
+
+  [Action]
+  public virtual ExitCode smartBranchRemoteDelete() {
+    if (!verifyRepo()) return -1;
+    println("smart branch remote delete: not implemented");
+    return -1;
+  }
+
+  [Action]
+  public virtual ExitCode merge() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git merge " + Config.rawCommandLine, home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode rebase() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git rebase " + Config.rawCommandLine, home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode cherryPick() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git cherry-pick " + Config.rawCommandLine, home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode checkout() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git checkout " + Config.rawCommandLine, home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartCheckout() {
+    if (!verifyRepo()) return -1;
+    println("smart checkout: not implemented");
+    return -1;
+  }
+
+  [Action]
+  public virtual ExitCode remote() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git remote " + Config.rawCommandLine, home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode reset() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git reset " + Config.rawCommandLine, home: dir.GetRealPath());
+  }
+
+  public virtual String getCurrentRemote() {
+    return "origin";
+  }
+
+  public virtual String getCurrentBranch() {
+    var lines = Console.eval("git symbolic-ref HEAD");
+    var prefix = "refs/heads/";
+    var result = lines.ElementAtOrDefault(0) ?? prefix;
+    return result.Substring(prefix.Length);
+  }
+
+  public virtual String getCurrentHead() {
+    return Console.eval("git rev-parse HEAD")[0];
+  }
+
+  [Action]
+  public virtual ExitCode smartShowCommit() {
+    if (!verifyRepo()) return -1;
+    var commit = Config.rawTarget;
+    return Console.batch("git show " + commit, home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartListCommits() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git log -g \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick --no-merges --all", home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartListBranchCommits() {
+    if (!verifyRepo()) return -1;
+    var branch = Config.rawTarget;
+    return Console.batch("git log \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick --no-merges " + branch, home: dir.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartListBranches() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git branch -a", home: dir.GetRealPath());
   }
 }
