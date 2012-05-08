@@ -238,7 +238,15 @@ public static class Console {
 
   public static bool firstTrace = true;
   public static void internalTrace(String msg) {
-    if (firstTrace) { firstTrace = false; traceln("myke {0} {1} {2}", Config.action, Config.originalTarget, Config.args); }
+    if (firstTrace) {
+      firstTrace = false;
+      traceln("myke {0} {1} {2}", Config.action, Config.originalTarget, Config.args);
+      if (Config.conn is Git) {
+        var git = Config.conn as Git;
+        traceln("git: branch = {0}, commit = {1}", git.getCurrentBranch(), git.getCurrentCommit());
+      }
+    }
+
     if (Config.conn_action.canTrace()) File.AppendAllText(Config.env["traceFile"], msg);
   }
 
@@ -2012,6 +2020,15 @@ public abstract class Git : Prj {
     var lines = Console.eval("git rev-parse HEAD", home: repo.GetRealPath());
     if (lines == null) return null;
     return lines.ElementAtOrDefault(0);
+  }
+
+  public virtual String getCurrentCommit() {
+//    var file = Path.GetTempFileName();
+//    var lines = Console.eval("git log \"--pretty=format:%h %s (%cn, %ad)\" --max-count 1 > " + file, home: repo.GetRealPath());
+//    if (lines == null) return null;
+//    lines = File.ReadAllLines(file).ToList();
+//    return lines.ElementAtOrDefault(0);
+    return getCurrentHead();
   }
 
   [Action]
