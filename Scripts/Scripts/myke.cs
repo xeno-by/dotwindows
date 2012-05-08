@@ -1032,7 +1032,7 @@ public static class Config {
 
     var rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
     Config.rawTarget = rawTarget;
-    Config.rawCommandLine = rawTarget == "" && Config.args.Count() == 0 ? "" : (String.Join(" ", flags.ToArray()) + " " + String.Join(" ", args.ToArray()));
+    Config.rawCommandLine = rawTarget == "" ? "" : (String.Join(" ", flags.ToArray()) + " " + String.Join(" ", args.ToArray()));
 
     var target = args.Take(1).ElementAtOrDefault(0) ?? ".";
     args = args.Skip(1).ToArray();
@@ -1900,19 +1900,21 @@ public abstract class Git : Prj {
   }
 
   [Action]
-  public virtual ExitCode smartSmartBranchLocalDelete() {
+  public virtual ExitCode smartBranchLocalDelete() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
+    if (branch == "") branch = getCurrentBranch();
     ExitCode result = 0;
     if (branch == getCurrentBranch()) result = Console.batch("git checkout master", home: dir.GetRealPath());
     return result && Console.batch("git branch -D " + branch, home: dir.GetRealPath());
   }
 
   [Action]
-  public virtual ExitCode smartSmartBranchRemoteDelete() {
+  public virtual ExitCode smartBranchRemoteDelete() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
-    var result = smartSmartBranchLocalDelete();
+    if (branch == "") branch = getCurrentBranch();
+    var result = smartBranchLocalDelete();
     return result && Console.batch("git push origin :" + branch, home: dir.GetRealPath());
   }
 
