@@ -638,6 +638,11 @@ void CommandLine::GetPrompt(string &strDestStr)
 }
 
 string CommandLine::GetGitBranch(string dir) {
+	HANDLE hLog = CreateFile(L"d:\\foo.log", FILE_APPEND_DATA, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	DWORD written;
+	WriteFile(hLog, (dir + L"\r\n").CPtr(), dir.GetLength() * 2 + 2 * 2, &written, NULL);
+	CloseHandle(hLog);
+
 	string gitHead(dir + "\\.git\\HEAD");
 	if (GetFileAttributes(gitHead) != INVALID_FILE_ATTRIBUTES) {
 		HANDLE hFile = CreateFile(gitHead, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -662,10 +667,11 @@ string CommandLine::GetGitBranch(string dir) {
 			return L"";
 		}
 	} else {
+		if (dir.GetLength() > 0 && (dir.At(dir.GetLength() - 1) == L'\\' || dir.At(dir.GetLength() - 1) == L'/')) dir = dir.SubStr(0, dir.GetLength() - 1);
 		wchar_t drive[10];
 		wchar_t parent[256];
 		_wsplitpath_s(dir, drive, 10, parent, 256, NULL, 0, NULL, 0);
-		if (dir.Equal(0, drive)) return L"";
+		if (dir.GetLength() <= string(drive).GetLength()) return L"";
 		return GetGitBranch(string(drive) + string(parent));
 	}
 }
