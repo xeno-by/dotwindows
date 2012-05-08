@@ -1952,13 +1952,21 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartMerge() {
     if (!verifyRepo()) return -1;
-    return Console.batch("git merge " + Config.rawCommandLine, home: repo.GetRealPath());
+    var branch = Config.rawTarget;
+    return Console.batch("git merge " + branch, home: repo.GetRealPath());
   }
 
   [Action]
   public virtual ExitCode rebase() {
     if (!verifyRepo()) return -1;
     return Console.batch("git rebase " + Config.rawCommandLine, home: repo.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartRebase() {
+    if (!verifyRepo()) return -1;
+    var branch = Config.rawTarget;
+    return Console.batch("git rebase " + branch, home: repo.GetRealPath());
   }
 
   [Action]
