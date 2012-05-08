@@ -638,10 +638,7 @@ void CommandLine::GetPrompt(string &strDestStr)
 }
 
 string CommandLine::GetGitBranch(string dir) {
-	HANDLE hLog = CreateFile(L"d:\\foo.log", FILE_APPEND_DATA, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	DWORD written;
-	WriteFile(hLog, (dir + L"\r\n").CPtr(), dir.GetLength() * 2 + 2 * 2, &written, NULL);
-	CloseHandle(hLog);
+	if (dir.GetLength() > 0 && (dir.At(0) == L'\\' || dir.At(0) == L'/')) return L"";
 
 	string gitHead(dir + "\\.git\\HEAD");
 	if (GetFileAttributes(gitHead) != INVALID_FILE_ATTRIBUTES) {
