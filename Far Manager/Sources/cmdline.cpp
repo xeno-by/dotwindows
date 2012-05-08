@@ -514,20 +514,6 @@ int CommandLine::ProcessMouse(MOUSE_EVENT_RECORD *MouseEvent)
 
 void CommandLine::GetPrompt(string &strDestStr)
 {
-//	HANDLE h = CreateFile(L"d:\\foo.txt", GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	STARTUPINFO info={sizeof(info)};
-//	info.dwFlags |= STARTF_USESTDHANDLES;
-//	info.hStdOutput = h;
-//	info.hStdError = h;
-	PROCESS_INFORMATION processInfo;
-	if (CreateProcess(L"C:\\Windows\\System32\\cmd.exe", L"/C git branch > d:\\foo.txt 2>&1", NULL, NULL, TRUE, 0, NULL, strCurDir, &info, &processInfo))
-	{
-	    ::WaitForSingleObject(processInfo.hProcess, INFINITE);
-	    CloseHandle(processInfo.hProcess);
-	    CloseHandle(processInfo.hThread);
-	}
-//	CloseHandle(h);
-
 	if (Opt.CmdLine.UsePromptFormat)
 	{
 		string strFormatStr, strExpandedFormatStr;
@@ -641,7 +627,46 @@ void CommandLine::GetPrompt(string &strDestStr)
 	else // default prompt = "$p$g"
 	{
 		strDestStr = strCurDir;
+		string branch = GetGitBranch(strCurDir);
+		if (branch.GetLength() != 0) {
+			string format("");
+			format.Format(L" @ %s", branch.CPtr());
+			strDestStr += format;
+		}
 		strDestStr += L">";
+	}
+}
+
+string CommandLine::GetGitBranch(string dir) {
+	string gitHead(dir + "\\.git\\HEAD");
+	if (GetFileAttributes(gitHead) != INVALID_FILE_ATTRIBUTES) {
+		HANDLE hFile = CreateFile(gitHead, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile != INVALID_HANDLE_VALUE) {
+			DWORD fsize = GetFileSize(hFile, NULL);
+			char* buffer = new char[fsize + 1];
+			DWORD actual;
+			ReadFile(hFile, buffer, fsize, &actual, NULL);
+			string result(buffer);
+			CloseHandle(hFile);
+
+			// trim to the end of the line
+			// cannot just trim to GetLength() - 1, because sometimes it's GetLength() - 2
+			// don't have toime to debug that, so I'll just leave it as it is
+			while (result.GetLength() > 0 && result.At(result.GetLength() - 1) != L'\n') result = result.SubStr(0, result.GetLength() - 1);
+			if (result.GetLength() > 0) result = result.SubStr(0, result.GetLength() - 1);
+
+			string prefix("ref: refs/heads/");
+			if (result.Equal(0, prefix)) return result.SubStr(prefix.GetLength(), result.GetLength() - prefix.GetLength());
+			else return result;
+		} else {
+			return L"";
+		}
+	} else {
+		wchar_t drive[10];
+		wchar_t parent[256];
+		_wsplitpath_s(dir, drive, 10, parent, 256, NULL, 0, NULL, 0);
+		if (dir.Equal(0, drive)) return L"";
+		return GetGitBranch(string(drive) + string(parent));
 	}
 }
 
