@@ -1887,6 +1887,14 @@ public abstract class Git : Prj {
   }
 
   [Action]
+  public virtual ExitCode smartShowCommitAtGithub() {
+    if (!verifyRepo()) return -1;
+    var commit = Config.rawTarget;
+    var url = getCommitUrl(commit);
+    return Console.ui(url);
+  }
+
+  [Action]
   public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
     return Console.batch("git pull", home: repo.GetRealPath());
@@ -1911,7 +1919,6 @@ public abstract class Git : Prj {
   public virtual ExitCode smartBranchLocalDelete() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
-    if (branch == "") branch = getCurrentBranch();
     ExitCode result = 0;
     if (branch == getCurrentBranch()) result = Console.batch("git checkout master", home: repo.GetRealPath());
     return result && Console.batch("git branch -D " + branch, home: repo.GetRealPath());
@@ -1921,13 +1928,18 @@ public abstract class Git : Prj {
   public virtual ExitCode smartBranchRemoteDelete() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
-    if (branch == "") branch = getCurrentBranch();
     var result = smartBranchLocalDelete();
     return result && Console.batch("git push origin :" + branch, home: repo.GetRealPath());
   }
 
   [Action]
   public virtual ExitCode merge() {
+    if (!verifyRepo()) return -1;
+    return Console.batch("git merge " + Config.rawCommandLine, home: repo.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartMerge() {
     if (!verifyRepo()) return -1;
     return Console.batch("git merge " + Config.rawCommandLine, home: repo.GetRealPath());
   }
@@ -1942,6 +1954,13 @@ public abstract class Git : Prj {
   public virtual ExitCode cherryPick() {
     if (!verifyRepo()) return -1;
     return Console.batch("git cherry-pick " + Config.rawCommandLine, home: repo.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartCherryPick() {
+    if (!verifyRepo()) return -1;
+    var commit = Config.rawTarget;
+    return Console.batch("git cherry-pick " + commit, home: repo.GetRealPath());
   }
 
   [Action]
@@ -1970,30 +1989,44 @@ public abstract class Git : Prj {
     return Console.batch("git reset " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  public virtual String getBranchPullRequestUrl(String branch) {
-    Func<String, String> getRemotePullRequestUrl = remote1 => {
-      var lines = Console.eval("git remote -v", home: repo.GetRealPath());
-      var line1 = lines.Where(line2 => line2.StartsWith(remote1)).FirstOrDefault();
-      if (line1 == null) return null;
-      line1 = line1.Substring(remote1.Length).Trim();
-      line1 = line1.Substring(0, line1.LastIndexOf("(") - 1).Trim();
-      // https://github.com/scalamacros/kepler/pull/new/topic/reflection
-      var url1 = line1;
-      var re1 = "^git://github.com/(?<user>.*?)/(?<repo>.*).git$";
-      var m1 = Regex.Match(url1, re1);
-      if (m1.Success) {
-        return m1.Result("https://github.com/${user}/${repo}/pull/new");
-      } else {
-        var re2 = "^git@github.com:(?<user>.*?)/(?<repo>.*).git$";
-        var m2 = Regex.Match(url1, re2);
-        if (m2.Success) {
-          return m2.Result("https://github.com/${user}/${repo}/pull/new");
-        } else {
-          return null;
-        }
-      }
-    };
+  [Action]
+  public virtual ExitCode smartMixedReset() {
+    if (!verifyRepo()) return -1;
+    var commit = Config.rawTarget;
+    return Console.batch("git reset --mixed " + commit, home: repo.GetRealPath());
+  }
 
+  [Action]
+  public virtual ExitCode smartHardReset() {
+    if (!verifyRepo()) return -1;
+    var commit = Config.rawTarget;
+    return Console.batch("git reset --hard " + commit, home: repo.GetRealPath());
+  }
+
+  public virtual String getGithubUrl(String remote) {
+    var lines = Console.eval("git remote -v", home: repo.GetRealPath());
+    var line = lines.Where(line2 => line2.StartsWith(remote)).FirstOrDefault();
+    if (line == null) return null;
+    line = line.Substring(remote.Length).Trim();
+    line = line.Substring(0, line.LastIndexOf("(") - 1).Trim();
+    // https://github.com/scalamacros/kepler/pull/new/topic/reflection
+    var url1 = line;
+    var re1 = "^git://github.com/(?<user>.*?)/(?<repo>.*).git$";
+    var m1 = Regex.Match(url1, re1);
+    if (m1.Success) {
+      return m1.Result("https://github.com/${user}/${repo}");
+    } else {
+      var re2 = "^git@github.com:(?<user>.*?)/(?<repo>.*).git$";
+      var m2 = Regex.Match(url1, re2);
+      if (m2.Success) {
+        return m2.Result("https://github.com/${user}/${repo}");
+      } else {
+        return null;
+      }
+    }
+  }
+
+  public virtual String getBranchPullRequestUrl(String branch) {
     String remote = null;
     if (branch.StartsWith("remotes/")) {
       branch = branch.Substring("remotes/".Length);
@@ -2003,9 +2036,15 @@ public abstract class Git : Prj {
       remote = "origin";
     }
 
-    var url = getRemotePullRequestUrl(remote);
+    var url = getGithubUrl(remote) + "/pull/new";
     if (url == null) return null;
     else return url + "/" + branch;
+  }
+
+  public virtual String getCommitUrl(String commit) {
+    var url = getGithubUrl("origin");
+    if (url == null) return null;
+    else return url + "/commit/" + commit;
   }
 
   public virtual String getCurrentBranch() {
