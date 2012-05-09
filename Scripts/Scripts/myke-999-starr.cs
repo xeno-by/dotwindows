@@ -76,8 +76,8 @@ public class Starr : Kep {
     }
   }
 
-  [Action]
-  public override ExitCode deploy() {
+  [Action, MenuItem(description = "Deploy to Kep", priority = 999)]
+  public ExitCode deploy() {
     var status1 = Console.batch("git add *", home: root);
     status1 = status1 && Console.batch("git commit -m wip", home: root);
     status1 = status1 && Console.batch("git push", home: root);

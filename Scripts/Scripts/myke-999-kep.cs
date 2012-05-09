@@ -520,13 +520,6 @@ public class Kep : Git {
   }
 
   [Action]
-  public virtual ExitCode deploy() {
-//    return deployStarr();
-    return deployStarrToKur();
-//    return deployMaven();
-  }
-
-  [Action]
   public virtual ExitCode deployMaven() {
     var result = new Donor().compile();
     result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-library.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-library\2.10.0-SNAPSHOT\scala-library-2.10.0-20120417.011253-317.jar");
@@ -534,7 +527,7 @@ public class Kep : Git {
     return result;
   }
 
-  [Action]
+  [Action, MenuItem(description = "Deploy to Kep", priority = 999.2)]
   public virtual ExitCode deployStarr() {
     var loloLibraryJar = new FileInfo(root + @"\build\locker\lib\scala-library.jar");
     var loloCompilerJar = new FileInfo(root + @"\build\locker\lib\scala-compiler.jar");
@@ -559,7 +552,7 @@ public class Kep : Git {
     return status;
   }
 
-  [Action]
+  [Action, MenuItem(description = "Deploy to Kur", priority = 999.3)]
   public virtual ExitCode deployStarrToKur() {
     var status1 = Console.batch("git add *", home: root);
     status1 = status1 && Console.batch("git commit -m wip", home: root);

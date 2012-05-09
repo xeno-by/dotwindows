@@ -1138,6 +1138,12 @@ public class ActionAttribute : Attribute {
   }
 }
 
+public class MenuItemAttribute : Attribute {
+  public String hotkey;
+  public String description;
+  public double priority;
+}
+
 public class DefaultAttribute : Attribute {
 }
 
@@ -1203,6 +1209,7 @@ public static class Connectors {
 
   public static String description(this Object connector) {
     if (connector is Type) return ((Type)connector).description();
+    if (connector is MethodInfo) return ((MethodInfo)connector).description();
     return connector.GetType().description();
   }
 
@@ -1211,13 +1218,34 @@ public static class Connectors {
     return attr.description;
   }
 
+  public static String description(this MethodInfo connector) {
+    var attr = connector.GetCustomAttributes(typeof(MenuItemAttribute), true).Cast<MenuItemAttribute>().Single();
+    return attr.description;
+  }
+
+  public static String hotkey(this Object connector) {
+    if (connector is MethodInfo) return ((MethodInfo)connector).description();
+    throw new Exception(connector == null ? "null" : connector.ToString());
+  }
+
+  public static String hotkey(this MethodInfo connector) {
+    var attr = connector.GetCustomAttributes(typeof(MenuItemAttribute), true).Cast<MenuItemAttribute>().SingleOrDefault();
+    return attr == null ? null : attr.hotkey;
+  }
+
   public static double priority(this Object connector) {
     if (connector is Type) return ((Type)connector).priority();
+    if (connector is MethodInfo) return ((MethodInfo)connector).priority();
     return connector.GetType().priority();
   }
 
   public static double priority(this Type connector) {
     var attr = connector.GetCustomAttributes(typeof(ConnectorAttribute), true).Cast<ConnectorAttribute>().Single();
+    return attr.priority;
+  }
+
+  public static double priority(this MethodInfo meth) {
+    var attr = meth.GetCustomAttributes(typeof(MenuItemAttribute), true).Cast<MenuItemAttribute>().Single();
     return attr.priority;
   }
 
@@ -1240,6 +1268,50 @@ public static class Connectors {
       var args = method.bindArgs();
       return () => (ExitCode)method.Invoke(connector, args);
     });
+  }
+
+  public class MenuItemsComparer : IComparer<Object> {
+    public int Compare(Object x, Object y) {
+      if (x == null || y == null) return x == null && y == null ? 0 : x == null ? -1 : 1;
+      if (!(x is MethodInfo) || !(y is MethodInfo)) throw new Exception(String.Format("x is {0}, y is {1}", x == null ? "null" : x.GetType().ToString(), y == null ? "null" : y.GetType().ToString()));
+      return Compare((MethodInfo)x, (MethodInfo)y);
+    }
+
+    public int Compare(MethodInfo x, MethodInfo y) {
+      if (x.priority() > y.priority()) return -1;
+      if (x.priority() < y.priority()) return 1;
+      return 0;
+    }
+  }
+
+  public static List<String> menuitems(this Object connector) {
+    var methods = connector.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.IsDefined(typeof(MenuItemAttribute), true)).ToList();
+    methods.Sort(new MenuItemsComparer());
+    var i = 1;
+    return methods.Select(meth => {
+      var hotkey = meth.hotkey() ?? (i++).ToString();
+      return String.Format("{0}. {1}", hotkey, meth.description());
+    }).ToList();
+  }
+
+  public static Func<ExitCode> menuitem(this Object connector, String hotkey) {
+    var methods = connector.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.IsDefined(typeof(MenuItemAttribute), true)).ToList();
+    methods.Sort(new MenuItemsComparer());
+    var hotkeys = new Dictionary<String, MethodInfo>();
+    var i = 1;
+    methods.ForEach(meth => {
+      var hotkey1 = meth.hotkey() ?? (i++).ToString();
+      hotkeys.Add(hotkey1, meth);
+    });
+    if (hotkeys.ContainsKey(hotkey)) {
+      var method = hotkeys[hotkey];
+      return (Func<ExitCode>)(() => {
+        var args = method.bindArgs();
+        return (ExitCode)method.Invoke(connector, args);
+      });
+    } else {
+      return null;
+    }
   }
 
   public static Object instantiate(this Type connector) {
@@ -1493,6 +1565,28 @@ public abstract class Conn : Base {
   public static Dictionary<String, String> env { get {
     return Config.env;
   } }
+
+  [Action]
+  public ExitCode menu() {
+    if (Config.rawTarget == "") {
+      var menuitems = this.menuitems();
+      menuitems.ForEach(menuitem => println(menuitem));
+      return menuitems.Count() == 0 ? -1 : 0;
+    } else {
+      var hotkey = Config.rawTarget;
+      if (Config.args.Count() == 0) {
+        Config.rawTarget = "";
+        Config.target = "";
+        Config.rawCommandLine = "";
+        var runtime = this.menuitem(hotkey);
+        if (runtime != null) return runtime();
+        else return -1;
+      } else {
+        println("arguments for menu items are not supported");
+        return -1;
+      }
+    }
+  }
 }
 
 [Connector(name = "universal", priority = 0, description =
@@ -1890,7 +1984,7 @@ public abstract class Git : Prj {
     return Console.batch("git push origin +" + branch, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, MenuItem(hotkey = "z", description = "Submit pull request", priority = 190)]
   public virtual ExitCode smartPullRequest() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
@@ -1899,7 +1993,7 @@ public abstract class Git : Prj {
     return Console.ui(url);
   }
 
-  [Action]
+  [Action, MenuItem(hotkey = "s", description = "Build in Jenkins", priority = 180)]
   public virtual ExitCode smartJenkins() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
@@ -1908,10 +2002,20 @@ public abstract class Git : Prj {
     return Console.ui(url);
   }
 
-  [Action]
+  [Action, MenuItem(hotkey = "a", description = "Show branch at GitHub", priority = 120)]
+  public virtual ExitCode smartShowBranchAtGithub() {
+    if (!verifyRepo()) return -1;
+    var branch = Config.rawTarget;
+    if (branch == "") branch = getCurrentBranch();
+    var url = getBranchUrl(branch);
+    return Console.ui(url);
+  }
+
+  [Action, MenuItem(hotkey = "q", description = "Show commit at GitHub", priority = 110)]
   public virtual ExitCode smartShowCommitAtGithub() {
     if (!verifyRepo()) return -1;
     var commit = Config.rawTarget;
+    if (commit == "") commit = getCurrentHead();
     var url = getCommitUrl(commit);
     return Console.ui(url);
   }
@@ -2083,15 +2187,30 @@ public abstract class Git : Prj {
       remote = "origin";
     }
 
-    var url = getGithubUrl(remote) + "/pull/new";
+    var url = getGithubUrl(remote);
     if (url == null) return null;
-    else return url + "/" + branch;
+    else return url + "/pull/new/" + branch;
   }
 
   public virtual String getCommitUrl(String commit) {
     var url = getGithubUrl("origin");
     if (url == null) return null;
     else return url + "/commit/" + commit;
+  }
+
+  public virtual String getBranchUrl(String branch) {
+    String remote = null;
+    if (branch.StartsWith("remotes/")) {
+      branch = branch.Substring("remotes/".Length);
+      remote = branch.Substring(0, branch.IndexOf("/") - 1);
+      branch = branch.Substring(branch.IndexOf("/") + 1);
+    } else {
+      remote = "origin";
+    }
+
+    var url = getGithubUrl(remote);
+    if (url == null) return null;
+    else return url + "/tree/" + branch;
   }
 
   public virtual String getJenkinsUrl(String remote) {
