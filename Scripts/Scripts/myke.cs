@@ -1900,6 +1900,15 @@ public abstract class Git : Prj {
   }
 
   [Action]
+  public virtual ExitCode smartJenkins() {
+    if (!verifyRepo()) return -1;
+    var branch = Config.rawTarget;
+    if (branch == "") branch = getCurrentBranch();
+    var url = getBranchJenkinsUrl(branch);
+    return Console.ui(url);
+  }
+
+  [Action]
   public virtual ExitCode smartShowCommitAtGithub() {
     if (!verifyRepo()) return -1;
     var commit = Config.rawTarget;
@@ -2083,6 +2092,44 @@ public abstract class Git : Prj {
     var url = getGithubUrl("origin");
     if (url == null) return null;
     else return url + "/commit/" + commit;
+  }
+
+  public virtual String getJenkinsUrl(String remote) {
+    var lines = Console.eval("git remote -v", home: repo.GetRealPath());
+    var line = lines.Where(line2 => line2.StartsWith(remote)).FirstOrDefault();
+    if (line == null) return null;
+    line = line.Substring(remote.Length).Trim();
+    line = line.Substring(0, line.LastIndexOf("(") - 1).Trim();
+    // https://github.com/scalamacros/kepler/pull/new/topic/reflection
+    var url1 = line;
+    var re1 = "^git://github.com/(?<user>.*?)/(?<repo>.*).git$";
+    var m1 = Regex.Match(url1, re1);
+    if (m1.Success) {
+      return m1.Result("https://scala-webapps.epfl.ch/jenkins/job/scala-checkin-manual/buildWithParameters?githubUsername=${user}&repository=${repo}");
+    } else {
+      var re2 = "^git@github.com:(?<user>.*?)/(?<repo>.*).git$";
+      var m2 = Regex.Match(url1, re2);
+      if (m2.Success) {
+        return m2.Result("https://scala-webapps.epfl.ch/jenkins/job/scala-checkin-manual/buildWithParameters?githubUsername=${user}&repository=${repo}");
+      } else {
+        return null;
+      }
+    }
+  }
+
+  public virtual String getBranchJenkinsUrl(String branch) {
+    String remote = null;
+    if (branch.StartsWith("remotes/")) {
+      branch = branch.Substring("remotes/".Length);
+      remote = branch.Substring(0, branch.IndexOf("/") - 1);
+      branch = branch.Substring(branch.IndexOf("/") + 1);
+    } else {
+      remote = "origin";
+    }
+
+    var url = getJenkinsUrl(remote);
+    if (url == null) return null;
+    else return url + "&branch=" + branch;
   }
 
   public virtual String getCurrentBranch() {
