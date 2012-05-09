@@ -554,7 +554,7 @@ public class Kep : Git {
 
   [Action, MenuItem(description = "Deploy to Kur", priority = 999.3)]
   public virtual ExitCode deployStarrToKur() {
-    var status1 = Console.batch("git add *", home: root);
+    var status1 = Console.batch("git add \"*\"", home: root);
     status1 = status1 && Console.batch("git commit -m wip", home: root);
     status1 = status1 && Console.batch("git push", home: root);
 //    status1 = status1 && Console.batch("git pull origin topic/typetags/v2", home: new Kep().root);

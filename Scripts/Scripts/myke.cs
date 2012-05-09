@@ -697,11 +697,8 @@ public static class Console {
         traceln("<ui session, not traced>");
       }
 
-      if (p.Start()) {
-        return 0;
-      } else {
-        return -1;
-      }
+      p.Start();
+      return 0;
     }
   }
 
@@ -1566,7 +1563,7 @@ public abstract class Conn : Base {
     return Config.env;
   } }
 
-  [Action]
+  [Action, DontTrace]
   public ExitCode menu() {
     if (Config.rawTarget == "") {
       var menuitems = this.menuitems();
