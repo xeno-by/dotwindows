@@ -1973,7 +1973,8 @@ public abstract class Git : Prj {
     return Console.interactive("git push " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action, MenuItem(description = "Push to origin", priority = 10000)]
+//  [Action, MenuItem(description = "Push to origin", priority = 10000)]
+  [Action]
   public virtual ExitCode smartPush() {
     if (!verifyRepo()) return -1;
     var branch = Config.rawTarget;
