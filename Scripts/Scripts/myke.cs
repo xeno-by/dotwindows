@@ -1029,6 +1029,8 @@ public static class Config {
       return 0;
     };
 
+    args = args.Select(arg => arg.Trim()).Where(arg => arg != "").ToArray();
+
     if (!extractSystemFlags()) return -1;
     var action = args.ElementAtOrDefault(0);
     args = args.Skip(1).ToArray();
@@ -1841,7 +1843,7 @@ public abstract class Git : Prj {
   }
 
   [Action, DontTrace]
-  public virtual ExitCode commit() {
+  public virtual ExitCode smartCommit() {
     if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
       var status = Console.batch("save-settings.bat");
       if (status != 0) return -1;
@@ -1852,26 +1854,26 @@ public abstract class Git : Prj {
   }
 
   [Action, DontTrace]
-  public virtual ExitCode logall() {
+  public virtual ExitCode smartLogall() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", repo.GetRealPath().FullName));
   }
 
   [Action, DontTrace]
-  public virtual ExitCode logthis() {
+  public virtual ExitCode smartLogthis() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
   [Action, DontTrace]
-  public virtual ExitCode blame() {
+  public virtual ExitCode smartBlame() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit blame \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
   [Action, DontTrace]
-  public virtual ExitCode log() {
-    return logall();
+  public virtual ExitCode smartLog() {
+    return smartLogall();
   }
 
   [Action]
@@ -1924,6 +1926,15 @@ public abstract class Git : Prj {
   public virtual ExitCode branch() {
     if (!verifyRepo()) return -1;
     return Console.batch("git branch " + Config.rawCommandLine, home: repo.GetRealPath());
+  }
+
+  [Action]
+  public virtual ExitCode smartBranchRename() {
+    if (!verifyRepo()) return -1;
+    if (Config.args.Count() < 1) return -1;
+    var oldname = Config.rawTarget;
+    var newname = Config.args[0];
+    return Console.batch("git branch -m " + oldname + " " + newname, home: repo.GetRealPath());
   }
 
   [Action]
