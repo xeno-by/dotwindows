@@ -477,10 +477,17 @@ public class Kep : Git {
   [Action, MenuItem(hotkey = "s", description = "Build in Jenkins", priority = 180)]
   public virtual ExitCode smartJenkins() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
-    if (branch == "") branch = getCurrentBranch();
-    var url = getBranchJenkinsUrl(branch);
-    return Console.ui(url);
+    var gitStatus = getCurrentStatus();
+    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
+      println("Nothing to commit");
+      var branch = Config.rawTarget;
+      if (branch == "") branch = getCurrentBranch();
+      var url = getBranchJenkinsUrl(branch);
+      if (url == null) return -1;
+      return smartPush() && Console.ui(url);
+    } else {
+      return smartCommit();
+    }
   }
 
   public virtual String getJenkinsUrl(String remote) {

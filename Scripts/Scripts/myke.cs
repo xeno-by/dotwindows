@@ -2006,10 +2006,17 @@ public abstract class Git : Prj {
   [Action, MenuItem(hotkey = "z", description = "Submit pull request", priority = 190)]
   public virtual ExitCode smartPullRequest() {
     if (!verifyRepo()) return -1;
-    var branch = Config.sanitizedRawTarget;
-    if (branch == "") branch = getCurrentBranch();
-    var url = getBranchPullRequestUrl(branch);
-    return Console.ui(url);
+    var gitStatus = getCurrentStatus();
+    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
+      println("Nothing to commit");
+      var branch = Config.sanitizedRawTarget;
+      if (branch == "") branch = getCurrentBranch();
+      var url = getBranchPullRequestUrl(branch);
+      if (url == null) return -1;
+      return smartPush() && Console.ui(url);
+    } else {
+      return smartCommit();
+    }
   }
 
   [Action, MenuItem(hotkey = "a", description = "Show branch at GitHub", priority = 120)]
@@ -2243,6 +2250,12 @@ public abstract class Git : Prj {
 //    lines = File.ReadAllLines(file).ToList();
 //    return lines.ElementAtOrDefault(0);
     return getCurrentHead();
+  }
+
+  public virtual String getCurrentStatus() {
+    var lines = Console.eval("git status", home: repo.GetRealPath());
+    if (lines == null) return null;
+    return String.Join("\r\n", lines.ToArray());
   }
 
   [Action, Meaningful]
