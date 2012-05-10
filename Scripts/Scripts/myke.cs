@@ -1585,7 +1585,7 @@ public abstract class Conn : Base {
     return Config.env;
   } }
 
-  [Action, DontTrace]
+  [Action]
   public ExitCode menu() {
     if (Config.rawTarget == "") {
       var menuitems = this.menuitems();
@@ -1597,13 +1597,14 @@ public abstract class Conn : Base {
         Config.rawTarget = "";
         Config.target = "";
         Config.rawCommandLine = "";
-        var runtime = this.menuitem(hotkey);
-        if (runtime != null) return runtime();
-        else return -1;
       } else {
-        println("arguments for menu items are not supported");
-        return -1;
+        Config.rawTarget = Config.args[0];
+        Config.target = Config.args[0];
+        Config.rawCommandLine = String.Join(" ", Config.args.Skip(1).ToArray());
       }
+      var runtime = this.menuitem(hotkey);
+      if (runtime != null) return runtime();
+      else return -1;
     }
   }
 }
@@ -2025,6 +2026,7 @@ public abstract class Git : Prj {
     var branch = Config.sanitizedRawTarget;
     if (branch == "") branch = getCurrentBranch();
     var url = getBranchUrl(branch);
+    if (url == null) return -1;
     return Console.ui(url);
   }
 
@@ -2034,6 +2036,16 @@ public abstract class Git : Prj {
     var commit = Config.sanitizedRawTarget;
     if (commit == "") commit = getCurrentHead();
     var url = getCommitUrl(commit);
+    if (url == null) return -1;
+    return Console.ui(url);
+  }
+
+  [Action, MenuItem(hotkey = "x", description = "Show file at GitHub", priority = 90)]
+  public virtual ExitCode smartShowFileAtGithub() {
+    if (!verifyRepo()) return -1;
+    var file = Config.rawTarget;
+    var url = getFileUrl(file);
+    if (url == null) return -1;
     return Console.ui(url);
   }
 
@@ -2212,6 +2224,25 @@ public abstract class Git : Prj {
     var url = getGithubUrl("origin");
     if (url == null) return null;
     else return url + "/commit/" + commit;
+  }
+
+  public virtual String getFileUrl(String file) {
+    var url = getGithubUrl("origin");
+    if (url == null) return null;
+
+    var linum = file.Contains("#L") ? file.Substring(file.IndexOf("#L") + 2) : null;
+    if (linum != null) file = file.Substring(0, file.IndexOf("#L"));
+    var normalizedFile = file.GetRealPath().Replace("\\", "/");
+    var normalizedRoot = root.FullName.GetRealPath().Replace("\\", "/");
+
+    Action<String, String> hackFile = (Action<String, String>)((String from, String to) => { if (normalizedFile.StartsWith(from)) normalizedFile = to + normalizedFile.Substring(from.Length); });
+    Action<String, String> hackRoot = (Action<String, String>)((String from, String to) => { if (normalizedRoot.StartsWith(from)) normalizedRoot = to; });
+    hackRoot("D:/Dropbox/Software/Sublime/", "D:/Dropbox/Software/Sublime/");
+    hackFile("C:/Program Files (x86)/scripts/", "C:/Program Files (x86)/scripts/Scripts/Scripts/");
+
+    if (normalizedFile.StartsWith(normalizedRoot)) normalizedFile = normalizedFile.Substring(normalizedRoot.Length);
+    if (normalizedFile.StartsWith("/")) normalizedFile = normalizedFile.Substring(1);
+    return url + "/blob/" + getCurrentHead() + "/" + normalizedFile + (linum == null ? null : ("#L" + linum));
   }
 
   public virtual String getBranchUrl(String branch) {
