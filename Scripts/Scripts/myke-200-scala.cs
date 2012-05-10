@@ -354,7 +354,7 @@ public class Scala : Git {
     return needsArgs ? null : "";
   }
 
-  [Action]
+  [Action, Meaningful]
   public virtual ExitCode run() {
     Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", compiler));
     Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", compiler));

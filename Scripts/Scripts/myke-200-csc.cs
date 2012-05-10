@@ -61,7 +61,7 @@ public class Csc : Git {
     return lines.Any(line => line.Contains("args") && !line.Contains("String[] args")) ? null : "";
   }
 
-  [Action]
+  [Action, Meaningful]
   public virtual ExitCode run(Arguments arguments) {
     var status = compile();
     if (status != 0) return -1;

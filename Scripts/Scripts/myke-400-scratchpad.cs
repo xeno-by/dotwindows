@@ -39,7 +39,7 @@ public class Scratchpad : Git {
     return scala.compile();
   }
 
-  [Action]
+  [Action, Meaningful]
   public virtual ExitCode run() {
     var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
     return scala.run();

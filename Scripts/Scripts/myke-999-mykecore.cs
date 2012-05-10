@@ -51,7 +51,7 @@ public class MykeCore : Csc {
     return 0;
   }
 
-  [Action]
+  [Action, Meaningful]
   public override ExitCode run(Arguments arguments) {
     return runWithCompile(arguments);
   }

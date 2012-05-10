@@ -252,7 +252,7 @@ public class Kep : Git {
     return Console.interactive(Config.sublime ? "scala /sublime" : "scala", home: root);
   }
 
-  [Action]
+  [Action, Meaningful]
   public virtual ExitCode run() {
     if (inPlayground || inTest) {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);

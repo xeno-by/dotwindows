@@ -38,7 +38,7 @@ public class Starr : Kep {
     }
   }
 
-  [Action]
+  [Action, Meaningful]
   public override ExitCode run() {
     if (inPlayground || inTest) {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);

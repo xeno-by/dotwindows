@@ -124,7 +124,7 @@ public class App {
             if (!env.ContainsKey("root")) env["root"] = conn.root == null ? null : conn.root.ToString();
             if (!env.ContainsKey("meaningful")) {
               env["meaningful"] = (exitCode ? 0 : 1).ToString();
-              if (action == "run" || action == "repl" || action == "console") env["meaningful"] = "1";
+              if (Config.conn_action.meaningful()) env["meaningful"] = "1";
             }
           }
         }
@@ -1005,6 +1005,11 @@ public static class Config {
   public static String originalTarget;
   public static String target;
   public static String rawTarget;
+  public static String sanitizedRawTarget { get {
+    var iof = rawTarget.IndexOf(" ");
+    if (iof == -1) return rawTarget;
+    else return rawTarget.Substring(0, iof - 1);
+  } }
   public static String rawCommandLine;
   public static String requestedConn;
   public static Arguments args;
@@ -1145,6 +1150,9 @@ public class DefaultAttribute : Attribute {
 }
 
 public class DontTraceAttribute : Attribute {
+}
+
+public class MeaningfulAttribute : Attribute {
 }
 
 public static class Connectors {
@@ -1309,6 +1317,20 @@ public static class Connectors {
     } else {
       return null;
     }
+  }
+
+  public static Boolean meaningful(this Object connector) {
+    if (connector is Type) return ((Type)connector).meaningful();
+    if (connector is MethodInfo) return ((MethodInfo)connector).meaningful();
+    return connector.GetType().meaningful();
+  }
+
+  public static Boolean meaningful(this Type connector) {
+    return connector.GetCustomAttributes(typeof(MeaningfulAttribute), true).Cast<MeaningfulAttribute>().Count() > 0;
+  }
+
+  public static Boolean meaningful(this MethodInfo connector) {
+    return connector.GetCustomAttributes(typeof(MeaningfulAttribute), true).Cast<MeaningfulAttribute>().Count() > 0;
   }
 
   public static Object instantiate(this Type connector) {
@@ -1570,7 +1592,7 @@ public abstract class Conn : Base {
       menuitems.ForEach(menuitem => println(menuitem));
       return menuitems.Count() == 0 ? -1 : 0;
     } else {
-      var hotkey = Config.rawTarget;
+      var hotkey = Config.sanitizedRawTarget;
       if (Config.args.Count() == 0) {
         Config.rawTarget = "";
         Config.target = "";
@@ -1976,7 +1998,7 @@ public abstract class Git : Prj {
   [Action, MenuItem(description = "Push to origin", priority = 10000)]
   public virtual ExitCode smartPush() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     if (branch == "") branch = getCurrentBranch();
     return Console.batch("git push origin +" + branch, home: repo.GetRealPath());
   }
@@ -1984,7 +2006,7 @@ public abstract class Git : Prj {
   [Action, MenuItem(hotkey = "z", description = "Submit pull request", priority = 190)]
   public virtual ExitCode smartPullRequest() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     if (branch == "") branch = getCurrentBranch();
     var url = getBranchPullRequestUrl(branch);
     return Console.ui(url);
@@ -1993,7 +2015,7 @@ public abstract class Git : Prj {
   [Action, MenuItem(hotkey = "a", description = "Show branch at GitHub", priority = 120)]
   public virtual ExitCode smartShowBranchAtGithub() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     if (branch == "") branch = getCurrentBranch();
     var url = getBranchUrl(branch);
     return Console.ui(url);
@@ -2002,7 +2024,7 @@ public abstract class Git : Prj {
   [Action, MenuItem(hotkey = "q", description = "Show commit at GitHub", priority = 110)]
   public virtual ExitCode smartShowCommitAtGithub() {
     if (!verifyRepo()) return -1;
-    var commit = Config.rawTarget;
+    var commit = Config.sanitizedRawTarget;
     if (commit == "") commit = getCurrentHead();
     var url = getCommitUrl(commit);
     return Console.ui(url);
@@ -2033,7 +2055,7 @@ public abstract class Git : Prj {
   public virtual ExitCode smartBranchRename() {
     if (!verifyRepo()) return -1;
     if (Config.args.Count() < 1) return -1;
-    var oldname = Config.rawTarget;
+    var oldname = Config.sanitizedRawTarget;
     var newname = Config.args[0];
     return Console.batch("git branch -m " + oldname + " " + newname, home: repo.GetRealPath());
   }
@@ -2041,7 +2063,7 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartBranchLocalDelete() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     ExitCode result = 0;
     if (branch == getCurrentBranch()) result = Console.batch("git checkout master", home: repo.GetRealPath());
     return result && Console.batch("git branch -D " + branch, home: repo.GetRealPath());
@@ -2050,7 +2072,7 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartBranchRemoteDelete() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     var result = smartBranchLocalDelete();
     return result && Console.batch("git push origin :" + branch, home: repo.GetRealPath());
   }
@@ -2064,7 +2086,7 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartMerge() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     return Console.batch("git merge " + branch, home: repo.GetRealPath());
   }
 
@@ -2077,7 +2099,7 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartRebase() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     return Console.batch("git rebase " + branch, home: repo.GetRealPath());
   }
 
@@ -2090,7 +2112,7 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartCherryPick() {
     if (!verifyRepo()) return -1;
-    var commit = Config.rawTarget;
+    var commit = Config.sanitizedRawTarget;
     return Console.batch("git cherry-pick " + commit, home: repo.GetRealPath());
   }
 
@@ -2110,7 +2132,7 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartCheckout() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     if (branch.StartsWith("remotes/")) return Console.batch("git checkout -t " + branch, home: repo.GetRealPath());
     else return Console.batch("git checkout " + branch, home: repo.GetRealPath());
   }
@@ -2129,16 +2151,15 @@ public abstract class Git : Prj {
 
   [Action]
   public virtual ExitCode smartMixedReset() {
-
     if (!verifyRepo()) return -1;
-    var commit = Config.rawTarget;
+    var commit = Config.sanitizedRawTarget;
     return Console.batch("git reset --mixed " + commit, home: repo.GetRealPath());
   }
 
   [Action]
   public virtual ExitCode smartHardReset() {
     if (!verifyRepo()) return -1;
-    var commit = Config.rawTarget;
+    var commit = Config.sanitizedRawTarget;
     return Console.batch("git reset --hard " + commit, home: repo.GetRealPath());
   }
 
@@ -2224,14 +2245,14 @@ public abstract class Git : Prj {
     return getCurrentHead();
   }
 
-  [Action]
+  [Action, Meaningful]
   public virtual ExitCode smartShowCommit() {
     if (!verifyRepo()) return -1;
-    var commit = Config.rawTarget;
+    var commit = Config.sanitizedRawTarget;
     return Console.batch("git show " + commit, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, Meaningful]
   public virtual ExitCode smartListCommits() {
     if (!verifyRepo()) return -1;
     var shortHash = getCurrentHead().Substring(0, 10);
@@ -2239,10 +2260,10 @@ public abstract class Git : Prj {
     return Console.batch("git log -g \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick --all | " + filter, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, Meaningful]
   public virtual ExitCode smartListBranchCommits() {
     if (!verifyRepo()) return -1;
-    var branch = Config.rawTarget;
+    var branch = Config.sanitizedRawTarget;
     var shortHash = getCurrentHead().Substring(0, 10);
     var filter = "sed -r 's/^" + shortHash + " (.*^)/* " + shortHash + " \\1/'";
     return Console.batch("git log \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick " + branch + " | " + filter, home: repo.GetRealPath());

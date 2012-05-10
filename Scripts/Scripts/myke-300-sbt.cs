@@ -121,7 +121,7 @@ public class Sbt : Git {
     return Console.interactive(scala + " " + String.Join(" ", options.ToArray()));
   }
 
-  [Action]
+  [Action, Meaningful]
   public virtual ExitCode run(Arguments arguments) {
     var info = compileAndInfer();
     if (info == null) return -1;
