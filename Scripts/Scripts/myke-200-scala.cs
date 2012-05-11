@@ -141,12 +141,30 @@ public class Scala : Git {
     return invocation.Replace(" scala.tools.nsc.Main ", " scala.tools.nsc.MainGenericRunner ");
   }
 
+  public virtual String inferScalaSourcesRoot() {
+    var target = dir;
+    DirectoryInfo sourcesRoot = null;
+    while (target.FullName != target.Root.FullName) {
+      var token = target.GetFiles("pull-binary-libs.sh").FirstOrDefault();
+      if (token != null) {
+        sourcesRoot = target;
+        break;
+      }
+      target = target.Parent;
+    }
+
+    sourcesRoot = sourcesRoot ?? new DirectoryInfo(@"%PROJECTS%\Kepler".Expand());
+    return sourcesRoot.FullName;
+  }
+
   public virtual String inferScalaHome() {
-    return @"%PROJECTS%\Kepler\build\locker\classes".Expand();
+    var sourcesRoot = inferScalaSourcesRoot();
+    return @"%ROOT%\build\locker\classes".Replace("%ROOT%", sourcesRoot);
   }
 
   public virtual String inferScalaClasspath() {
-    return @"%PROJECTS%\Kepler\lib\jline.jar;%PROJECTS%\Kepler\lib\fjbg.jar;%PROJECTS%\Kepler\build\locker\classes\compiler;%PROJECTS%\Kepler\build\locker\classes\library".Expand();
+    var sourcesRoot = inferScalaSourcesRoot();
+    return @"%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
   }
 
   [Action]
