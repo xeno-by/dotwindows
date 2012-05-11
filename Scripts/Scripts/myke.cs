@@ -138,7 +138,12 @@ public class App {
       Console.println();
     }
 
+    var traceDir1 = new DirectoryInfo(@"%HOME%\.myke".Expand());
+    if (!traceDir1.Exists) traceDir1.Create();
+    var fileName1 = traceDir1 + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + "NA" + "-" + Config.action + ".log";
+    Config.env["traceFile"] = fileName1;
     Console.println("error: no connector accepted the target {0}", originalTarget);
+
     return -1;
   }
 }
@@ -248,7 +253,7 @@ public static class Console {
       }
     }
 
-    if (Config.conn_action.canTrace()) File.AppendAllText(Config.env["traceFile"], msg);
+    if (Config.conn_action == null || Config.conn_action.canTrace()) File.AppendAllText(Config.env["traceFile"], msg);
   }
 
   public static void trace(String format, params Object[] objs) {
@@ -1018,6 +1023,9 @@ public static class Config {
   public static Dictionary<String, String> env;
 
   public static ExitCode parse(String[] args) {
+    Config.env = new Dictionary<String, String>();
+    env["WorkingDir"] = Environment.CurrentDirectory;
+
     Func<ExitCode> extractSystemFlags = () => {
       var systemFlags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
       args = args.SkipWhile(arg => arg.StartsWith("/")).ToArray();
@@ -1038,6 +1046,7 @@ public static class Config {
     args = args.Skip(1).ToArray();
     if (action == null) { Help.printUsage(); return -1; }
     Config.action = action;
+    env["Action"] = action;
 
     if (!extractSystemFlags()) return -1;
     var flags = args.TakeWhile(arg => arg.StartsWith("-")).ToList();
@@ -1055,6 +1064,7 @@ public static class Config {
     var target = args.Take(1).ElementAtOrDefault(0) ?? ".";
     args = args.Skip(1).ToArray();
     if (target == null || target == "/?" || target == "-help" || target == "--help") { Help.printUsage(action); return -1; }
+    env["Target"] = target;
 
     // don't check for file existence - connector might actually create that non-existent file/directory
     try {
@@ -1066,10 +1076,10 @@ public static class Config {
     }
     args = args.Where(arg => arg.Trim() != String.Empty).ToArray();
     Config.args = new Arguments(Enumerable.Concat(flags, args).ToList());
+    env["Args"] = String.Join(" ", Config.args.ToArray());
 
     // conn will be set elsewhere
     Config.conn = null;
-    Config.env = new Dictionary<String, String>();
 
     return 0;
   }
@@ -1707,7 +1717,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode getTestSuite() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1723,7 +1733,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode setTestSuite(Arguments arguments) {
     var suite = arguments.Last();
     var dotProfile = new FileInfo(root + "\\.profile");
@@ -1731,7 +1741,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode listTestSuiteAllTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1744,7 +1754,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode listTestSuiteFailedTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1757,7 +1767,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode listTestSuiteSucceededTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1956,7 +1966,7 @@ public abstract class Git : Prj {
     }
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode smartCommit() {
     if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
       var status = Console.batch("save-settings.bat");
@@ -1967,25 +1977,25 @@ public abstract class Git : Prj {
     return Console.ui(String.Format("tgit commit \"{0}\"", repo.GetRealPath().FullName));
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode smartLogall() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", repo.GetRealPath().FullName));
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode smartLogthis() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode smartBlame() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit blame \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode smartLog() {
     return smartLogall();
   }
