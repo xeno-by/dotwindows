@@ -138,10 +138,6 @@ public class App {
       Console.println();
     }
 
-    var traceDir1 = new DirectoryInfo(@"%HOME%\.myke".Expand());
-    if (!traceDir1.Exists) traceDir1.Create();
-    var fileName1 = traceDir1 + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + "NA" + "-" + Config.action + ".log";
-    Config.env["traceFile"] = fileName1;
     Console.println("error: no connector accepted the target {0}", originalTarget);
 
     return -1;
@@ -1024,7 +1020,11 @@ public static class Config {
 
   public static ExitCode parse(String[] args) {
     Config.env = new Dictionary<String, String>();
-    env["WorkingDir"] = Environment.CurrentDirectory;
+    env["workingDir"] = Environment.CurrentDirectory;
+    var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
+    if (!traceDir.Exists) traceDir.Create();
+    var fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + "NA" + "-" + "NA" + ".log";
+    env["traceFile"] = fileName;
 
     Func<ExitCode> extractSystemFlags = () => {
       var systemFlags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
@@ -1046,7 +1046,9 @@ public static class Config {
     args = args.Skip(1).ToArray();
     if (action == null) { Help.printUsage(); return -1; }
     Config.action = action;
-    env["Action"] = action;
+    env["action"] = action;
+    fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + "NA" + "-" + action + ".log";
+    env["traceFile"] = fileName;
 
     if (!extractSystemFlags()) return -1;
     var flags = args.TakeWhile(arg => arg.StartsWith("-")).ToList();
@@ -1064,7 +1066,7 @@ public static class Config {
     var target = args.Take(1).ElementAtOrDefault(0) ?? ".";
     args = args.Skip(1).ToArray();
     if (target == null || target == "/?" || target == "-help" || target == "--help") { Help.printUsage(action); return -1; }
-    env["Target"] = target;
+    env["target"] = target;
 
     // don't check for file existence - connector might actually create that non-existent file/directory
     try {
@@ -1076,7 +1078,7 @@ public static class Config {
     }
     args = args.Where(arg => arg.Trim() != String.Empty).ToArray();
     Config.args = new Arguments(Enumerable.Concat(flags, args).ToList());
-    env["Args"] = String.Join(" ", Config.args.ToArray());
+    env["args"] = String.Join(" ", Config.args.ToArray());
 
     // conn will be set elsewhere
     Config.conn = null;

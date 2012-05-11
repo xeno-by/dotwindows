@@ -302,7 +302,12 @@ public class Scala : Git {
       watcher.EnableRaisingEvents = true;
 
       var compilers = compiler.Split(new []{Environment.NewLine}, StringSplitOptions.None).ToList();
-      status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => curr ? Console.batch(buildCompilerInvocation(compiler1), home: root) : curr);
+      status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => {
+        if (!curr) return curr;
+        var invocation = buildCompilerInvocation(compiler1);
+        if (invocation.Contains("-Xprompt")) return Console.interactive(invocation, home: root);
+        return Console.batch(invocation, home: root);
+      });
 
       var parent_reg = Registry.CurrentUser.OpenSubKey(parent_key, true) ?? Registry.CurrentUser.CreateSubKey(parent_key);
       parent_reg.DeleteSubKey(short_key);
