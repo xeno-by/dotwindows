@@ -252,8 +252,8 @@ public class Kep : Git {
 
   [Action]
   public virtual ExitCode repl() {
-//    return compile() && println() && Console.interactive(Config.sublime ? "scala /sublime" : "scala", home: root);
-    return Console.interactive(Config.sublime ? "scala /sublime" : "scala", home: root);
+//    return compile() && println() && Console.interactive(Config.sublime ? "scala /S" : "scala", home: root);
+    return Console.interactive(Config.sublime ? "scala /S" : "scala", home: root);
   }
 
   [Action, Meaningful]

@@ -1660,10 +1660,10 @@ public abstract class Prj : Universal {
     return dir;
   } }
 
-  [Action]
-  public override ExitCode console() {
-    return Console.interactive("mycmd.exe", home: root);
-  }
+//  [Action]
+//  public override ExitCode console() {
+//    return Console.interactive("mycmd.exe", home: root);
+//  }
 
   [Action]
   public virtual ExitCode makeTestSuite(Arguments arguments) {
@@ -2052,11 +2052,20 @@ public abstract class Git : Prj {
     return Console.ui(url);
   }
 
-  [Action, MenuItem(hotkey = "x", description = "Show file at GitHub", priority = 90)]
-  public virtual ExitCode smartShowFileAtGithub() {
+  [Action, MenuItem(hotkey = "x", description = "Show file at GitHub (current revision)", priority = 90)]
+  public virtual ExitCode smartShowFileAtGithubRevisionAware() {
     if (!verifyRepo()) return -1;
     var file = Config.rawTarget;
-    var url = getFileUrl(file);
+    var url = getFileUrlRevisionAware(file);
+    if (url == null) return -1;
+    return Console.ui(url);
+  }
+
+  [Action, MenuItem(hotkey = "c", description = "Show file at GitHub (revision-agnostic)", priority = 80)]
+  public virtual ExitCode smartShowFileAtGithubRevisionAgnostic() {
+    if (!verifyRepo()) return -1;
+    var file = Config.rawTarget;
+    var url = getFileUrlRevisionAgnostic(file);
     if (url == null) return -1;
     return Console.ui(url);
   }
@@ -2156,8 +2165,8 @@ public abstract class Git : Prj {
   [Action]
   public virtual ExitCode smartBranchNewSelect() {
     if (!verifyRepo()) return -1;
-    var result = smartCheckout();
-    return result && Console.batch("git checkout -b " + Config.args, home: repo.GetRealPath());
+    var result = Console.batch("git branch " + Config.args[0] + " " + Config.rawTarget, home: repo.GetRealPath());
+    return result && Console.batch("git checkout " + Config.args[0]);
   }
 
   [Action]
@@ -2238,7 +2247,26 @@ public abstract class Git : Prj {
     else return url + "/commit/" + commit;
   }
 
-  public virtual String getFileUrl(String file) {
+  public virtual String getFileUrlRevisionAware(String file) {
+    var url = getGithubUrl("origin");
+    if (url == null) return null;
+
+    var linum = file.Contains("#L") ? file.Substring(file.IndexOf("#L") + 2) : null;
+    if (linum != null) file = file.Substring(0, file.IndexOf("#L"));
+    var normalizedFile = file.GetRealPath().Replace("\\", "/");
+    var normalizedRoot = root.FullName.GetRealPath().Replace("\\", "/");
+
+    Action<String, String> hackFile = (Action<String, String>)((String from, String to) => { if (normalizedFile.StartsWith(from)) normalizedFile = to + normalizedFile.Substring(from.Length); });
+    Action<String, String> hackRoot = (Action<String, String>)((String from, String to) => { if (normalizedRoot.StartsWith(from)) normalizedRoot = to; });
+    hackRoot("D:/Dropbox/Software/Sublime/", "D:/Dropbox/Software/Sublime/");
+    hackFile("C:/Program Files (x86)/scripts/", "C:/Program Files (x86)/scripts/Scripts/Scripts/");
+
+    if (normalizedFile.StartsWith(normalizedRoot)) normalizedFile = normalizedFile.Substring(normalizedRoot.Length);
+    if (normalizedFile.StartsWith("/")) normalizedFile = normalizedFile.Substring(1);
+    return url + "/blob/" + getCurrentBranch() + "/" + normalizedFile + (linum == null ? null : ("#L" + linum));
+  }
+
+  public virtual String getFileUrlRevisionAgnostic(String file) {
     var url = getGithubUrl("origin");
     if (url == null) return null;
 
