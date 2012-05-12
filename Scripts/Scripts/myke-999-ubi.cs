@@ -11,6 +11,8 @@ using Microsoft.Win32;
 [Connector(name = "ubi", priority = 999.1, description = "Compiles ubi scripts")]
 
 public class Ubi : Csc {
+  public override String project { get { return "%SCRIPTS_HOME%".Expand(); } }
+
   public Ubi(FileInfo file, Lines lines) : base(file, lines) {
   }
 

@@ -151,20 +151,48 @@ public class App {
       session.WriteAllLines(lines);
     }
 
-    Process.Start(sublime, String.Join(" ", args));
-    Thread.Sleep(50);
-    ActivateSublimeWindow();
+//    if (MessageBox.Show("About to start sublime with args: " + String.Join(" ", args), "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+      Process.Start(sublime, String.Join(" ", args));
+      Thread.Sleep(50);
+      PostprocessSublimeWindow();
+//    }
   }
 
-  [DllImportAttribute("User32.dll")]
+  [DllImport("User32.dll")]
   private static extern IntPtr SetForegroundWindow(IntPtr hWnd);
 
-  public static void ActivateSublimeWindow() {
+  [DllImport("User32.DLL")]
+  public static extern bool ShowWindow(IntPtr hWnd,int nCmdShow);
+
+  const int SW_MAXIMIZE = 3;
+
+  [DllImport("user32.dll")]
+  static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+  [DllImport("user32.dll", CharSet = CharSet.Auto)]
+  static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+
+  const int WM_CLOSE = 0x10;
+
+  public static void PostprocessSublimeWindow() {
     var sublime = Process.GetProcesses().Where(process => process.ProcessName != null && process.ProcessName.EndsWith("sublime_text")).FirstOrDefault();
-    if (sublime != null) SetForegroundWindow(sublime.MainWindowHandle);
+    if (sublime != null) {
+      var builder = new StringBuilder(256);
+      GetWindowText(sublime.MainWindowHandle, builder, 256);
+      if (builder.ToString() == "") {
+        Thread.Sleep(50);
+        PostprocessSublimeWindow();
+      } else {
+        if (builder.ToString() == "untitled - Sublime Text 2") {
+          SendMessage(sublime.MainWindowHandle, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+        } else {
+          SetForegroundWindow(sublime.MainWindowHandle);
+          ShowWindow(sublime.MainWindowHandle, SW_MAXIMIZE);
+        }
+      }
+    }
   }
 }
-
 
 public static class Env {
   public static String Expand(this String s) {

@@ -245,7 +245,9 @@ public static class Console {
       traceln("myke {0} {1} {2}", Config.action, Config.originalTarget, Config.args);
       if (Config.conn is Git) {
         var git = Config.conn as Git;
+        var backup = Config.env.ContainsKey("workingDir") ? Config.env["workingDir"] : null;
         traceln("git: branch = {0}, commit = {1}", git.getCurrentBranch(), git.getCurrentCommit());
+        if (backup != null) Config.env["workingDir"] = backup;
       }
     }
 
@@ -719,6 +721,8 @@ public static class Console {
     }
 
     Config.env["workingDir"] = home.FullName;
+//    System.Console.WriteLine("eval " + command + ": " + Config.env["workingDir"]);
+//    System.Console.WriteLine(new StackTrace(true).ToString());
     return internalEval(command, home);
   }
 
@@ -738,6 +742,8 @@ public static class Console {
     }
 
     Config.env["workingDir"] = home.FullName;
+//    System.Console.WriteLine("batch " + command + ": " + Config.env["workingDir"]);
+//    System.Console.WriteLine(new StackTrace(true).ToString());
     return cmd(command, home, true);
   }
 
@@ -757,6 +763,8 @@ public static class Console {
     }
 
     Config.env["workingDir"] = home.FullName;
+//    System.Console.WriteLine("interactive " + command + ": " + Config.env["workingDir"]);
+//    System.Console.WriteLine(new StackTrace(true).ToString());
     return cmd(command, home, false);
   }
 
@@ -776,6 +784,8 @@ public static class Console {
     }
 
     Config.env["workingDir"] = home.FullName;
+//    System.Console.WriteLine("ui " + command + ": " + Config.env["workingDir"]);
+//    System.Console.WriteLine(new StackTrace(true).ToString());
     return shellex(command, home);
   }
 }
@@ -1021,6 +1031,7 @@ public static class Config {
   public static ExitCode parse(String[] args) {
     Config.env = new Dictionary<String, String>();
     env["workingDir"] = Environment.CurrentDirectory;
+//    System.Console.WriteLine("initial: " + Config.env["workingDir"]);
     var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
     if (!traceDir.Exists) traceDir.Create();
     var fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + "NA" + "-" + "NA" + ".log";
