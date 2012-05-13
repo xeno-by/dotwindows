@@ -24,7 +24,7 @@ public class App {
     var path = @"Software\Far2\KeyMacros\Vars";
     var reg = Registry.CurrentUser.OpenSubKey(path, true) ?? Registry.CurrentUser.CreateSubKey(path);
     var env_values = reg.GetValueNames().Where(name => name.StartsWith("%%Myke")).ToList();
-    env_values.ForEach(value => reg.DeleteValue(value));
+    env_values.ForEach(value => { try { reg.DeleteValue(value); } catch { /* ignore */ } });
 
     try {
       try {
@@ -2096,7 +2096,7 @@ public abstract class Git : Prj {
     return Console.batch("git pull " + remoteAndBranch, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode branch() {
     if (!verifyRepo()) return -1;
     return Console.batch("git branch " + Config.rawCommandLine, home: repo.GetRealPath());
@@ -2319,10 +2319,28 @@ public abstract class Git : Prj {
     return result.Substring(prefix.Length);
   }
 
+  [Action, Meaningful]
+  public virtual ExitCode smartCurrentBranch() {
+    if (!verifyRepo()) return -1;
+    var branch = getCurrentBranch();
+    if (branch == null) return -1;
+    println(branch);
+    return 0;
+  }
+
   public virtual String getCurrentHead() {
     var lines = Console.eval("git rev-parse HEAD", home: repo.GetRealPath());
     if (lines == null) return null;
     return lines.ElementAtOrDefault(0);
+  }
+
+  [Action, Meaningful]
+  public virtual ExitCode smartCurrentHead() {
+    if (!verifyRepo()) return -1;
+    var commit = getCurrentBranch();
+    if (commit == null) return -1;
+    println(commit);
+    return 0;
   }
 
   public virtual String getCurrentCommit() {
