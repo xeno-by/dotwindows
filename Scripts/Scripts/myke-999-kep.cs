@@ -250,10 +250,12 @@ public class Kep : Git {
     }
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode repl() {
-//    return compile() && println() && Console.interactive(Config.sublime ? "scala /S" : "scala", home: root);
-    return Console.interactive(Config.sublime ? "scala /S" : "scala", home: root);
+    var incantation = Config.sublime ? "scala /S" : "scala";
+    if (arguments.Count() > 0) incantation += " ";
+    incantation = incantation + String.Join(" ", arguments.ToArray());
+    return Console.interactive(incantation, home: root);
   }
 
   [Action, Meaningful]
@@ -269,35 +271,39 @@ public class Kep : Git {
       //options.Add("-e \"scala.reflect.mirror.reify{" + (arguments.Count > 0 ? arguments.ToString() : readArguments()) + "}\"");
       //return Console.batch("scala " + String.Join(" ", options.ToArray()));
 
-/*
-      var root = new DirectoryInfo(@"%PROJECTS%\Kepler\sandbox\".Expand());
-      var files = root.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
-      if (files.Count == 0) {
-        println("error: nothing to run");
-        return -1;
-      } else if (files.Count == 1) {
-        var toRun = files[0];
-        println("running {0}", toRun.FullName);
-        var scala = new Scala(toRun, arguments);
-        return scala.run();
-      } else {
-        println("error: command is ambiguous");
-        files.Take(5).ToList().ForEach(file1 => println("    " + file1));
-        if (files.Count > 5) println("    ... " + (files.Count - 5) + " more");
-        return -1;
-      }
-*/
+      // var root = new DirectoryInfo(project + @"\sandbox\");
+      // var files = root.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
+      // if (files.Count == 0) {
+      //   println("error: nothing to run");
+      //   return -1;
+      // } else if (files.Count == 1) {
+      //   var toRun = files[0];
+      //   println("running {0}", toRun.FullName);
+      //   var scala = new Scala(toRun, arguments);
+      //   return scala.run();
+      // } else {
+      //   println("error: command is ambiguous");
+      //   files.Take(5).ToList().ForEach(file1 => println("    " + file1));
+      //   if (files.Count > 5) println("    ... " + (files.Count - 5) + " more");
+      //   return -1;
+      // }
+      var dir = new DirectoryInfo(project + @"\sandbox");
+      var scala = new Scala(dir, arguments);
+      return scala.run();
+
       //return Console.batch("partest files\\pos\\t1693.scala", home: root);
-      println("don't know how to run");
-      return -1;
     }
+  }
+
+  public virtual Donor mkDonor() {
+    return new Donor(new DirectoryInfo(new Donor().project), arguments);
   }
 
   [Action]
   public override ExitCode runTest() {
     var partest1 = project + @"\build\locker\classes\partest";
     if (!Directory.Exists(partest1)) {
-      var donor = new Donor(new DirectoryInfo(new Donor().project), arguments);
+      var donor = mkDonor();
       var status1 = donor.compile();
       if (!status1) return status1;
     }

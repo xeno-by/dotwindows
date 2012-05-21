@@ -7,17 +7,21 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 public class App {
+  public static bool kur() { return Environment.CurrentDirectory.Contains("KeplerUnderRefactoring"); }
+  public static String prefix() { return kur() ? @"%PROJECTS%\KeplerUnderRefactoring" : @"%PROJECTS%\Kepler"; }
+
   public static int Main(String[] args) {
-    var age1 = File.Exists("%PROJECTS%/Kepler/build/locker/all.complete".Expand()) ? File.GetLastWriteTime("%PROJECTS%/Kepler/build/locker/all.complete".Expand()) : DateTime.MinValue;
-    var age2 = File.Exists("%PROJECTS%/Kepler/build/locker/library.complete".Expand()) ? File.GetLastWriteTime("%PROJECTS%/Kepler/build/locker/library.complete".Expand()) : DateTime.MinValue;
-    var age3 = File.Exists("%PROJECTS%/Kepler/build/locker/compiler.complete".Expand()) ? File.GetLastWriteTime("%PROJECTS%/Kepler/build/locker/compiler.complete".Expand()) : DateTime.MinValue;
+
+    var age1 = File.Exists((prefix() + "/build/locker/all.complete").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/all.complete").Expand()) : DateTime.MinValue;
+    var age2 = File.Exists((prefix() + "/build/locker/library.complete").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/library.complete").Expand()) : DateTime.MinValue;
+    var age3 = File.Exists((prefix() + "/build/locker/compiler.complete").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/compiler.complete").Expand()) : DateTime.MinValue;
     var maxAge = age1 > age2 ? age1 : age2;
     maxAge = maxAge > age3 ? maxAge : age3;
 
     var ageOfClasses = maxAge;
-    age1 = File.Exists("%PROJECTS%/Kepler/build/locker/lib/scala-library.jar".Expand()) ? File.GetLastWriteTime("%PROJECTS%/Kepler/build/locker/lib/scala-library.jar".Expand()) : DateTime.MinValue;
-    age2 = File.Exists("%PROJECTS%/Kepler/build/locker/lib/scala-compiler.jar".Expand()) ? File.GetLastWriteTime("%PROJECTS%/Kepler/build/locker/lib/scala-compiler.jar".Expand()) : DateTime.MinValue;
-    age3 = File.Exists("%PROJECTS%/Kepler/build/locker/lib/scala-partest.jar".Expand()) ? File.GetLastWriteTime("%PROJECTS%/Kepler/build/locker/lib/scala-partest.jar".Expand()) : DateTime.MinValue;
+    age1 = File.Exists((prefix() + "/build/locker/lib/scala-library.jar").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/lib/scala-library.jar").Expand()) : DateTime.MinValue;
+    age2 = File.Exists((prefix() + "/build/locker/lib/scala-compiler.jar").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/lib/scala-compiler.jar").Expand()) : DateTime.MinValue;
+    age3 = File.Exists((prefix() + "/build/locker/lib/scala-partest.jar").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/lib/scala-partest.jar").Expand()) : DateTime.MinValue;
     maxAge = age1 > age2 ? age1 : age2;
     maxAge = maxAge > age3 ? maxAge : age3;
     if (age1 == DateTime.MinValue || age2 == DateTime.MinValue || age3 == DateTime.MinValue) maxAge = DateTime.MinValue;
@@ -43,8 +47,8 @@ public class App {
   }
 
   public static int RunPartest(String[] args) {
-//    var classpath = "%PROJECTS%/Kepler/test/files/codelib/code.jar;%PROJECTS%/Kepler/build/locker/classes/compiler;%PROJECTS%/Kepler/build/locker/classes/library;%PROJECTS%/Kepler/build/locker/classes/partest".Expand();
-    var classpath = "%PROJECTS%/Kepler/test/files/codelib/code.jar;%PROJECTS%/Kepler/build/locker/lib/scala-compiler.jar;%PROJECTS%/Kepler/build/locker/lib/scala-library.jar;%PROJECTS%/Kepler/build/locker/lib/scala-partest.jar".Expand();
+    // var classpath = "%PROJECTS%/Kepler/test/files/codelib/code.jar;%PROJECTS%/Kepler/build/locker/classes/compiler;%PROJECTS%/Kepler/build/locker/classes/library;%PROJECTS%/Kepler/build/locker/classes/partest".Expand();
+    var classpath = (prefix() + "/test/files/codelib/code.jar;" + prefix() +  "/build/locker/lib/scala-compiler.jar;" + prefix() + "/build/locker/lib/scala-library.jar;" + prefix() + "/build/locker/lib/scala-partest.jar").Expand();
     Environment.SetEnvironmentVariable("CLASSPATH", classpath);
 
     var opts = new List<String>();
@@ -53,12 +57,12 @@ public class App {
     //opts.Add("--debug");
     //opts.Add("--verbose");
 //    opts.Add("--classpath %PROJECTS%/Kepler/build/locker/classes");
-    opts.Add("--buildpath %PROJECTS%/Kepler/build/locker");
+    opts.Add("--buildpath " + prefix() + "/build/locker");
     opts.AddRange(args);
 
     var process = new Process();
     process.StartInfo.FileName = "java.exe";
-    process.StartInfo.WorkingDirectory = "%PROJECTS%/Kepler/test".Expand();
+    process.StartInfo.WorkingDirectory = (prefix() + "/test").Expand();
     process.StartInfo.Arguments = String.Join(" ", opts.Select(opt => opt.Expand()).ToArray());
     process.StartInfo.UseShellExecute = false;
     process.Start();

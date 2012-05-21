@@ -17,7 +17,7 @@ using Microsoft.Win32.SafeHandles;
 public class Scala : Git {
 //  public static String defaultJavaopts = "-Dscala.usejavacp=true -Dscala.timings=true";
   public static String defaultJavaopts = "-Dscala.usejavacp=true";
-  public static String defaultScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-lite -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+  public static String defaultScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-verbose -Xlog-implicits -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
 //  public static String defaultScalaopts = "";
 
   public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }
@@ -28,7 +28,11 @@ public class Scala : Git {
   private void init(Arguments arguments) {
     var head = ((FileSystemInfo)file ?? dir).FullName;
     if (head == Path.GetFullPath(".")) head = ".";
-    else head = ((FileSystemInfo)file ?? dir).Name;
+    else {
+      // head = ((FileSystemInfo)file ?? dir).Name;
+      if (head.StartsWith(Path.GetFullPath("."))) head = head.Substring(Path.GetFullPath(".").Length);
+      if (head.StartsWith("/") || head.StartsWith("\\")) head = head.Substring(1);
+    }
 
     arguments = new Arguments((arguments ?? new Arguments()).Concat(new List<String>{head}).ToList());
     var combo = arguments.SelectMany<String, Object>(argument => {
@@ -128,6 +132,7 @@ public class Scala : Git {
     command = command.Replace("$JAVAOPTS$", javaOpts);
     command = command.Replace("$SCALAOPTS$", scalaOpts);
 
+    // println(command);
     return command.Expand();
   }
 
@@ -164,7 +169,7 @@ public class Scala : Git {
 
   public virtual String inferScalaClasspath() {
     var sourcesRoot = inferScalaSourcesRoot();
-    return @"%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
+    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
   }
 
   [Action]
@@ -385,7 +390,7 @@ public class Scala : Git {
     return compile() && Console.batch(buildRunnerInvocation(readMainclass(), readArguments()), home: root);
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode repl() {
     return Console.interactive(buildReplInvocation(), home: inferScalaHome());
   }

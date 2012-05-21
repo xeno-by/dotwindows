@@ -25,6 +25,7 @@ public class App {
     var reg = Registry.CurrentUser.OpenSubKey(path, true) ?? Registry.CurrentUser.CreateSubKey(path);
     var env_values = reg.GetValueNames().Where(name => name.StartsWith("%%Myke")).ToList();
     env_values.ForEach(value => { try { reg.DeleteValue(value); } catch { /* ignore */ } });
+    // System.Console.WriteLine("launching myke: " + String.Join(" ", args));
 
     try {
       try {
@@ -251,7 +252,9 @@ public static class Console {
       }
     }
 
-    if (Config.conn_action == null || Config.conn_action.canTrace()) File.AppendAllText(Config.env["traceFile"], msg);
+    if (Config.conn_action == null || Config.conn_action.canTrace()) {
+      if (!Config.env.ContainsKey("dontTrace")) File.AppendAllText(Config.env["traceFile"], msg);
+    }
   }
 
   public static void trace(String format, params Object[] objs) {
@@ -1611,6 +1614,7 @@ public abstract class Conn : Base {
   [Action]
   public ExitCode menu() {
     if (Config.rawTarget == "") {
+      Config.env["dontTrace"] = "1";
       var menuitems = this.menuitems();
       menuitems.ForEach(menuitem => println(menuitem));
       return menuitems.Count() == 0 ? -1 : 0;
@@ -2124,8 +2128,16 @@ public abstract class Git : Prj {
   public virtual ExitCode smartBranchRemoteDelete() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
-    var result = smartBranchLocalDelete();
-    return result && Console.batch("git push origin :" + branch, home: repo.GetRealPath());
+    if (!branch.StartsWith("remotes/")) {
+      var result = smartBranchLocalDelete();
+      return result && Console.batch("git push origin :" + branch, home: repo.GetRealPath());
+    } else {
+      branch = branch.Substring("remotes/".Length);
+      var iof = branch.IndexOf("/");
+      var remote = branch.Substring(0, iof);
+      branch = branch.Substring(iof + 1);
+      return Console.batch("git push " + remote + " :" + branch, home: repo.GetRealPath());
+    }
   }
 
   [Action]
@@ -2258,7 +2270,7 @@ public abstract class Git : Prj {
     else return url + "/commit/" + commit;
   }
 
-  public virtual String getFileUrlRevisionAware(String file) {
+  public virtual String getFileUrlRevisionAgnostic(String file) {
     var url = getGithubUrl("origin");
     if (url == null) return null;
 
@@ -2277,7 +2289,7 @@ public abstract class Git : Prj {
     return url + "/blob/" + getCurrentBranch() + "/" + normalizedFile + (linum == null ? null : ("#L" + linum));
   }
 
-  public virtual String getFileUrlRevisionAgnostic(String file) {
+  public virtual String getFileUrlRevisionAware(String file) {
     var url = getGithubUrl("origin");
     if (url == null) return null;
 

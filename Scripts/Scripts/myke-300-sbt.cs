@@ -109,7 +109,7 @@ public class Sbt : Git {
     return new ProjectInfo{scalahome = scalahome, classpath = classpath, mainclasses = mainclasses};
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode repl() {
     var info = compileAndInfer();
     if (info == null) return -1;

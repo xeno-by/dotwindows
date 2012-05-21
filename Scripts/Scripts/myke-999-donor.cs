@@ -12,10 +12,13 @@ using System.Xml.XPath;
 using ZetaLongPaths;
 
 [Connector(name = "donor", priority = 999, description =
-  "Wraps the development workflow of donor scalacheck for Kepler")]
-
+  "Wraps the development workflow of scalatest donor for Kepler")]
 public class Donor : Kep {
-  public override String project { get { return @"%PROJECTS%\Donor".Expand(); } }
+  public bool kur = false;
+  public String donneeName() { return kur ? "Kur" : "Kepler"; }
+  public Prj donnee() { return kur ? new Kur() : new Kep(); }
+  public override String project { get { return kur ? @"%PROJECTS%\DonorUnderRefactoring".Expand() : @"%PROJECTS%\Donor".Expand(); } }
+
   public override String profile { get { return profileAlt; } }
   public override String profileClean { get { return profileAltClean; } }
   public override String profileLibrary { get { return profileAltLibrary; } }
@@ -26,9 +29,9 @@ public class Donor : Kep {
     return dir.IsChildOrEquivalentTo(project);
   }
 
-  public Donor() : base() {}
-  public Donor(FileInfo file, Arguments arguments) : base(file, arguments) { this.arguments = arguments; }
-  public Donor(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) { this.arguments = arguments; }
+  public Donor(bool kur = false) : base() { this.kur = kur; }
+  public Donor(FileInfo file, Arguments arguments, bool kur = false) : base(file, arguments) { this.arguments = arguments; this.kur = kur; }
+  public Donor(DirectoryInfo dir, Arguments arguments, bool kur = false) : base(dir, arguments) { this.arguments = arguments; this.kur = kur; }
 
   [Default, Action]
   public override ExitCode compile() {
@@ -39,7 +42,7 @@ public class Donor : Kep {
       if (!status) return -1;
 
       println();
-      println("Transplanting partest to Kepler...");
+      println("Transplanting partest to " + donneeName() + "...");
       status = status && transplantDir("build/quick/classes/partest", "build/locker/classes/partest");
       status = status && transplantDir("build/quick/classes/library/scala/actors", "build/locker/classes/library/scala/actors");
       status = status && transplantDir("build/quick/classes/scalap/scala/tools/scalap", "build/locker/classes/partest/scala/tools/scalap");
@@ -56,8 +59,8 @@ public class Donor : Kep {
 
       if (status) {
         println();
-        println("Calculating longest path lengths in Kepler...");
-        var locker = new ZlpDirectoryInfo(new Kep().project + "\\build\\locker" );
+        println("Calculating longest path lengths in " + donneeName() + "...");
+        var locker = new ZlpDirectoryInfo(donnee().project + "\\build\\locker" );
         var classes = locker.GetFiles("*.class", SearchOption.AllDirectories).ToList();
         classes = classes.OrderByDescending(f => f.FullName.Length).ToList();
         classes = classes.Take(5).Concat(classes.Skip(5).Where(f => f.FullName.Length > 260)).ToList();
@@ -69,8 +72,8 @@ public class Donor : Kep {
 
         println();
         println("Packing locker into jars...");
-        var classesDir = new Kep().project + @"\build\locker\classes";
-        var jarDir = new Kep().project + @"\build\locker\lib";
+        var classesDir = donnee().project + @"\build\locker\classes";
+        var jarDir = donnee().project + @"\build\locker\lib";
         if (!Directory.Exists(jarDir)) Directory.CreateDirectory(jarDir);
         status = status && print("  * scala-compiler... ") && Console.batch("jar cf ../lib/scala-compiler.jar -C compiler .", home: classesDir) && println("[  OK  ]");
         status = status && print("  * scala-library... ") && Console.batch("jar cf ../lib/scala-library.jar -C library .", home: classesDir) && println("[  OK  ]");
@@ -84,13 +87,14 @@ public class Donor : Kep {
 
   public ExitCode transplantFile(String from, String to) {
     from = project + "\\" + from.Replace("/", "\\");
-    var to5 = new Kep5().project + "\\" + to.Replace("/", "\\");
-    to = new Kep().project + "\\" + to.Replace("/", "\\");
+    // var to5 = new Kep5().project + "\\" + to.Replace("/", "\\");
+    to = donnee().project + "\\" + to.Replace("/", "\\");
     print("  * Copying {0} to {1}... ", from, to);
 
     try {
       ExitCode status = -1;
-      if (File.Exists(from)) status = CopyFile(from, to) && CopyFile(from, to5);
+      // if (File.Exists(from)) status = CopyFile(from, to) && CopyFile(from, to5);
+      if (File.Exists(from)) status = CopyFile(from, to);
       if (status) println("[  OK  ]");
       return status;
     } catch (Exception ex) {
@@ -113,13 +117,14 @@ public class Donor : Kep {
 
   public ExitCode transplantDir(String from, String to) {
     from = project + "\\" + from.Replace("/", "\\");
-    var to5 = new Kep5().project + "\\" + to.Replace("/", "\\");
-    to = new Kep().project + "\\" + to.Replace("/", "\\");
+    // var to5 = new Kep5().project + "\\" + to.Replace("/", "\\");
+    to = donnee().project + "\\" + to.Replace("/", "\\");
     print("  * Copying {0} to {1}... ", from, to);
 
     try {
       ExitCode status = -1;
-      status = CopyDirectory(from, to) && CopyDirectory(from, to5);
+      // status = CopyDirectory(from, to) && CopyDirectory(from, to5);
+      status = CopyDirectory(from, to);
       if (status) println("[  OK  ]");
       return status;
     } catch (Exception ex) {
