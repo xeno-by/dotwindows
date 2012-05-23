@@ -14,7 +14,7 @@ using ZetaLongPaths;
 [Connector(name = "donor", priority = 999, description =
   "Wraps the development workflow of scalatest donor for Kepler")]
 public class Donor : Kep {
-  public bool kur = false;
+  public bool kur { get { return dir.IsChildOrEquivalentTo(@"%PROJECTS%\DonorUnderRefactoring".Expand()); } }
   public String donneeName() { return kur ? "Kur" : "Kepler"; }
   public Prj donnee() { return kur ? new Kur() : new Kep(); }
   public override String project { get { return kur ? @"%PROJECTS%\DonorUnderRefactoring".Expand() : @"%PROJECTS%\Donor".Expand(); } }
@@ -29,9 +29,9 @@ public class Donor : Kep {
     return dir.IsChildOrEquivalentTo(project);
   }
 
-  public Donor(bool kur = false) : base() { this.kur = kur; }
-  public Donor(FileInfo file, Arguments arguments, bool kur = false) : base(file, arguments) { this.arguments = arguments; this.kur = kur; }
-  public Donor(DirectoryInfo dir, Arguments arguments, bool kur = false) : base(dir, arguments) { this.arguments = arguments; this.kur = kur; }
+  public Donor() : base() { }
+  public Donor(FileInfo file, Arguments arguments) : base(file, arguments) { this.arguments = arguments; }
+  public Donor(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) { this.arguments = arguments; }
 
   [Default, Action]
   public override ExitCode compile() {

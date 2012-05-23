@@ -19,8 +19,4 @@ public class Kur : Kep {
   public Kur() : base() {}
   public Kur(FileInfo file, Arguments arguments) : base(file, arguments) {}
   public Kur(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
-
-  public override Donor mkDonor() {
-    return new Donor(new DirectoryInfo(new Donor().project), arguments, kur: true);
-  }
 }

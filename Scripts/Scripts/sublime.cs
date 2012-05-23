@@ -186,6 +186,7 @@ public class App {
         if (builder.ToString() == "untitled - Sublime Text 2") {
           SendMessage(sublime.MainWindowHandle, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
         } else {
+          // MessageBox.Show(builder.ToString());
           SetForegroundWindow(sublime.MainWindowHandle);
           ShowWindow(sublime.MainWindowHandle, SW_MAXIMIZE);
         }

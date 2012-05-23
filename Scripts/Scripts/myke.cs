@@ -80,9 +80,10 @@ public class App {
               else Console.println("[R]");
             }
             return accepts ? myconn : null;
-          } catch {
+          } catch (Exception ex) {
             if (Config.verbose) {
               Console.println("[R]");
+              Console.println(ex);
             }
             return null;
           }
@@ -1360,7 +1361,7 @@ public static class Connectors {
   }
 
   public static Object instantiate(this Type connector) {
-    var ctors = connector.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(ctor1 => ctor1.GetParameters().Length > 0).ToList();
+    var ctors = connector.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(ctor1 => ctor1.GetParameters().Where(p => !p.IsOptional).Count() > 0).ToList();
     var binds = ctors.ToDictionary(ctor1 => ctor1, ctor1 => ctor1.bindArgs());
     var bind = binds.Where(kvp => kvp.Value != null).SingleOrDefault();
     var ctor = bind.Key;
@@ -1402,6 +1403,7 @@ public static class Connectors {
         } else if (p.ParameterType == typeof(Arguments)) {
           return Config.args;
         } else {
+          if (p.IsOptional) return p.DefaultValue;
           throw new NotSupportedException(String.Format("cannot bind parameter {0} of type {1}", p.Name, p.ParameterType.FullName));
         }
       }).ToArray();

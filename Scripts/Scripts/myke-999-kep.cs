@@ -296,7 +296,7 @@ public class Kep : Git {
   }
 
   public virtual Donor mkDonor() {
-    return new Donor(new DirectoryInfo(new Donor().project), arguments);
+    return new Donor(new DirectoryInfo(project), arguments);
   }
 
   [Action]

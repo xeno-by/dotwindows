@@ -17,7 +17,7 @@ using Microsoft.Win32.SafeHandles;
 public class Scala : Git {
 //  public static String defaultJavaopts = "-Dscala.usejavacp=true -Dscala.timings=true";
   public static String defaultJavaopts = "-Dscala.usejavacp=true";
-  public static String defaultScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-verbose -Xlog-implicits -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+  public static String defaultScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-lite -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
 //  public static String defaultScalaopts = "";
 
   public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }

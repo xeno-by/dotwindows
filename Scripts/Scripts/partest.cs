@@ -8,10 +8,10 @@ using System.Text.RegularExpressions;
 
 public class App {
   public static bool kur() { return Environment.CurrentDirectory.Contains("KeplerUnderRefactoring"); }
-  public static String prefix() { return kur() ? @"%PROJECTS%\KeplerUnderRefactoring" : @"%PROJECTS%\Kepler"; }
+  public static String prefix() { return (kur() ? @"%PROJECTS%\KeplerUnderRefactoring" : @"%PROJECTS%\Kepler").Expand(); }
+  public static String donor() { return (kur() ? @"%PROJECTS%\DonorUnderRefactoring" : @"%PROJECTS%\Donor").Expand(); }
 
   public static int Main(String[] args) {
-
     var age1 = File.Exists((prefix() + "/build/locker/all.complete").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/all.complete").Expand()) : DateTime.MinValue;
     var age2 = File.Exists((prefix() + "/build/locker/library.complete").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/library.complete").Expand()) : DateTime.MinValue;
     var age3 = File.Exists((prefix() + "/build/locker/compiler.complete").Expand()) ? File.GetLastWriteTime((prefix() + "/build/locker/compiler.complete").Expand()) : DateTime.MinValue;
@@ -38,7 +38,7 @@ public class App {
   public static int TransplantPartest() {
     var process = new Process();
     process.StartInfo.FileName = "myke.exe";
-    process.StartInfo.WorkingDirectory = "%PROJECTS%/Donor".Expand();
+    process.StartInfo.WorkingDirectory = donor();
     process.StartInfo.Arguments = "compile";
     process.StartInfo.UseShellExecute = false;
     process.Start();
