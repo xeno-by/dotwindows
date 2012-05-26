@@ -509,8 +509,8 @@ public static class Console {
         println();
       }
 
-      reg.SetValue("arguments" + (maxIndex + 1), input, RegistryValueKind.String);
-      reg.SetValue("lastarguments", input, RegistryValueKind.String);
+      reg.SetValue("arguments" + (maxIndex + 1), input ?? "", RegistryValueKind.String);
+      reg.SetValue("lastarguments", input ?? "", RegistryValueKind.String);
       return input;
     } else {
       if (prompt != null && prompt != String.Empty) print(prompt + ": ");

@@ -5,8 +5,7 @@ using System.Linq;
 
 public class App {
   public static void Main(String[] args) {
-    // var root = new DirectoryInfo(@"c:\Projects\KeplerUnderRefactoring\test\files");
-    var root = new DirectoryInfo(@"c:\Projects\KeplerUnderRefactoring\test\pending");
+    var root = new DirectoryInfo(@"c:\Projects\KeplerUnderRefactoring\test");
     var files = root.GetFiles("*.scala", SearchOption.AllDirectories).ToList();
     files.ForEach(file => {
       var lines = File.ReadAllLines(file.FullName).ToList();
@@ -78,8 +77,35 @@ public class App {
         //   lines.Insert(iof + 1, "import scala.tools.reflect.RuntimeEval");
         // }
 
+        // var modded = false;
+        // var usesMkToolBox = lines.Where(line => line.Trim().Contains("mkToolBox()")).Count() > 0;
+        // if (usesMkToolBox) {
+        //   var iof = lines.IndexOf("import scala.reflect.runtime.universe._");
+        //   if (iof == -1) {
+        //     Console.WriteLine("*" + file.FullName);
+        //     return;
+        //   }
+        //   modded = true;
+        //   lines.Insert(iof + 1, "import scala.reflect.runtime.{universe => ru}");
+        //   lines = lines.Select(line => line.Replace("mkToolBox()", "ru.mkToolBox()")).ToList();
+        // }
+
+        // var modded = false;
+        // var usesMkToolBox = lines.Where(line => line.Trim().Contains("ru.mkToolBox()")).Count() > 0;
+        // if (usesMkToolBox) {
+        //   var iof = lines.IndexOf("import scala.reflect.runtime.{universe => ru}");
+        //   if (iof == -1) {
+        //     Console.WriteLine("*" + file.FullName);
+        //     return;
+        //   }
+        //   modded = true;
+        //   lines.Insert(iof + 1, "import scala.reflect.runtime.{currentMirror => cm}");
+        //   lines.Insert(iof + 2, "import scala.tools.reflect.ToolBox");
+        //   lines = lines.Select(line => line.Replace("ru.mkToolBox()", "cm.mkToolBox()")).ToList();
+        // }
+
         var modded = false;
-        var usesMkToolBox = lines.Where(line => line.Trim().Contains("mkToolBox()")).Count() > 0;
+        var usesMkToolBox = lines.Where(line => line.Trim().Contains("println(code.eval)")).Count() > 0;
         if (usesMkToolBox) {
           var iof = lines.IndexOf("import scala.reflect.runtime.universe._");
           if (iof == -1) {
@@ -87,8 +113,8 @@ public class App {
             return;
           }
           modded = true;
-          lines.Insert(iof + 1, "import scala.tools.reflect.{universe => ru}");
-          lines = lines.Select(line => line.Replace("mkToolBox()", "ru.mkToolBox()")).ToList();
+          lines.Insert(iof + 1, "import scala.tools.reflect.ToolBox");
+          lines = lines.Select(line => line.Replace("println(code.eval)", "println(code.runtimeEval)")).ToList();
         }
 
         // if (lines.Count() != orig_lines.Count()) {

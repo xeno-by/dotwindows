@@ -15,10 +15,13 @@ using Microsoft.Win32.SafeHandles;
   "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using sbt.")]
 
 public class Scala : Git {
-//  public static String defaultJavaopts = "-Dscala.usejavacp=true -Dscala.timings=true";
-  public static String defaultJavaopts = "-Dscala.usejavacp=true";
-  public static String defaultScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-lite -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
-//  public static String defaultScalaopts = "";
+//  public static String staticJavaopts = "-Dscala.usejavacp=true -Dscala.timings=true";
+  public static String staticJavaopts = "-Dscala.usejavacp=true";
+  public static String staticScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-verbose -Xlog-implicits -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
+//  public static String staticScalaopts = "";
+
+  public String defaultJavaopts { get { return staticJavaopts; } }
+  public String defaultScalaopts { get { return staticScalaopts + (dir.IsChildOrEquivalentTo("%PROJECTS%\\KeplerUnderRefactoring".Expand()) ? " -Yrepl-vids" : ""); } }
 
   public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }
   public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { init(arguments); }
