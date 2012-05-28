@@ -362,6 +362,13 @@ public class Kep : Git {
   }
 
   [Action]
+  public override ExitCode open() {
+    if (inTest) return runTest();
+    else if (inPlayground) return run();
+    else return base.open();
+  }
+
+  [Action]
   public ExitCode runAllTests() {
     var status = runAnt("build");
     if (status) {

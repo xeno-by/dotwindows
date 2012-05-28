@@ -1,0 +1,2 @@
+-Dscala.usejavacp=true
+-language:experimental.macros

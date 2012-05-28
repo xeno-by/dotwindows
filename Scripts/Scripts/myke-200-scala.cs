@@ -15,13 +15,12 @@ using Microsoft.Win32.SafeHandles;
   "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using sbt.")]
 
 public class Scala : Git {
-//  public static String staticJavaopts = "-Dscala.usejavacp=true -Dscala.timings=true";
-  public static String staticJavaopts = "-Dscala.usejavacp=true";
-  public static String staticScalaopts = "-deprecation -unchecked -Xexperimental -language:experimental.macros -Ymacro-debug-verbose -Xlog-implicits -Yshow-trees-compact -Yshow-trees-stringified -g:vars";
-//  public static String staticScalaopts = "";
+  public static String[] profile { get { return File.ReadAllLines("%SCRIPTS_HOME%/scalac.profile".Expand()); } }
+  public static String staticJavaopts { get { return profile.ElementAtOrDefault(0) ?? ""; } }
+  public static String staticScalaopts { get { return profile.ElementAtOrDefault(1) ?? ""; } }
 
-  public String defaultJavaopts { get { return staticJavaopts; } }
-  public String defaultScalaopts { get { return staticScalaopts + (dir.IsChildOrEquivalentTo("%PROJECTS%\\KeplerUnderRefactoring".Expand()) ? " -Yrepl-vids" : ""); } }
+  public String defaultJavaopts { get { return staticJavaopts + (dir.IsChildOrEquivalentTo("%PROJECTS%\\KeplerUnderRefactoring".Expand()) ? " -Dscala.repl.vids=1 -Dscala.repl.autoruncode=%HOME%/.scala_autorun -Dscala.repl.maxprintstring=0" : "");; } }
+  public String defaultScalaopts { get { return staticScalaopts; } }
 
   public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }
   public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { init(arguments); }

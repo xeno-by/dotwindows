@@ -1660,6 +1660,11 @@ public class Universal : Conn {
     println(dir.ToString() + ">");
     return 0;
   }
+
+  [Action]
+  public virtual ExitCode open() {
+    return Console.ui(file != null ? file.FullName : dir.FullName);
+  }
 }
 
 public abstract class Prj : Universal {
