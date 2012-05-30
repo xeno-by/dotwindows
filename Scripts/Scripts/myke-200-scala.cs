@@ -129,7 +129,12 @@ public class Scala : Git {
     });
     var scalaOpts = String.Join(" ", scalaParts.ToArray());
 
-    command = @"%JAVA_HOME%\bin\java.exe -cp ""$CLASSPATH$"" $JAVAOPTS$ scala.tools.nsc.Main $SCALAOPTS$";
+    var f_classpathConfig = new FileInfo("%SCRIPTS_HOME%/scalac.classpath".Expand());
+    var useBootClasspath = f_classpathConfig.Exists && File.ReadAllText(f_classpathConfig.FullName) == "boot";
+    var nobootTemplate = @"%JAVA_HOME%\bin\java.exe -cp ""$CLASSPATH$"" $JAVAOPTS$ scala.tools.nsc.Main $SCALAOPTS$";
+    var bootTemplate = @"%JAVA_HOME%\bin\java.exe -Xbootclasspath/a:""$CLASSPATH$"" $JAVAOPTS$ scala.tools.nsc.Main $SCALAOPTS$";
+
+    command = useBootClasspath ? bootTemplate : nobootTemplate;
     command = command.Replace("$CLASSPATH$", inferScalaClasspath());
     command = command.Replace("$JAVAOPTS$", javaOpts);
     command = command.Replace("$SCALAOPTS$", scalaOpts);

@@ -363,8 +363,8 @@ public class Kep : Git {
 
   [Action]
   public override ExitCode open() {
-    if (inTest) return runTest();
-    else if (inPlayground) return run();
+    if (inTest) { Config.action = "run-test"; return runTest(); }
+    else if (inPlayground) { Config.action = "run"; return run(); }
     else return base.open();
   }
 

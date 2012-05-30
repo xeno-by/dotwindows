@@ -1,2 +1,2 @@
 -Dscala.usejavacp=true
--language:experimental.macros
+-deprecation -unchecked -Xexperimental -language:experimental.macros -Yreify-copypaste -Yshow-trees-compact -Yshow-trees-stringified -g:vars
