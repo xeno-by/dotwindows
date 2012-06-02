@@ -176,7 +176,7 @@ public class Scala : Git {
 
   public virtual String inferScalaClasspath() {
     var sourcesRoot = inferScalaSourcesRoot();
-    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
+    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
   }
 
   [Action]
@@ -226,6 +226,31 @@ public class Scala : Git {
       if (!classes && File.Exists(compVerFile)) File.Delete(compVerFile);
     }
 
+    status = classes ? 0 : Console.batch(String.Format("unzip -o -q \"{0}\\lib\\scala-reflect.jar\" reflect.properties", scalaHome), home: (scalaHome + "\\lib"));
+    var reflVerFile = classes ? (scalaHome + "\\reflect\\reflect.properties") : (scalaHome + "\\lib\\reflect.properties");
+    var reflVer = null as String;
+    try {
+      if (!status || !File.Exists(reflVerFile)) {
+        // println("scalac: bad unzip @ scala-reflect.jar");
+        // return -1;
+        reflVer = "n/a";
+      } else {
+        reflVer = File.ReadAllLines(reflVerFile).Select(line => {
+          var m = Regex.Match(line, @"^version.number=(?<reflVer>.*)$");
+          return m.Success ? m.Result("${reflVer}") : null;
+        }).Where(ver => ver != null).FirstOrDefault();
+
+        if (reflVer == null) {
+          println("scalac: bad jar contents @ scala-reflect.jar");
+          return -1;
+        } else {
+          reflVer += (" @ " + File.ReadAllLines(reflVerFile).First().Substring(1));
+        }
+      }
+    } finally {
+      if (!classes && File.Exists(reflVerFile)) File.Delete(reflVerFile);
+    }
+
     status = classes ? 0 : Console.batch(String.Format("unzip -o -q \"{0}\\lib\\scala-library.jar\" library.properties", scalaHome), home: (scalaHome + "\\lib"));
     var libVerFile = classes ? (scalaHome + "\\library\\library.properties") : (scalaHome + "\\lib\\library.properties");
     var libVer = null as String;
@@ -258,6 +283,7 @@ public class Scala : Git {
     var prev_compiler = reg.GetValue("compiler") as String;
     var prev_scalaHome = reg.GetValue("scalaHome") as String;
     var prev_compVer = reg.GetValue("compVer") as String;
+    var prev_reflVer = reg.GetValue("reflVer") as String;
     var prev_libVer = reg.GetValue("libVer") as String;
 
     if (Config.verbose) {
@@ -275,14 +301,17 @@ public class Scala : Git {
         println("compVer");
         println("  expected = {0}", prev_compVer);
         println("  actual   = {0}", compVer);
+        println("reflVer");
+        println("  expected = {0}", prev_reflVer);
+        println("  actual   = {0}", reflVer);
         println("libVer");
         println("  expected = {0}", prev_libVer);
         println("  actual   = {0}", libVer);
       }
     }
 
-    if (prev_status && prev_compiler == compiler && prev_scalaHome == scalaHome && prev_compVer == compVer && prev_libVer == libVer) {
-      var filenames = reg.GetValueNames().Except(new []{"compiler", "scalaHome", "compVer", "libVer", "status"}).ToList();
+    if (prev_status && prev_compiler == compiler && prev_scalaHome == scalaHome && prev_compVer == compVer && prev_reflVer == reflVer && prev_libVer == libVer) {
+      var filenames = reg.GetValueNames().Except(new []{"compiler", "scalaHome", "compVer", "reflVer", "libVer", "status"}).ToList();
       var nocache = filenames.Any(filename => {
         var prev_modtime = reg.GetValue(filename) as String;
         filename = filename.Replace("$slash$", "\\");
@@ -345,6 +374,7 @@ public class Scala : Git {
       reg.SetValue("compiler", compiler);
       reg.SetValue("scalaHome", scalaHome);
       reg.SetValue("compVer", compVer);
+      reg.SetValue("reflVer", reflVer);
       reg.SetValue("libVer", libVer);
       reg.SetValue("status", status.value);
 

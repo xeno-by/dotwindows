@@ -22,6 +22,7 @@ public class Donor : Kep {
   public override String profile { get { return profileAlt; } }
   public override String profileClean { get { return profileAltClean; } }
   public override String profileLibrary { get { return profileAltLibrary; } }
+  public override String profileReflect { get { return profileAltReflect; } }
   public override String profileCompiler { get { return profileAltCompiler; } }
 
   public override bool accept() {
@@ -76,6 +77,9 @@ public class Donor : Kep {
         var jarDir = donnee().project + @"\build\locker\lib";
         if (!Directory.Exists(jarDir)) Directory.CreateDirectory(jarDir);
         status = status && print("  * scala-compiler... ") && Console.batch("jar cf ../lib/scala-compiler.jar -C compiler .", home: classesDir) && println("[  OK  ]");
+        if (Directory.Exists(classesDir + @"\\" + "reflect")) {
+          status = status && print("  * scala-reflect... ") && Console.batch("jar cf ../lib/scala-reflect.jar -C reflect .", home: classesDir) && println("[  OK  ]");
+        }
         status = status && print("  * scala-library... ") && Console.batch("jar cf ../lib/scala-library.jar -C library .", home: classesDir) && println("[  OK  ]");
         status = status && print("  * scala-partest... ") && Console.batch("jar cf ../lib/scala-partest.jar -C partest .", home: classesDir) && println("[  OK  ]");
         if (!status) println("[FAILED]");

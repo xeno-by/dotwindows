@@ -22,8 +22,10 @@ public class Kep : Git {
   public virtual String profileClean { get { return "locker.clean"; } }
   public virtual String profileAltClean { get { return "clean"; } }
   public virtual String profileLibrary { get { return "locker.unlock locker.lib"; } }
+  public virtual String profileReflect { get { return "locker.unlock locker.reflect"; } }
   public virtual String profileCompiler { get { return "locker.unlock locker.comp"; } }
   public virtual String profileAltLibrary { get { return "quick.lib"; } }
+  public virtual String profileAltReflect { get { return "quick.reflect"; } }
   public virtual String profileAltCompiler { get { return "quick.comp"; } }
 
   public virtual String antExecutable() { return "ant" + " -Dscalac.args=\"\"\"" + String.Join(" ", arguments.ToArray()) + "\"\"\""; }
@@ -102,15 +104,23 @@ public class Kep : Git {
     } else {
       var mods = arguments;
       var library = mods.Count() == 0 || mods.Contains("library");
+      var reflect = mods.Contains("reflect");
       var compiler = mods.Contains("compiler");
+      var reflectAndCompiler = mods.Contains("reflect-and-compiler");
       var altLibrary = mods.Contains("alt") || mods.Contains("alt-library");
+      var altReflect = mods.Contains("alt-reflect");
       var altCompiler = mods.Contains("alt-compiler");
-      arguments = new Arguments(arguments.Where(arg => arg != "library" && arg != "compiler" && arg != "alt" && arg != "alt-library" && arg != "alt-compiler").ToList());
+      var altReflectAndCompiler = mods.Contains("alt-reflect-and-compiler");
+      arguments = new Arguments(arguments.Where(arg => arg != "library" && arg != "reflect" && arg != "compiler" && arg != "reflect-and-compiler" && arg != "alt" && arg != "alt-library" && arg != "alt-reflect" && arg != "alt-compiler" && arg != "alt-reflect-and-compiler").ToList());
 
       if (library) return runAnt(profileClean + " " + profile);
+      else if (reflect) return rebuildReflect();
       else if (compiler) return rebuildCompiler();
+      else if (reflectAndCompiler) return rebuildReflectAndCompiler();
       else if (altLibrary) return rebuildAltLibrary();
+      else if (altReflect) return rebuildAltReflect();
       else if (altCompiler) return rebuildAltCompiler();
+      else if (altReflectAndCompiler) return rebuildAltReflectAndCompiler();
       else throw new Exception("don't know how to rebuild the stuff you asked: " + mods);
     }
   }
@@ -145,6 +155,25 @@ public class Kep : Git {
   }
 
   [Action]
+  public virtual ExitCode rebuildReflect() {
+    return rebuildReflectInternal(false);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildReflectWithYourkit() {
+    return rebuildReflectInternal(true);
+  }
+
+  private ExitCode rebuildReflectInternal(bool yourkit) {
+    var reflectClasses = new DirectoryInfo(project + "\\build\\locker\\classes\\reflect");
+    if (reflectClasses.Exists) ZlpIOHelper.DeleteDirectory(reflectClasses.FullName, true);
+    var reflectToken = new FileInfo(project + "\\build\\locker\\reflect.complete");
+    if (reflectToken.Exists) reflectToken.Delete();
+    var flags = yourkit ? "/yourkit " : "";
+    return runAnt(flags + profileReflect);
+  }
+
+  [Action]
   public virtual ExitCode rebuildCompiler() {
     return rebuildCompilerInternal(false);
   }
@@ -161,6 +190,26 @@ public class Kep : Git {
     if (compilerToken.Exists) compilerToken.Delete();
     var flags = yourkit ? "/yourkit " : "";
     return runAnt(flags + profileCompiler);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildReflectAndCompiler() {
+    return rebuildReflect() && rebuildCompiler();
+  }
+
+  [Action]
+  public virtual ExitCode rebuildReflectAndCompilerWithYourkit() {
+    return rebuildReflectWithYourkit() && rebuildCompilerWithYourkit();
+  }
+
+  [Action]
+  public virtual ExitCode rebuildCompilerAndReflect() {
+    return rebuildReflectAndCompiler();
+  }
+
+  [Action]
+  public virtual ExitCode rebuildCompilerAndReflectWithYourkit() {
+    return rebuildCompilerAndReflectWithYourkit();
   }
 
   [Action]
@@ -193,6 +242,25 @@ public class Kep : Git {
   }
 
   [Action]
+  public virtual ExitCode rebuildAltReflect() {
+    return rebuildAltReflectInternal(false);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltReflectWithYourkit() {
+    return rebuildAltReflectInternal(true);
+  }
+
+  private ExitCode rebuildAltReflectInternal(bool yourkit) {
+    var reflectClasses = new DirectoryInfo(project + "\\build\\quick\\classes\\reflect");
+    if (reflectClasses.Exists) ZlpIOHelper.DeleteDirectory(reflectClasses.FullName, true);
+    var reflectToken = new FileInfo(project + "\\build\\quick\\reflect.complete");
+    if (reflectToken.Exists) reflectToken.Delete();
+    var flags = yourkit ? "/yourkit " : "";
+    return runAnt(flags + profileAltReflect);
+  }
+
+  [Action]
   public virtual ExitCode rebuildAltCompiler() {
     return rebuildAltCompilerInternal(false);
   }
@@ -209,6 +277,26 @@ public class Kep : Git {
     if (compilerToken.Exists) compilerToken.Delete();
     var flags = yourkit ? "/yourkit " : "";
     return runAnt(flags + profileAltCompiler);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltReflectAndCompiler() {
+    return rebuildAltReflect() && rebuildAltCompiler();
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltReflectAndCompilerWithYourkit() {
+    return rebuildAltReflectWithYourkit() && rebuildAltCompilerWithYourkit();
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltCompilerAndReflect() {
+    return rebuildAltReflectAndCompiler();
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltCompilerAndReflectWithYourkit() {
+    return rebuildAltCompilerAndReflectWithYourkit();
   }
 
   [Action]
@@ -594,6 +682,9 @@ public class Kep : Git {
   public virtual ExitCode deployMaven() {
     var result = new Donor().compile();
     result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-library.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-library\2.10.0-SNAPSHOT\scala-library-2.10.0-20120417.011253-317.jar");
+    if (File.Exists(@"C:\Projects\Kepler\build\locker\lib\scala-reflect.jar")) {
+      result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-reflect.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-library\2.10.0-SNAPSHOT\scala-reflect-2.10.0-20120417.011253-000.jar");
+    }
     result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-compiler.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-compiler\2.10.0-SNAPSHOT\scala-compiler-2.10.0-20120417.011253-314.jar");
     return result;
   }
@@ -601,11 +692,15 @@ public class Kep : Git {
   [Action, MenuItem(description = "Deploy to Kep", priority = 999.2)]
   public virtual ExitCode deployStarr() {
     var loloLibraryJar = new FileInfo(root + @"\build\locker\lib\scala-library.jar");
+    var loloReflectJar = new FileInfo(root + @"\build\locker\lib\scala-reflect.jar");
     var loloCompilerJar = new FileInfo(root + @"\build\locker\lib\scala-compiler.jar");
     var paloLibraryJar = new FileInfo(root + @"\build\palo\lib\scala-library.jar");
+    var paloReflectJar = new FileInfo(root + @"\build\palo\lib\scala-reflect.jar");
     var paloCompilerJar = new FileInfo(root + @"\build\palo\lib\scala-compiler.jar");
     var packLibraryJar = new FileInfo(root + @"\build\pack\lib\scala-library.jar");
+    var packReflectJar = new FileInfo(root + @"\build\pack\lib\scala-reflect.jar");
     var packCompilerJar = new FileInfo(root + @"\build\pack\lib\scala-compiler.jar");
+    // todo. rewrite this to include ***reflectJar files into consideration
     var loloModTime = loloLibraryJar.Exists && loloCompilerJar.Exists ? (loloLibraryJar.LastWriteTime > loloCompilerJar.LastWriteTime ? loloLibraryJar.LastWriteTime : loloCompilerJar.LastWriteTime) : DateTime.MinValue;
     var paloModTime = paloLibraryJar.Exists && paloCompilerJar.Exists ? (paloLibraryJar.LastWriteTime > paloCompilerJar.LastWriteTime ? paloLibraryJar.LastWriteTime : paloCompilerJar.LastWriteTime) : DateTime.MinValue;
     var packModTime = packLibraryJar.Exists && packCompilerJar.Exists ? (packLibraryJar.LastWriteTime > packCompilerJar.LastWriteTime ? packLibraryJar.LastWriteTime : packCompilerJar.LastWriteTime) : DateTime.MinValue;
@@ -619,6 +714,9 @@ public class Kep : Git {
 
     println("Deploying starr upon ourselves...");
     status = status && transplantFile(source + "lib/scala-library.jar", "lib/scala-library.jar");
+    if (File.Exists(source + "lib/scala-reflect.jar")) {
+      status = status && transplantFile(source + "lib/scala-reflect.jar", "lib/scala-reflect.jar");
+    }
     status = status && transplantFile(source + "lib/scala-compiler.jar", "lib/scala-compiler.jar");
     return status;
   }
@@ -633,6 +731,9 @@ public class Kep : Git {
     status = status && println("Transplanting starr to Kepler...");
     status = status && runAnt("locker.unlock palo.done");
     status = status && transplantFileToKur("build/palo/lib/scala-library.jar", "lib/scala-library.jar");
+    if (File.Exists(project + "/" + "build/palo/lib/scala-reflect.jar")) {
+      status = status && transplantFileToKur("build/palo/lib/scala-reflect.jar", "lib/scala-reflect.jar");
+    }
     status = status && transplantFileToKur("build/palo/lib/scala-compiler.jar", "lib/scala-compiler.jar");
     return status;
   }

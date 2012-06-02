@@ -33,6 +33,9 @@ public class Starr : Kep {
       println();
       println("Transplanting starr to Kepler...");
       status = status && transplantFile("build/palo/lib/scala-library.jar", "lib/scala-library.jar");
+      if (File.Exists(project + "/" + "build/palo/lib/scala-reflect.jar")) {
+        status = status && transplantFile("build/palo/lib/scala-reflect.jar", "lib/scala-reflect.jar");
+      }
       status = status && transplantFile("build/palo/lib/scala-compiler.jar", "lib/scala-compiler.jar");
       return status;
     }
@@ -85,6 +88,9 @@ public class Starr : Kep {
     var status = println();
     status = status && println("Transplanting starr to Kepler...");
     status = status && transplantFile("build/palo/lib/scala-library.jar", "lib/scala-library.jar");
+    if (File.Exists(project + "/" + "build/palo/lib/scala-reflect.jar")) {
+      status = status && transplantFile("build/palo/lib/scala-reflect.jar", "lib/scala-reflect.jar");
+    }
     status = status && transplantFile("build/palo/lib/scala-compiler.jar", "lib/scala-compiler.jar");
     return status;
   }
