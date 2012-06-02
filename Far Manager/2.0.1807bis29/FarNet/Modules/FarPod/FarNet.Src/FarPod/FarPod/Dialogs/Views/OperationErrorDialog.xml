@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Dialog
+  Rect="-1,-1,70,7"
+  IsWarning="1">
+
+  <Box
+    Rect="3,1"
+    Text="{Binding Title}"/>
+
+  <Collection
+    TypeOfItem="Text"
+    Items="{Binding MessageLines}"
+    Orientation="1"
+    StartPlace="5,-1,64"
+    
+    Text.Centered="1"
+    />
+  
+  <Text
+    Rect="5,-1"
+    Separator="1"/>
+
+  <Collection
+    TypeOfItem="Button"
+    Items="{Binding Buttons}"
+    Orientation="0"
+    StartPlace="0,-1"
+        
+    Button.CenterGroup="True"
+    Button.ButtonClicked="onButtonClicked"/>
+
+</Dialog>

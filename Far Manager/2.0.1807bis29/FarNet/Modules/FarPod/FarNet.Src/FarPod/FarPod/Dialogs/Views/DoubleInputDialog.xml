@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Dialog
+  Rect="-1,-1,70,10"
+  Focused="EditControl">
+
+  <Box
+    Rect="3,1"
+    Text="{Binding Title}"/>
+
+  <Text    
+    Rect="5,-1,64"
+    Centered="1"
+    Text="{Binding Text}"/>
+
+  <Edit    
+    Name="EditControl"
+    Rect="5,-1,64"
+    Text="{Binding InputText, Mode=TwoWay}"
+    History="{Binding HistoryKey}"
+    SelectOnEntry="1"
+    UseLastHistory="1"/>
+
+  <Text    
+    Rect="5,-1,64"
+    Centered="1"
+    Text="{Binding Text2}"/>
+
+  <Edit    
+    Name="EditControl2"
+    Rect="5,-1,64"
+    Text="{Binding InputText2, Mode=TwoWay}"
+    History="{Binding HistoryKey2}"
+    SelectOnEntry="1"
+    UseLastHistory="1"/>
+
+  <Text
+    Rect="5,-1"
+    Separator="1"/>
+
+  <Collection
+    TypeOfItem="Button"
+    Items="{Binding Buttons}"
+    Orientation="0"
+    StartPlace="0,-1"
+        
+    Button.CenterGroup="True"
+    Button.ButtonClicked="onButtonClicked"/>
+
+</Dialog>

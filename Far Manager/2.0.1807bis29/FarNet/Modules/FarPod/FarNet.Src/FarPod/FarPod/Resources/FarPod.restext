@@ -1,0 +1,56 @@
+﻿# Common
+FarPod=FarPod
+FarPodPrefix=FarPod:
+GB=GB
+MB=MB
+Unknown=Unknown
+
+# Buttons
+BtnOk=&Ok
+BtnMove=&Move
+BtnCopy=&Copy
+BtnCreate=Cr&eate
+BtnCancel=Ca&ncel
+BtnSkip=&Skip
+BtnSkipAll=Skip all
+BtnReplace=Replace
+BtnReplaceAll=Replace all
+BtnRetry=&Retry
+BtnDelete=&Delete
+BtnDeleteWithTracks=Delete with &tracks
+BtnDeleteFromPlaylist=Remove from &playlist
+BtnRename=Rena&me
+BtnAddExistToPlayList=&Add to playList
+
+# Messages
+MsgGettingDevices=Getting devices...
+MsgEjecting=Ejecting ...
+MsgGettingFiles=Getting media files...
+MsgNoDirectCopyToDiffDevice=Direct copy to diff device not implemented!
+MsgCopyOrMoveToPath=Copy or Move to path operation ...
+MsgCopyOrMoveToDevice=Copy or Move to device operation ...
+MsgDelete=Delete operation ... 
+MsgCancel=Do you really want to cancel it?
+MsgOutputFormat=Output Name format:
+MsgTrackExist=Track already exists
+MsgFileExist=File already exists
+MsgCopierSource=Source: {0}
+MsgCopierDestination=Destination: {0}
+MsgRememberChoice=Remember choice
+MsgPlaylistSortField=Playlist sort field:
+MsgMenuEditTrackTags=&Edit track(s) tags
+MsgMenuBatchTrackTags=&Batch edit tags
+MsgMenuClosePanel=&Close FarPod panel
+MsgMenuEjectDevice=&Eject selected device
+MsgCopyPlayLists={0} {1} playlist(s) to:
+MsgCopyTracks={0} {1} track(s) to:
+MsgDeletePlayLists=Delete {0} playlist(s) ?
+MsgDeleteTracks=Delete {0} track(s) ?
+MsgCopyFiles={0} {1} files/dirs to playList:
+MsgNewPlayList=Enter new playlist name:
+MsgNewFileList=Enter new file name:
+MsgRenamePlayList=Rename playlist to:
+MsgLocalCopyPlayList=Copy playlist to:
+MsgSaveFileTags=Save file tags ...
+MsgSaveIPodDB=Save ipod database ...
+MsgDirectOperationOnDiffDeviceWarning=Direct operation only for one device!

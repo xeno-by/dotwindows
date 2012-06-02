@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Dialog
+  Rect="-1,-1,70,16"  
+  Cancel="btnCancel">
+
+  <Box
+    Rect="3,1"
+    Text="Tag edit dialog:"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetArtist, Mode=TwoWayManual}" Name="SetArtist" Text="Artist:"/>
+  <Edit Rect="24,0,64" Text="{Binding Artist, Mode=TwoWayManual}"
+        Disabled="{Binding Selected, SourceControl=SetArtist, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetAlbumArtist, Mode=TwoWayManual}" Name="SetAlbumArtist" Text="Album artist:"/>
+  <Edit Rect="24,0,64" Text="{Binding AlbumArtist, Mode=TwoWayManual}"
+        Disabled="{Binding Selected, SourceControl=SetAlbumArtist, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetYear, Mode=TwoWayManual}" Name="SetYear" Text="Year:"/>
+  <Edit Rect="24,0,27" Text="{Binding Year, Mode=TwoWayManual}" Fixed="1" Mask="9999"
+        Disabled="{Binding Selected, SourceControl=SetYear, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetAlbum, Mode=TwoWayManual}" Name="SetAlbum" Text="Album:"/>
+  <Edit Rect="24,0,64" Text="{Binding Album, Mode=TwoWayManual}"
+        Disabled="{Binding Selected, SourceControl=SetAlbum, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetTitle, Mode=TwoWayManual}" Name="SetTitle" Text="Title:"/>
+  <Edit Rect="24,0,64" Text="{Binding Title, Mode=TwoWayManual}"
+        Disabled="{Binding Selected, SourceControl=SetTitle, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetGenre, Mode=TwoWayManual}" Name="SetGenre" Text="Genre:"/>
+  <Edit Rect="24,0,64" Text="{Binding Genre, Mode=TwoWayManual}"
+        Disabled="{Binding Selected, SourceControl=SetGenre, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetTrackNumber, Mode=TwoWayManual}" Name="SetTrackNumber" Text="Track number:"/>
+  <Edit Rect="24,0,27" Text="{Binding TrackNumber, Mode=TwoWayManual}" Fixed="1" Mask="9999"
+        Disabled="{Binding Selected, SourceControl=SetTrackNumber, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="30,0" Selected="{Binding SetAlbumTrackCount, Mode=TwoWayManual}" Name="SetAlbumTrackCount" Text="Total track count:"/>
+  <Edit Rect="54,0,57" Text="{Binding AlbumTrackCount, Mode=TwoWayManual}" Fixed="1" Mask="9999"
+        Disabled="{Binding Selected, SourceControl=SetAlbumTrackCount, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetDiscNumber, Mode=TwoWayManual}" Name="SetDiscNumber" Text="Disc number:"/>
+  <Edit Rect="24,0,27" Text="{Binding DiscNumber, Mode=TwoWayManual}" Fixed="1" Mask="9999"
+        Disabled="{Binding Selected, SourceControl=SetDiscNumber, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="30,0" Selected="{Binding SetTotalDiscCount, Mode=TwoWayManual}" Name="SetTotalDiscCount" Text="Total disc count:"/>
+  <Edit Rect="54,0,57" Text="{Binding TotalDiscCount, Mode=TwoWayManual}" Fixed="1" Mask="9999"
+        Disabled="{Binding Selected, SourceControl=SetTotalDiscCount, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetComposer, Mode=TwoWayManual}" Name="SetComposer" Text="Composer:"/>
+  <Edit Rect="24,0,64" Text="{Binding Composer, Mode=TwoWayManual}"
+        Disabled="{Binding Selected, SourceControl=SetComposer, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <CheckBox Rect="5,-1" Selected="{Binding SetComments, Mode=TwoWayManual}" Name="SetComments" Text="Comments:"/>
+  <Edit Rect="24,0,64" Text="{Binding Comments, Mode=TwoWayManual}"
+        Disabled="{Binding Selected, SourceControl=SetComments, Converter=BooleanNot, Mode=OneWay}"/>
+
+  <Text
+    Rect="5,-1"
+    Separator="1"/>
+
+  <Button
+    Text="{Resource BtnOk}"
+    Name="btnOk"
+    Rect="0,-1"
+    CenterGroup="1"/>
+
+  <Button
+    Text="{Resource BtnCancel}"
+    Name="btnCancel"
+    Rect="0,0"
+    CenterGroup="1"/>
+
+</Dialog>

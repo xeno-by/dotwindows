@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Dialog
+  Rect="-1,-1,70,10"
+  Focused="EditControl">
+
+  <Box
+    Rect="3,1"
+    Text="{Binding Title}"/>
+
+  <Text    
+    Rect="5,-1,64"    
+    Text="{Binding Text}"/>
+
+  <Edit
+    Name="EditControl"
+    Rect="5,-1,64"
+    Text="{Binding PlaylistName, Mode=TwoWay}"
+    History="PlaylistName"
+    SelectOnEntry="1"
+    UseLastHistory="1"/>
+
+  <Text
+    Rect="5,-1,64"
+    Text="{Resource MsgPlaylistSortField}"/>
+
+  <ComboBox
+    Rect="5,-1,64"
+    DropDownList="1"
+    Text="{Binding PlaylistSortField, Mode=TwoWay}">
+
+    <Collection
+      TypeOfItem="FarItem"
+      Items="{Binding PlaylistSortFields}"
+      Orientation="1"
+      StartPlace="0,0"/>
+    
+  </ComboBox>
+
+  <Text
+    Rect="5,-1"
+    Separator="1"/>
+
+  <Collection
+    TypeOfItem="Button"
+    Items="{Binding Buttons}"
+    Orientation="0"
+    StartPlace="0,-1"
+        
+    Button.CenterGroup="True"
+    Button.ButtonClicked="onButtonClicked"/>
+
+</Dialog>

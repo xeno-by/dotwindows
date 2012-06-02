@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3ABFA6A7-9274-4C56-A386-6F71FCF3B194}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FarNet.Tools.ViewBuilder</RootNamespace>
+    <AssemblyName>FarNet.Tools.ViewBuilder</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FarNet">
+      <HintPath>..\..\FarNet\FarNet.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FarNet.Settings">
+      <HintPath>..\..\FarNet\FarNet.Settings.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FarNet.Tools">
+      <HintPath>..\..\FarNet\FarNet.Tools.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Binding\BindingEngine.cs" />
+    <Compile Include="Binding\BindingExpression.cs" />
+    <Compile Include="Binding\CustomExpressions\CollectionBindingExpression.cs" />
+    <Compile Include="Binding\CustomExpressions\SelectedItemBindingExpression.cs" />
+    <Compile Include="Binding\CustomExpressions\StandardControlBindingExpression.cs" />
+    <Compile Include="Binding\Enums\EBingingMode.cs" />
+    <Compile Include="Builders\ContainerBuilders\CollectionBuilder.cs" />
+    <Compile Include="Builders\BaseBuilder.cs" />
+    <Compile Include="Builders\ContainerBuilders\Bases\BaseContainerBuilder.cs" />
+    <Compile Include="Builders\ContainerBuilders\Bases\BaseControlContainerBuilder.cs" />
+    <Compile Include="Builders\ContainerBuilders\BoxControlBuilder.cs" />
+    <Compile Include="Builders\StandardControls\CommonControlBuilder.cs" />
+    <Compile Include="Builders\ContainerBuilders\DialogBuilder.cs" />
+    <Compile Include="Builders\AdditionalBuilders\FarItemBuilder.cs" />
+    <Compile Include="Builders\ContainerBuilders\ListControlBuilder.cs" />
+    <Compile Include="Binding\BindingHelper.cs" />
+    <Compile Include="Common\ComplexParser.cs" />
+    <Compile Include="Common\BuildContext.cs" />
+    <Compile Include="Common\ValueParser.cs" />
+    <Compile Include="Interfaces\IBindingValueConverter.cs" />
+    <Compile Include="Mapping\Bases\PropertyMap.cs" />
+    <Compile Include="Mapping\Maps\BaseListMap.cs" />
+    <Compile Include="Mapping\Maps\BoxMap.cs" />
+    <Compile Include="Mapping\Maps\ButtonMap.cs" />
+    <Compile Include="Mapping\Maps\CheckBoxMap.cs" />
+    <Compile Include="Mapping\Maps\ItemCollectionMap.cs" />
+    <Compile Include="Mapping\Maps\ColorControlMap.cs" />
+    <Compile Include="Mapping\Maps\ComboBoxMap.cs" />
+    <Compile Include="Mapping\Maps\ControlMap.cs" />
+    <Compile Include="Mapping\Maps\DialogMap.cs" />
+    <Compile Include="Mapping\Maps\EditableMap.cs" />
+    <Compile Include="Mapping\Maps\EditMap.cs" />
+    <Compile Include="Mapping\Maps\FarItemMap.cs" />
+    <Compile Include="Mapping\Maps\ListBoxMap.cs" />
+    <Compile Include="Mapping\Maps\RadioButtonMap.cs" />
+    <Compile Include="Mapping\Maps\TextMap.cs" />
+    <Compile Include="Mapping\Bases\BaseMap.cs" />
+    <Compile Include="Mapping\MappingService.cs" />
+    <Compile Include="ValueConverters\BooleanNotConverter.cs" />
+    <Compile Include="ViewFactory.cs" />
+    <Compile Include="Wrappers\FarControlColorWrapper.cs" />
+    <Compile Include="Wrappers\FarControlNotifyWrapper.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

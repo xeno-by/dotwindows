@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Dialog
+  Rect="-1,-1,70,16"
+  Cancel="btnCancel">
+
+  <Box
+    Rect="3,1"
+    Text="Tag edit dialog:"/>
+
+  <Text Rect="5,-1" Text="Artist:"/>
+  <Edit Rect="20,0,64" Text="{Binding Artist, Mode=TwoWayManual}"/>
+
+  <Text Rect="5,-1" Text="Album artist:"/>
+  <Edit Rect="20,0,64" Text="{Binding AlbumArtist, Mode=TwoWayManual}"/>
+  
+  <Text Rect="5,-1" Text="Year:"/>
+  <Edit Rect="20,0,23" Text="{Binding Year, Mode=TwoWayManual}" Fixed="1" Mask="9999"/>
+
+  <Text Rect="5,-1" Text="Album:"/>
+  <Edit Rect="20,0,64" Text="{Binding Album, Mode=TwoWayManual}"/>  
+
+  <Text Rect="5,-1" Text="Title:"/>
+  <Edit Rect="20,0,64" Text="{Binding Title, Mode=TwoWayManual}"/>
+
+  <Text Rect="5,-1" Text="Genre:"/>
+  <Edit Rect="20,0,64" Text="{Binding Genre, Mode=TwoWayManual}"/>
+
+  <Text Rect="5,-1" Text="Track number:"/>
+  <Edit Rect="20,0,23" Text="{Binding TrackNumber, Mode=TwoWayManual}" Fixed="1" Mask="9999"/>
+  
+  <Text Rect="26,0" Text="Total track count:"/>
+  <Edit Rect="46,0,49" Text="{Binding AlbumTrackCount, Mode=TwoWayManual}" Fixed="1" Mask="9999"/>
+
+  <Text Rect="5,-1" Text="Disc number:"/>
+  <Edit Rect="20,0,23" Text="{Binding DiscNumber, Mode=TwoWayManual}" Fixed="1" Mask="9999"/>
+
+  <Text Rect="26,0" Text="Total disc count:"/>
+  <Edit Rect="46,0,49" Text="{Binding TotalDiscCount, Mode=TwoWayManual}" Fixed="1" Mask="9999"/>  
+
+  <Text Rect="5,-1" Text="Composer:"/>
+  <Edit Rect="20,0,64" Text="{Binding Composer, Mode=TwoWayManual}"/>
+
+  <Text Rect="5,-1" Text="Comments:"/>
+  <Edit Rect="20,0,64" Text="{Binding Comments, Mode=TwoWayManual}"/>
+
+  <Text
+    Rect="5,-1"
+    Separator="1"/>
+
+  <Button
+    Text="&amp;Prev"
+    NoClose="1"
+    Disabled="{Binding IsSingleFileMode, Mode=OneTime}"
+    Rect="5,-1"    
+    ButtonClicked="onPrev"/>
+  
+  <Button
+    Text="{Resource BtnOk}"
+    Name="btnOk"
+    Rect="0,0"
+    CenterGroup="1"/>
+
+  <Button
+    Text="{Resource BtnCancel}"
+    Name="btnCancel"
+    Rect="0,0"
+    CenterGroup="1"/>
+
+  <Button
+    Text="&amp;Next"    
+    NoClose="1"
+    Disabled="{Binding IsSingleFileMode, Mode=OneTime}"
+    Rect="57,0"    
+    ButtonClicked="onNext"/>
+
+</Dialog>

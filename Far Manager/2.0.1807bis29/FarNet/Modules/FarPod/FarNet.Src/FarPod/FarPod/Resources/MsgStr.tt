@@ -1,0 +1,69 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#
+	string[] resourceStrings = System.IO.File.ReadAllLines(this.Host.ResolvePath("FarPod.restext"));
+#>
+
+#pragma warning disable 0649
+
+namespace FarPod.Resources
+{
+	using System;
+	using System.Reflection;
+	using FarNet;
+
+    static class MsgStr
+    {
+		#region
+		<# foreach (string resource in resourceStrings)  
+		   {
+				if (string.IsNullOrEmpty(resource)) continue;
+				
+				if (resource.StartsWith("#"))
+				{
+					#>
+
+		// <#= resource #>
+		<#
+				}	
+				else
+				{
+				    string[] resourceParts = resource.Split('=');
+		#>			
+		/// <summary>
+		/// <#= System.Security.SecurityElement.Escape(resourceParts[1]) #>
+		/// </summary>
+		public static string <#= resourceParts[0] #>="<#= resourceParts[1] #>"; 
+		<#
+				}	
+		  } 
+		#>
+		
+		#endregion
+
+        private static bool _isLoaded = false;
+        private static readonly object _lockObject = new object();
+
+        public static void Load(IModuleManager mm)
+        {        
+			if (!_isLoaded)
+            {    
+				lock (_lockObject)
+				{
+					if (!_isLoaded)
+					{
+						foreach (FieldInfo fi in typeof(MsgStr).GetFields(
+							BindingFlags.Static | BindingFlags.Public))
+						{
+							fi.SetValue(null, mm.GetString(fi.Name));
+						}
+
+						_isLoaded = true;
+					}
+				}
+			}
+        }
+    }
+}
+
+#pragma warning restore 0649

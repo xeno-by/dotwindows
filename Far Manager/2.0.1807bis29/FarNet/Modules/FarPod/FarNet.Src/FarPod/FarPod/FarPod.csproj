@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{181D37A4-57C9-41C1-972E-17931D5D8D0D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FarPod</RootNamespace>
+    <AssemblyName>FarPod</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FarNet">
+      <HintPath>..\..\FarNet\FarNet.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FarNet.Settings">
+      <HintPath>..\..\FarNet\FarNet.Settings.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FarNet.Tools">
+      <HintPath>..\..\FarNet\FarNet.Tools.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharePodLib">
+      <HintPath>..\Bin\SharePodLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="taglib-sharp">
+      <HintPath>..\Bin\taglib-sharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Explorers\DeviceExplorer.cs" />
+    <Compile Include="Explorers\FarPodExplorerBase.cs" />
+    <Compile Include="Explorers\FileFarPodExplorerBase.cs" />
+    <Compile Include="Explorers\PlayListExplorer.cs" />
+    <Compile Include="Explorers\TrackExplorer.cs" />
+    <Compile Include="FarPodHost.cs" />
+    <Compile Include="FarPodSetting.cs" />
+    <Compile Include="Common\GuidContants.cs" />
+    <Compile Include="Dialogs\Bases\BaseActionDialog.cs" />
+    <Compile Include="Dialogs\Bases\BaseView.cs" />
+    <Compile Include="Dialogs\BatchTagEditDialog.cs" />
+    <Compile Include="Dialogs\CollisionBehaviorDialog.cs" />
+    <Compile Include="Dialogs\FileCopierErrorDialog.cs" />
+    <Compile Include="Dialogs\OperationErrorDialog.cs" />
+    <Compile Include="Dialogs\PlaylistParamDialog.cs" />
+    <Compile Include="Dialogs\TrackTagEditDialog.cs" />
+    <Compile Include="Exceptions\AsyncFarPodException.cs" />
+    <Compile Include="Exceptions\Bases\BaseFarPodException.cs" />
+    <Compile Include="Dialogs\DoubleInputDialog.cs" />
+    <Compile Include="Dialogs\InputDialog.cs" />
+    <Compile Include="Exceptions\OperationFarPodException.cs" />
+    <Compile Include="Exceptions\CancelOperationFarPodException.cs" />
+    <Compile Include="Extensions\BaseViewExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="FarPodPanel.cs" />
+    <Compile Include="Helpers\DisplayFormat.cs" />
+    <Compile Include="Helpers\MaskMatcher.cs" />
+    <Compile Include="Operations\Bases\BaseOperation.cs" />
+    <Compile Include="Operations\Bases\CopyContentOperation.cs" />
+    <Compile Include="Operations\CopyContentFromSelfOperation.cs" />
+    <Compile Include="Operations\CopyContentToSelfOperation.cs" />
+    <Compile Include="Operations\CreatePlayListOperation.cs" />
+    <Compile Include="Operations\DeleteContentOperation.cs" />
+    <Compile Include="Operations\Bases\OnDeviceOperation.cs" />
+    <Compile Include="Operations\DirectCopyToDeviceOperation.cs" />
+    <Compile Include="Extensions\IPodExtensions.cs" />
+    <Compile Include="Menus\FarPodCommandMenu.cs" />
+    <Compile Include="DataTypes\EExistCollisionStrategy.cs" />
+    <Compile Include="Common\FarPodContext.cs" />
+    <Compile Include="DataTypes\EFileSystemLevel.cs" />
+    <Compile Include="DataTypes\OperationResult.cs" />
+    <Compile Include="Dialogs\Common\CommonDialog.cs" />
+    <Compile Include="Operations\DirectPlaylistOperation.cs" />
+    <Compile Include="Resources\MsgStr.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MsgStr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Services\FarPodDeviceService.cs" />
+    <Compile Include="Services\FarPodOperationService.cs" />
+    <Compile Include="FarPodMain.cs" />
+    <Compile Include="Services\FileSystemEnumerator.cs" />
+    <Compile Include="Helpers\IPodTrackFactory.cs" />
+    <Compile Include="Helpers\IPodTrackFormatter.cs" />
+    <Compile Include="Helpers\ProgressFormHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FileCopierService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FarPod.lic">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FarPod.restext">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MsgStr.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MsgStr.cs</LastGenOutput>
+    </None>
+    <None Include="Resources\ToDo.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dialogs\Views\PlaylistParamDialog.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dialogs\Views\CollisionBehaviorDialog.xml" />
+    <EmbeddedResource Include="Dialogs\Views\DoubleInputDialog.xml" />
+    <EmbeddedResource Include="Dialogs\Views\FileCopierErrorDialog.xml" />
+    <EmbeddedResource Include="Dialogs\Views\InputDialog.xml" />
+    <EmbeddedResource Include="Dialogs\Views\OperationErrorDialog.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dialogs\Views\TrackTagEditDialog.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dialogs\Views\BatchTagEditDialog.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\FarNetViewBuilder\FarNet.Tools.ViewBuilder\FarNet.Tools.ViewBuilder.csproj">
+      <Project>{3ABFA6A7-9274-4C56-A386-6F71FCF3B194}</Project>
+      <Name>FarNet.Tools.ViewBuilder</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+    <Exec Command="xcopy /Y Bin\$(Configuration)\*.* D:\win7stuff\tools\far2\FarNet\Modules\$(AssemblyName)\" />
+    <Exec Command="xcopy /Y Bin\$(Configuration)\Resources\*.* D:\win7stuff\tools\far2\FarNet\Modules\$(AssemblyName)\" />
+    <Exec Command="&quot;c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\ResGen.exe&quot; /compile D:\win7stuff\tools\far2\FarNet\Modules\$(AssemblyName)\FarPod.restext" />
+  </Target>
+</Project>
