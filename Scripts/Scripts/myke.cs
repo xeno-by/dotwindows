@@ -92,11 +92,7 @@ public class App {
 
         if (conn != null) {
           Config.conn = conn;
-
-          var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
-          if (!traceDir.Exists) traceDir.Create();
-          var fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + conn.name() + "-" + Config.action + ".log";
-          Config.env["traceFile"] = fileName;
+          Config.env["traceFile"] = Trace.primaryFileName(conn.name(), Config.action);
 
           var action = Config.action;
           if (Config.verbose) {
@@ -253,9 +249,9 @@ public static class Console {
       }
     }
 
-    if (Config.conn_action == null || Config.conn_action.canTrace()) {
-      if (!Config.env.ContainsKey("dontTrace")) File.AppendAllText(Config.env["traceFile"], msg);
-    }
+    var traceToPrimary = (Config.conn_action == null || Config.conn_action.canTrace()) && !Config.env.ContainsKey("dontTrace");
+    if (!traceToPrimary) Config.env["traceFile"] = Trace.auxiliaryFileName(Config.env["traceFile"]);
+    File.AppendAllText(Config.env["traceFile"], msg);
   }
 
   public static void trace(String format, params Object[] objs) {
@@ -1036,10 +1032,7 @@ public static class Config {
     Config.env = new Dictionary<String, String>();
     env["workingDir"] = Environment.CurrentDirectory;
 //    System.Console.WriteLine("initial: " + Config.env["workingDir"]);
-    var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
-    if (!traceDir.Exists) traceDir.Create();
-    var fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + "NA" + "-" + "NA" + ".log";
-    env["traceFile"] = fileName;
+    Config.env["traceFile"] = Trace.primaryFileName("NA", "NA");
 
     Func<ExitCode> extractSystemFlags = () => {
       var systemFlags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
@@ -1062,8 +1055,7 @@ public static class Config {
     if (action == null) { Help.printUsage(); return -1; }
     Config.action = action;
     env["action"] = action;
-    fileName = traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + "NA" + "-" + action + ".log";
-    env["traceFile"] = fileName;
+    Config.env["traceFile"] = Trace.primaryFileName("NA", Config.action);
 
     if (!extractSystemFlags()) return -1;
     var flags = args.TakeWhile(arg => arg.StartsWith("-")).ToList();
@@ -1103,6 +1095,34 @@ public static class Config {
 
   public static void print() {
     Console.println("config: dryrun = {0}, verbose = {1}, action = {2}, target = {3}, args = {4}", dryrun, verbose, action, target, String.Join(", ", args));
+  }
+}
+
+public static class Trace {
+  public static String primaryFileName(String conn_name, String action) {
+    var traceDir = new DirectoryInfo(@"%HOME%\.myke_important".Expand());
+    if (!traceDir.Exists) traceDir.Create();
+    return traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + conn_name + "-" + action + ".log";
+  }
+
+  public static String primaryFileName(String file_name) {
+    var traceDir = new DirectoryInfo(@"%HOME%\.myke_important".Expand());
+    if (!traceDir.Exists) traceDir.Create();
+    var liof = file_name.Replace("/", "\\").LastIndexOf("\\");
+    return traceDir + "\\" + file_name.Substring(liof);
+  }
+
+  public static String auxiliaryFileName(String conn_name, String action) {
+    var traceDir = new DirectoryInfo(@"%HOME%\.myke_all".Expand());
+    if (!traceDir.Exists) traceDir.Create();
+    return traceDir + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-" + conn_name + "-" + action + ".log";
+  }
+
+  public static String auxiliaryFileName(String file_name) {
+    var traceDir = new DirectoryInfo(@"%HOME%\.myke_all".Expand());
+    if (!traceDir.Exists) traceDir.Create();
+    var liof = file_name.Replace("/", "\\").LastIndexOf("\\");
+    return traceDir + "\\" + file_name.Substring(liof);
   }
 }
 
@@ -1613,10 +1633,9 @@ public abstract class Conn : Base {
     return Config.env;
   } }
 
-  [Action]
+  [Action, DontTrace]
   public ExitCode menu() {
     if (Config.rawTarget == "") {
-      Config.env["dontTrace"] = "1";
       var menuitems = this.menuitems();
       menuitems.ForEach(menuitem => println(menuitem));
       return menuitems.Count() == 0 ? -1 : 0;
@@ -1650,18 +1669,18 @@ public class Universal : Conn {
     return true;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode console() {
     return Console.interactive("mycmd.exe", home: dir);
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode prompt() {
     println(dir.ToString() + ">");
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode open() {
     return Console.ui(file != null ? file.FullName : dir.FullName);
   }
@@ -1682,7 +1701,7 @@ public abstract class Prj : Universal {
     return dir;
   } }
 
-//  [Action]
+//  [Action, DontTrace]
 //  public override ExitCode console() {
 //    return Console.interactive("mycmd.exe", home: root);
 //  }
@@ -1717,7 +1736,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode addFilesToTestSuite(Arguments arguments) {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1729,7 +1748,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode removeFilesFromTestSuite(Arguments arguments) {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1741,7 +1760,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode getTestSuite() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1757,7 +1776,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode setTestSuite(Arguments arguments) {
     var suite = arguments.Last();
     var dotProfile = new FileInfo(root + "\\.profile");
@@ -1765,7 +1784,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode listTestSuiteAllTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1778,7 +1797,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode listTestSuiteFailedTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -1791,7 +1810,7 @@ public abstract class Prj : Universal {
     return 0;
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode listTestSuiteSucceededTests() {
     var suite = getCurrentTestSuite();
     if (suite == null) { println("there is no test suite associated with this project"); return -1; }
@@ -2001,36 +2020,36 @@ public abstract class Git : Prj {
     return Console.ui(String.Format("tgit commit \"{0}\"", repo.GetRealPath().FullName));
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartLogall() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", repo.GetRealPath().FullName));
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartLogthis() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit log \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartBlame() {
     if (!verifyRepo()) return -1;
     return Console.ui(String.Format("tgit blame \"{0}\"", (file != null ? (FileSystemInfo)file : dir).GetRealPath().FullName));
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartLog() {
     return smartLogall();
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode push() {
     if (!verifyRepo()) return -1;
     return Console.interactive("git push " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action, MenuItem(description = "Push to origin", priority = 10000)]
+  [Action, DontTrace, MenuItem(description = "Push to origin", priority = 10000)]
   public virtual ExitCode smartPush() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
@@ -2038,7 +2057,7 @@ public abstract class Git : Prj {
     return Console.batch("git push origin +" + branch, home: repo.GetRealPath());
   }
 
-  [Action, MenuItem(hotkey = "z", description = "Submit pull request", priority = 190)]
+  [Action, DontTrace, MenuItem(hotkey = "z", description = "Submit pull request", priority = 190)]
   public virtual ExitCode smartPullRequest() {
     if (!verifyRepo()) return -1;
     var gitStatus = getCurrentStatus();
@@ -2054,7 +2073,7 @@ public abstract class Git : Prj {
     }
   }
 
-  [Action, MenuItem(hotkey = "a", description = "Show branch at GitHub", priority = 120)]
+  [Action, DontTrace, MenuItem(hotkey = "a", description = "Show branch at GitHub", priority = 120)]
   public virtual ExitCode smartShowBranchAtGithub() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
@@ -2064,7 +2083,7 @@ public abstract class Git : Prj {
     return Console.ui(url);
   }
 
-  [Action, MenuItem(hotkey = "q", description = "Show commit at GitHub", priority = 110)]
+  [Action, DontTrace, MenuItem(hotkey = "q", description = "Show commit at GitHub", priority = 110)]
   public virtual ExitCode smartShowCommitAtGithub() {
     if (!verifyRepo()) return -1;
     var commit = Config.sanitizedRawTarget;
@@ -2074,7 +2093,7 @@ public abstract class Git : Prj {
     return Console.ui(url);
   }
 
-  [Action, MenuItem(hotkey = "x", description = "Show file at GitHub (current revision)", priority = 90)]
+  [Action, DontTrace, MenuItem(hotkey = "x", description = "Show file at GitHub (current revision)", priority = 90)]
   public virtual ExitCode smartShowFileAtGithubRevisionAware() {
     if (!verifyRepo()) return -1;
     var file = Config.rawTarget;
@@ -2083,7 +2102,7 @@ public abstract class Git : Prj {
     return Console.ui(url);
   }
 
-  [Action, MenuItem(hotkey = "c", description = "Show file at GitHub (revision-agnostic)", priority = 80)]
+  [Action, DontTrace, MenuItem(hotkey = "c", description = "Show file at GitHub (revision-agnostic)", priority = 80)]
   public virtual ExitCode smartShowFileAtGithubRevisionAgnostic() {
     if (!verifyRepo()) return -1;
     var file = Config.rawTarget;
@@ -2092,13 +2111,13 @@ public abstract class Git : Prj {
     return Console.ui(url);
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode pull() {
     if (!verifyRepo()) return -1;
     return Console.batch("git pull", home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartPull() {
     if (!verifyRepo()) return -1;
     var remoteAndBranch = Config.rawCommandLine;
@@ -2113,7 +2132,7 @@ public abstract class Git : Prj {
     return Console.batch("git branch " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartBranchRename() {
     if (!verifyRepo()) return -1;
     if (Config.args.Count() < 1) return -1;
@@ -2122,7 +2141,7 @@ public abstract class Git : Prj {
     return Console.batch("git branch -m " + oldname + " " + newname, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartBranchLocalDelete() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
@@ -2131,7 +2150,7 @@ public abstract class Git : Prj {
     return result && Console.batch("git branch -D " + branch, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartBranchRemoteDelete() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
@@ -2147,59 +2166,59 @@ public abstract class Git : Prj {
     }
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode merge() {
     if (!verifyRepo()) return -1;
     return Console.batch("git merge " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartMerge() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
     return Console.batch("git merge " + branch, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode rebase() {
     if (!verifyRepo()) return -1;
     return Console.batch("git rebase " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartRebase() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
     return Console.batch("git rebase " + branch, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode cherryPick() {
     if (!verifyRepo()) return -1;
     return Console.batch("git cherry-pick " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartCherryPick() {
     if (!verifyRepo()) return -1;
     var commit = Config.sanitizedRawTarget;
     return Console.batch("git cherry-pick " + commit, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode checkout() {
     if (!verifyRepo()) return -1;
     return Console.batch("git checkout " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartBranchNewSelect() {
     if (!verifyRepo()) return -1;
     var result = Console.batch("git branch " + Config.args[0] + " " + Config.rawTarget, home: repo.GetRealPath());
     return result && Console.batch("git checkout " + Config.args[0]);
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartCheckout() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
@@ -2207,26 +2226,26 @@ public abstract class Git : Prj {
     else return Console.batch("git checkout " + branch, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode remote() {
     if (!verifyRepo()) return -1;
     return Console.batch("git remote " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode reset() {
     if (!verifyRepo()) return -1;
     return Console.batch("git reset " + Config.rawCommandLine, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartMixedReset() {
     if (!verifyRepo()) return -1;
     var commit = Config.sanitizedRawTarget;
     return Console.batch("git reset --mixed " + commit, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace]
   public virtual ExitCode smartHardReset() {
     if (!verifyRepo()) return -1;
     var commit = Config.sanitizedRawTarget;
@@ -2338,7 +2357,7 @@ public abstract class Git : Prj {
     return result.Substring(prefix.Length);
   }
 
-  [Action, Meaningful]
+  [Action, DontTrace, Meaningful]
   public virtual ExitCode smartCurrentBranch() {
     if (!verifyRepo()) return -1;
     var branch = getCurrentBranch();
@@ -2353,7 +2372,7 @@ public abstract class Git : Prj {
     return lines.ElementAtOrDefault(0);
   }
 
-  [Action, Meaningful]
+  [Action, DontTrace, Meaningful]
   public virtual ExitCode smartCurrentHead() {
     if (!verifyRepo()) return -1;
     var commit = getCurrentBranch();
@@ -2377,14 +2396,14 @@ public abstract class Git : Prj {
     return String.Join("\r\n", lines.ToArray());
   }
 
-  [Action, Meaningful]
+  [Action, DontTrace, Meaningful]
   public virtual ExitCode smartShowCommit() {
     if (!verifyRepo()) return -1;
     var commit = Config.sanitizedRawTarget;
     return Console.batch("git show " + commit, home: repo.GetRealPath());
   }
 
-  [Action, Meaningful]
+  [Action, DontTrace, Meaningful]
   public virtual ExitCode smartListCommits() {
     if (!verifyRepo()) return -1;
     var shortHash = getCurrentHead().Substring(0, 10);
@@ -2392,7 +2411,7 @@ public abstract class Git : Prj {
     return Console.batch("git log -g \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick --all | " + filter, home: repo.GetRealPath());
   }
 
-  [Action, Meaningful]
+  [Action, DontTrace, Meaningful]
   public virtual ExitCode smartListBranchCommits() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
@@ -2401,7 +2420,7 @@ public abstract class Git : Prj {
     return Console.batch("git log \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick " + branch + " | " + filter, home: repo.GetRealPath());
   }
 
-  [Action]
+  [Action, DontTrace, Meaningful]
   public virtual ExitCode smartListBranches() {
     if (!verifyRepo()) return -1;
     return Console.batch("git branch -a", home: repo.GetRealPath());

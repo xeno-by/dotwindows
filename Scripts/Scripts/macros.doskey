@@ -152,7 +152,15 @@ gra=myke remote add $*
 gru=myke remote update
 gcp=myke cherry-pick $*
 grh=myke reset --hard $*
+grh0=myke reset --hard HEAD
+grh1=myke reset --hard HEAD~1
+grh2=myke reset --hard HEAD~2
+grh3=myke reset --hard HEAD~3
 grm=myke reset --mixed $*
+grm0=myke reset --mixed HEAD
+grm1=myke reset --mixed HEAD~1
+grm2=myke reset --mixed HEAD~2
+grm3=myke reset --mixed HEAD~3
 gpr=myke smart-pull-request $*
 grb=myke rebase $*
 
