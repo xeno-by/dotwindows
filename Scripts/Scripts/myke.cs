@@ -242,7 +242,7 @@ public static class Console {
   public static void internalTrace(String msg) {
     if (firstTrace) {
       firstTrace = false;
-      traceln("myke {0} {1} {2}", Config.action, Config.originalTarget.ShellEscape(), Config.args);
+      traceln("myke {0} {1} {2}", Config.action, Config.originalTarget == null ? null : Config.originalTarget.ShellEscape(), Config.args);
       if (Config.conn is Git) {
         var git = Config.conn as Git;
         var backup = Config.env.ContainsKey("workingDir") ? Config.env["workingDir"] : null;
@@ -1034,7 +1034,7 @@ public static class Config {
     Config.env = new Dictionary<String, String>();
     env["workingDir"] = Environment.CurrentDirectory;
 //    System.Console.WriteLine("initial: " + Config.env["workingDir"]);
-    Config.env["traceFile"] = Trace.primaryFileName("NA", "NA");
+    Config.env["traceFile"] = Trace.auxiliaryFileName("NA", "NA");
 
     Func<ExitCode> extractSystemFlags = () => {
       var systemFlags = args.TakeWhile(arg => arg.StartsWith("/")).Select(flag => flag.ToUpper()).ToList();
@@ -1057,11 +1057,29 @@ public static class Config {
     if (action == null) { Help.printUsage(); return -1; }
     Config.action = action;
     env["action"] = action;
-    Config.env["traceFile"] = Trace.primaryFileName("NA", Config.action);
+    Config.env["traceFile"] = Trace.auxiliaryFileName("NA", Config.action);
 
     if (!extractSystemFlags()) return -1;
-    var flags = args.TakeWhile(arg => arg.StartsWith("-")).ToList();
-    args = args.SkipWhile(arg => arg.StartsWith("-")).ToArray();
+    // var flags = args.TakeWhile(arg => arg.StartsWith("-")).ToList();
+    // args = args.SkipWhile(arg => arg.StartsWith("-")).ToArray();
+    var flags = new List<String>();
+    var specialFlags = new []{"-cp", "-bootcp", "-toolcp", "-d"};
+    var i = 0;
+    while (i < args.Length) {
+      var arg = args[i];
+      if (arg.StartsWith("-")) {
+        flags.Add(arg);
+        i += 1;
+        if (specialFlags.Contains(arg) && i < args.Length) {
+          arg = args[i];
+          flags.Add(arg);
+          i += 1;
+        }
+      } else {
+        break;
+      }
+    }
+    args = args.Skip(i).ToArray();
 
     var rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
     // hack for fargit
@@ -1070,7 +1088,7 @@ public static class Config {
       rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
     }
     Config.rawTarget = rawTarget;
-    Config.rawCommandLine = rawTarget == "" ? "" : (String.Join(" ", flags.ToArray()) + " " + String.Join(" ", args.ToArray()));
+    Config.rawCommandLine = String.Join(" ", flags.ToArray()) + " " + String.Join(" ", args.ToArray());
 
     var target = args.Take(1).ElementAtOrDefault(0) ?? ".";
     args = args.Skip(1).ToArray();
@@ -1529,7 +1547,7 @@ public class Arguments : BaseList<String> {
   }
 
   public override String ToString() {
-    return String.Join(", ", arguments.Select(arg => arg.ShellEscape()));
+    return String.Join(" ", arguments.Select(arg => arg.ShellEscape()));
   }
 }
 
