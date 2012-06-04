@@ -527,7 +527,7 @@ public class Kep : Git {
 
   public List<String> getTestSuiteTestsInternal(String profile, String kind) {
     var result = new List<String>();
-    var traceDir = new DirectoryInfo(@"%HOME%\.myke".Expand());
+    var traceDir = new DirectoryInfo(@"%HOME%\.myke_important".Expand());
     if (traceDir.Exists) {
       var logs = traceDir.GetFiles("*.log").OrderByDescending(fi => fi.LastWriteTime).ToList();
       var tests = null as List<String>;

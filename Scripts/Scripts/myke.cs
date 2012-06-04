@@ -242,7 +242,7 @@ public static class Console {
   public static void internalTrace(String msg) {
     if (firstTrace) {
       firstTrace = false;
-      traceln("myke {0} {1} {2}", Config.action, Config.originalTarget, Config.args);
+      traceln("myke {0} {1} {2}", Config.action, Config.originalTarget.ShellEscape(), Config.args);
       if (Config.conn is Git) {
         var git = Config.conn as Git;
         var backup = Config.env.ContainsKey("workingDir") ? Config.env["workingDir"] : null;
