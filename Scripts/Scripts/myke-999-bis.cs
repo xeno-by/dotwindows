@@ -34,7 +34,7 @@ public class Bis : Git {
     return Console.ui("Far.exe", home: root + @"\Release.32.vc");
   }
 
-  [Action]
+  [Action, MenuItem(description = "Deploy to Program Files (x86)", priority = 999.2)]
   public virtual ExitCode deploy() {
     var status = println("Deploying Far Manager 2.1 bis...");
     status = status && transplantFile("Release.32.vc/Far.exe", "Far.exe");

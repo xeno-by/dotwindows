@@ -85,6 +85,18 @@ void History::AddToHistoryLocal(const wchar_t *Str, const wchar_t *Prefix, int T
 	if (!Str || !*Str)
 		return;
 
+	// xeno.by: I'd love to learn an idiomatic way to exclude stuff from command history
+	string WrappedStr(Str);
+	if (WrappedStr.Equal(0, "last")) return;
+	if (WrappedStr.Equal(0, "clip:")) return;
+	if (WrappedStr.Equal(0, "tmp:")) return;
+	if (WrappedStr.Equal(0, "myke clean")) return;
+	if (WrappedStr.Equal(0, "myke smart-")) return;
+	if (WrappedStr.Equal(0, "myke menu")) return;
+	if (WrappedStr.Equal(0, "myke make-test-suite")) return;
+	if (WrappedStr.Equal(0, "myke add-files-to-test-suite")) return;
+	if (WrappedStr.Equal(0, "myke remove-files-from-test-suite")) return;
+
 	HistoryRecord AddRecord;
 
 	if (TypeHistory == HISTORYTYPE_FOLDER && Prefix && *Prefix)
