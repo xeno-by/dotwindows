@@ -1,4 +1,4 @@
-// build this with "csc /r:Microsoft.VisualBasic.dll /r:ZetaLongPaths.dll /t:exe /out:myke.exe /debug+ myke*.cs"
+// build this with "csc /r:Microsoft.VisualBasic.dll /r:ZetaLongPaths.dll /r:LibGit2Sharp.dll /t:exe /out:myke.exe /debug+ myke*.cs"
 
 using System;
 using System.Collections;
@@ -18,6 +18,7 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
+using LibGit2Sharp;
 
 public class App {
   public static int Main(String[] args) {
@@ -105,6 +106,7 @@ public class App {
 
           var actions = conn.actions();
           if (!actions.ContainsKey(action)) {
+            Config.env["traceFile"] = Trace.auxiliaryFileName(conn.name(), Config.action);
             Console.println("error: {0} does not know how to do {1}", conn.name(), Config.action);
             return -1;
           }
@@ -2009,7 +2011,16 @@ public abstract class Git : Prj {
     }
   }
 
-  [Action]
+  private Repository _gitRepo;
+  public Repository gitRepo { get {
+    if (_gitRepo == null) {
+      _gitRepo = new Repository(repo.FullName);
+    }
+
+    return _gitRepo;
+  } }
+
+  [Action, DontTrace]
   public virtual ExitCode smartCommit() {
     if (dir.IsChildOrEquivalentTo("%SCRIPTS_HOME%".Expand())) {
       var status = Console.batch("save-settings.bat");
@@ -2350,11 +2361,7 @@ public abstract class Git : Prj {
   }
 
   public virtual String getCurrentBranch() {
-    var lines = Console.eval("git symbolic-ref HEAD", home: repo.GetRealPath());
-    if (lines == null) return null;
-    var prefix = "refs/heads/";
-    var result = lines.ElementAtOrDefault(0) ?? prefix;
-    return result.Substring(prefix.Length);
+    return gitRepo.Head.Name;
   }
 
   [Action, DontTrace, Meaningful]
@@ -2367,9 +2374,7 @@ public abstract class Git : Prj {
   }
 
   public virtual String getCurrentHead() {
-    var lines = Console.eval("git rev-parse HEAD", home: repo.GetRealPath());
-    if (lines == null) return null;
-    return lines.ElementAtOrDefault(0);
+    return gitRepo.Head.Tip.Sha;
   }
 
   [Action, DontTrace, Meaningful]
@@ -2382,12 +2387,7 @@ public abstract class Git : Prj {
   }
 
   public virtual String getCurrentCommit() {
-//    var file = Path.GetTempFileName();
-//    var lines = Console.eval("git log \"--pretty=format:%h %s (%cn, %ad)\" --max-count 1 > " + file, home: repo.GetRealPath());
-//    if (lines == null) return null;
-//    lines = File.ReadAllLines(file).ToList();
-//    return lines.ElementAtOrDefault(0);
-    return getCurrentHead();
+    return showCommit(gitRepo.Head.Tip, absoluteTime: true);
   }
 
   public virtual String getCurrentStatus() {
@@ -2406,23 +2406,66 @@ public abstract class Git : Prj {
   [Action, DontTrace, Meaningful]
   public virtual ExitCode smartListCommits() {
     if (!verifyRepo()) return -1;
-    var shortHash = getCurrentHead().Substring(0, 10);
-    var filter = "sed -r 's/^" + shortHash + " (.*^)/* " + shortHash + " \\1/'";
-    return Console.batch("git log -g \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick --all | " + filter, home: repo.GetRealPath());
+    gitRepo.Commits.Take(50).ToList().ForEach(commit => {
+      if (commit.Sha == gitRepo.Head.Tip.Sha) print("* ");
+      println(showCommit(commit, absoluteTime: false));
+    });
+    return 0;
   }
 
   [Action, DontTrace, Meaningful]
   public virtual ExitCode smartListBranchCommits() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
-    var shortHash = getCurrentHead().Substring(0, 10);
-    var filter = "sed -r 's/^" + shortHash + " (.*^)/* " + shortHash + " \\1/'";
-    return Console.batch("git log \"--pretty=format:%h %s (%cn, %ad)\" --max-count 50 --cherry-pick " + branch + " | " + filter, home: repo.GetRealPath());
+    gitRepo.Branches[branch].Commits.Take(50).ToList().ForEach(commit => {
+      if (commit.Sha == gitRepo.Head.Tip.Sha) print("* ");
+      println(showCommit(commit, absoluteTime: false));
+    });
+    return 0;
   }
 
   [Action, DontTrace, Meaningful]
   public virtual ExitCode smartListBranches() {
     if (!verifyRepo()) return -1;
     return Console.batch("git branch -a", home: repo.GetRealPath());
+  }
+
+  private String showCommit(Commit commit, Boolean absoluteTime = true) {
+    String s_authortime = null;
+    if (absoluteTime) s_authortime = commit.Author.When.ToString();
+    else {
+      Func<DateTime, String> showRelativeTime = (DateTime dt) => {
+        // That's why I love StackOverflow so much
+        // http://stackoverflow.com/questions/11/calculating-relative-time
+
+        const int SECOND = 1;
+        const int MINUTE = 60 * SECOND;
+        const int HOUR = 60 * MINUTE;
+        const int DAY = 24 * HOUR;
+        const int MONTH = 30 * DAY;
+
+        var ts = new TimeSpan(DateTime.UtcNow.Ticks - dt.Ticks);
+        double delta = Math.Abs(ts.TotalSeconds);
+
+        if (delta < 0) return "not yet";
+        if (delta < 1 * MINUTE) return ts.Seconds == 1 ? "one second ago" : ts.Seconds + " seconds ago";
+        if (delta < 2 * MINUTE) return "a minute ago";
+        if (delta < 45 * MINUTE) return ts.Minutes + " minutes ago";
+        if (delta < 90 * MINUTE) return "an hour ago";
+        if (delta < 24 * HOUR) return ts.Hours + " hours ago";
+        if (delta < 48 * HOUR) return "yesterday";
+        if (delta < 30 * DAY) return ts.Days + " days ago";
+        if (delta < 12 * MONTH) {
+          int months = Convert.ToInt32(Math.Floor((double)ts.Days / 30));
+          return months <= 1 ? "one month ago" : months + " months ago";
+        } else {
+          int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
+          return years <= 1 ? "one year ago" : years + " years ago";
+        }
+      };
+
+      s_authortime = showRelativeTime(commit.Author.When.UtcDateTime);
+    }
+    return String.Format("{0} {1} ({2}, {3})", commit.Sha.Substring(0, 10), commit.MessageShort, commit.Committer.Name, s_authortime);
   }
 }
