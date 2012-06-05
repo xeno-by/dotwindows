@@ -88,6 +88,7 @@ void History::AddToHistoryLocal(const wchar_t *Str, const wchar_t *Prefix, int T
 	// xeno.by: I'd love to learn an idiomatic way to exclude stuff from command history
 	string WrappedStr(Str);
 	if (WrappedStr.Equal(0, "last")) return;
+	if (WrappedStr.Equal(0, "edit:")) return;
 	if (WrappedStr.Equal(0, "clip:")) return;
 	if (WrappedStr.Equal(0, "tmp:")) return;
 	if (WrappedStr.Equal(0, "myke clean")) return;

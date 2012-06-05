@@ -2417,7 +2417,10 @@ public abstract class Git : Prj {
   public virtual ExitCode smartShowCommit() {
     if (!verifyRepo()) return -1;
     var commit = Config.sanitizedRawTarget;
-    return Console.batch("git show " + commit, home: repo.GetRealPath());
+    var gitCommit = gitRepo.Lookup<Commit>(commit);
+    var gitParentCommit = gitCommit.Parents.First();
+    var diff = gitRepo.Diff.Compare(gitParentCommit.Tree, gitCommit.Tree);
+    return 0;
   }
 
   [Action, DontTrace, Meaningful]

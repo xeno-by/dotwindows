@@ -1,4 +1,4 @@
-// build this with "csc mykill.cs"
+\// build this with "csc mykill.cs"
 
 using System;
 using System.ComponentModel;
