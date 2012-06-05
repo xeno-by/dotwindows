@@ -2512,6 +2512,7 @@ public abstract class Git : Prj {
   public virtual ExitCode smartListBranchCommits() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
+    if (branch.Trim() == "") branch = getCurrentBranch();
     if (branch.StartsWith("remotes/")) branch = "refs/" + branch;
     gitRepo.Branches[branch].Commits.Take(50).ToList().ForEach(commit => {
       if (commit.Sha == gitRepo.Head.Tip.Sha) print("* ");
