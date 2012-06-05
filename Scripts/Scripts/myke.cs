@@ -2445,6 +2445,12 @@ public abstract class Git : Prj {
   }
 
   [Action, DontTrace, Meaningful]
+  public virtual ExitCode smartShowCommitFilesystem() {
+    // todo. implement virtual filesystem!
+    return smartShowCommitStructure();
+  }
+
+  [Action, DontTrace, Meaningful]
   public virtual ExitCode smartListCommits() {
     if (!verifyRepo()) return -1;
     gitRepo.Commits.Take(50).ToList().ForEach(commit => {
