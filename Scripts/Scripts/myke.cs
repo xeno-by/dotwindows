@@ -2440,15 +2440,35 @@ public abstract class Git : Prj {
   [Action, DontTrace, Meaningful]
   public virtual ExitCode smartShowCommitStructureEntryPatch() {
     if (!verifyRepo()) return -1;
-    println("not yet implemented");
+    var raw = Config.rawCommandLine.Trim();
+    var commit = raw.Substring(0, raw.IndexOf(" "));
+    var entry = raw.Substring(raw.IndexOf(" ") + 1);
+    var gitCommit = gitRepo.Lookup<Commit>(commit);
+    var gitParentCommit = gitCommit.Parents.First();
+    var diff = gitRepo.Diff.Compare(gitParentCommit.Tree, gitCommit.Tree);
+    var changes = diff[entry];
+    println(changes.Patch);
     return 0;
   }
 
   [Action, DontTrace, Meaningful]
   public virtual ExitCode smartShowCommitStructureEntryMerge() {
     if (!verifyRepo()) return -1;
-    println("not yet implemented");
-    return 0;
+    var raw = Config.rawCommandLine.Trim();
+    var commit = raw.Substring(0, raw.IndexOf(" "));
+    var entry = raw.Substring(raw.IndexOf(" ") + 1);
+    var after = gitRepo.Lookup<Commit>(commit).Tree[entry];
+    var before = gitRepo.Lookup<Commit>(commit).Parents.First().Tree[entry];
+    if (before == null) return -1;
+    entry = entry.Replace("/", "\\");
+    var shortName = entry.LastIndexOf("\\") == -1 ? entry : entry.Substring(entry.LastIndexOf("\\") + 1);
+    var afterContent = Encoding.UTF8.GetString(gitRepo.Lookup<Blob>(after.Target.Sha).Content);
+    var afterTempName = Path.GetTempPath() + shortName + "-child-" + gitRepo.Lookup<Commit>(commit).Sha.Substring(0, 10);
+    File.WriteAllText(afterTempName, afterContent);
+    var beforeContent = Encoding.UTF8.GetString(gitRepo.Lookup<Blob>(before.Target.Sha).Content);
+    var beforeTempName = Path.GetTempPath() + shortName + "-parent-" + gitRepo.Lookup<Commit>(commit).Parents.First().Sha.Substring(0, 10);
+    File.WriteAllText(beforeTempName, beforeContent);
+    return Console.ui("mydiff " + beforeTempName + " " + afterTempName);
   }
 
   [Action, DontTrace, Meaningful]
