@@ -2438,7 +2438,14 @@ public abstract class Git : Prj {
   }
 
   [Action, DontTrace, Meaningful]
-  public virtual ExitCode smartShowCommitStructureEntryDiff() {
+  public virtual ExitCode smartShowCommitStructureEntryPatch() {
+    if (!verifyRepo()) return -1;
+    println("not yet implemented");
+    return 0;
+  }
+
+  [Action, DontTrace, Meaningful]
+  public virtual ExitCode smartShowCommitStructureEntryMerge() {
     if (!verifyRepo()) return -1;
     println("not yet implemented");
     return 0;
