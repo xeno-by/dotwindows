@@ -1082,16 +1082,15 @@ public static class Config {
     args = args.Skip(i).ToArray();
 
     var rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
-    // hack for fargit
-    if (rawTarget == "*") {
-      args = args.Skip(1).ToArray();
-      rawTarget = args.Take(1).ElementAtOrDefault(0) ?? "";
-    }
     Config.rawTarget = rawTarget;
     Config.rawCommandLine = String.Join(" ", flags.ToArray()) + " " + String.Join(" ", args.ToArray());
 
     var target = args.Take(1).ElementAtOrDefault(0) ?? ".";
-    args = args.Skip(1).ToArray();
+    if (target.Contains("*") || target.Contains("?")) {
+      target = ".";
+    } else {
+      args = args.Skip(1).ToArray();
+    }
     if (target == null || target == "/?" || target == "-help" || target == "--help") { Help.printUsage(action); return -1; }
     env["target"] = target;
 
@@ -2435,6 +2434,7 @@ public abstract class Git : Prj {
   public virtual ExitCode smartListBranchCommits() {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
+    if (branch.StartsWith("remotes/")) branch = "refs/" + branch;
     gitRepo.Branches[branch].Commits.Take(50).ToList().ForEach(commit => {
       if (commit.Sha == gitRepo.Head.Tip.Sha) print("* ");
       println(showCommit(commit, absoluteTime: false));
