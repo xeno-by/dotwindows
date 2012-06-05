@@ -2472,6 +2472,27 @@ public abstract class Git : Prj {
   }
 
   [Action, DontTrace, Meaningful]
+  public virtual ExitCode smartShowCommitStructureEntryCopy() {
+    if (!verifyRepo()) return -1;
+    var raw = Config.rawCommandLine.Trim();
+    var commit = raw.Substring(0, raw.IndexOf(" "));
+    var entry = raw.Substring(raw.IndexOf(" ") + 1);
+    var target = entry.Substring(entry.IndexOf(" ") + 1);
+    target = target.Replace("/", "\\");
+    entry = entry.Substring(0, entry.IndexOf(" "));
+    entry = entry.Replace("/", "\\");
+    if (target.EndsWith(":")) target += "\\";
+    if (target.EndsWith("\\")) {
+      var shortName = entry.LastIndexOf("\\") == -1 ? entry : entry.Substring(entry.LastIndexOf("\\") + 1);
+      target += shortName;
+    }
+    var after = gitRepo.Lookup<Commit>(commit).Tree[entry];
+    var afterContent = Encoding.UTF8.GetString(gitRepo.Lookup<Blob>(after.Target.Sha).Content);
+    File.WriteAllText(target, afterContent);
+    return 0;
+  }
+
+  [Action, DontTrace, Meaningful]
   public virtual ExitCode smartShowCommitFilesystem() {
     // todo. implement virtual filesystem!
     return smartShowCommitStructure();
