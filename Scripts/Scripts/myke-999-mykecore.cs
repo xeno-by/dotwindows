@@ -53,7 +53,8 @@ public class MykeCore : Csc {
 
   [Action, Meaningful]
   public override ExitCode run(Arguments arguments) {
-    return runWithCompile(arguments);
+    return Console.batch("myke smart-show-commit-structure 0c7d5eb864", home: "c:/Projects/KeplerUnderRefactoring");
+    // return runWithCompile(arguments);
   }
 
   [Action]

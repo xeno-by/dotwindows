@@ -32,6 +32,11 @@ public class LibGit2SharpProject : Git {
   }
 
   [Action]
+  public virtual ExitCode run() {
+    return Console.batch("myke smart-show-commit 0c7d5eb864", home: "c:/Projects/KeplerUnderRefactoring");
+  }
+
+  [Action]
   public override ExitCode runTest() {
     return Console.batch("msbuild CI-build.msbuild /target:Test", home: root);
   }
@@ -43,6 +48,8 @@ public class LibGit2SharpProject : Git {
       rem Wait for self to exit
       sleep 100
 
+      copy ""{0}\LibGit2Sharp\bin\Debug\NativeBinaries\amd64\git2.dll"" ""%SCRIPTS_HOME%\git2.dll""
+      copy ""{0}\LibGit2Sharp\bin\Debug\NativeBinaries\amd64\git2.pdb"" ""%SCRIPTS_HOME%\git2.pdb""
       copy ""{0}\LibGit2Sharp\bin\Debug\LibGit2Sharp.dll"" ""%SCRIPTS_HOME%\LibGit2Sharp.dll""
       copy ""{0}\LibGit2Sharp\bin\Debug\LibGit2Sharp.pdb"" ""%SCRIPTS_HOME%\LibGit2Sharp.pdb""
       set status=%errorlevel%
@@ -76,6 +83,8 @@ public class LibGit2SharpProject : Git {
       rem Wait for self to exit
       sleep 100
 
+      copy ""{0}\Build\NativeBinaries\amd64\git2.dll"" ""%SCRIPTS_HOME%\git2.dll""
+      copy ""{0}\Build\NativeBinaries\amd64\git2.pdb"" ""%SCRIPTS_HOME%\git2.pdb""
       copy ""{0}\Build\LibGit2Sharp.dll"" ""%SCRIPTS_HOME%\LibGit2Sharp.dll""
       copy ""{0}\Build\LibGit2Sharp.pdb"" ""%SCRIPTS_HOME%\LibGit2Sharp.pdb""
       set status=%errorlevel%

@@ -2420,6 +2420,27 @@ public abstract class Git : Prj {
     var gitCommit = gitRepo.Lookup<Commit>(commit);
     var gitParentCommit = gitCommit.Parents.First();
     var diff = gitRepo.Diff.Compare(gitParentCommit.Tree, gitCommit.Tree);
+    println(diff.Patch);
+    return 0;
+  }
+
+  [Action, DontTrace, Meaningful]
+  public virtual ExitCode smartShowCommitStructure() {
+    if (!verifyRepo()) return -1;
+    var commit = Config.sanitizedRawTarget;
+    var gitCommit = gitRepo.Lookup<Commit>(commit);
+    var gitParentCommit = gitCommit.Parents.First();
+    var diff = gitRepo.Diff.Compare(gitParentCommit.Tree, gitCommit.Tree);
+    diff.OrderBy(cs => cs.Path).ToList().ForEach(cs => {
+      println("{0} {1}", cs.Status.ToString()[0], cs.Path);
+    });
+    return 0;
+  }
+
+  [Action, DontTrace, Meaningful]
+  public virtual ExitCode smartShowCommitStructureEntryDiff() {
+    if (!verifyRepo()) return -1;
+    println("not yet implemented");
     return 0;
   }
 
