@@ -1,2 +1,2 @@
--Dscala.usejavacp=true
--deprecation -unchecked -Xexperimental -language:experimental.macros -Yreify-debug -Yreify-copypaste -Ymacro-debug-verbose -Xlog-implicits -Yshow-trees-compact -Yshow-trees-stringified -g:vars
+-Dscala.usejavacp=true -Dscala.repl.vids=1 -Dscala.repl.autoruncode=%HOME%/.scala_autorun -Dscala.repl.maxprintstring=0
+-language:experimental.macros

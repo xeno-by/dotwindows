@@ -20,3 +20,25 @@ public class Kur : Kep {
   public Kur(FileInfo file, Arguments arguments) : base(file, arguments) {}
   public Kur(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
 }
+
+[Connector(name = "kurs", priority = 999, description =
+  "Wraps the development workflow of the Kepler under refactoring.")]
+
+public class Kurs : Kep {
+  public override String project { get { return @"%PROJECTS%\KeplerUnderRefactoring_Stable".Expand(); } }
+
+  public Kurs() : base() {}
+  public Kurs(FileInfo file, Arguments arguments) : base(file, arguments) {}
+  public Kurs(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
+}
+
+[Connector(name = "kurn", priority = 999, description =
+  "Wraps the development workflow of the Kepler under refactoring.")]
+
+public class Kurn : Kep {
+  public override String project { get { return @"%PROJECTS%\KeplerUnderRefactoring_ForTodayNightly".Expand(); } }
+
+  public Kurn() : base() {}
+  public Kurn(FileInfo file, Arguments arguments) : base(file, arguments) {}
+  public Kurn(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}
+}

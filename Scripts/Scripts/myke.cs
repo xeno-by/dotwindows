@@ -2030,6 +2030,9 @@ public abstract class Git : Prj {
 
   private Repository _gitRepo;
   public Repository gitRepo { get {
+    if (repo == null)
+      return null;
+
     if (_gitRepo == null) {
       _gitRepo = new Repository(repo.FullName);
     }
@@ -2378,6 +2381,7 @@ public abstract class Git : Prj {
   }
 
   public virtual String getCurrentBranch() {
+    if (gitRepo == null) return null;
     return gitRepo.Head.Name;
   }
 
@@ -2391,6 +2395,7 @@ public abstract class Git : Prj {
   }
 
   public virtual String getCurrentHead() {
+    if (gitRepo == null) return null;
     return gitRepo.Head.Tip.Sha;
   }
 
@@ -2404,6 +2409,7 @@ public abstract class Git : Prj {
   }
 
   public virtual String getCurrentCommit() {
+    if (gitRepo == null) return null;
     return showCommit(gitRepo.Head.Tip, absoluteTime: true);
   }
 

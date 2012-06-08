@@ -16,10 +16,11 @@ using Microsoft.Win32.SafeHandles;
 
 public class Scala : Git {
   public static String[] profile { get { return File.ReadAllLines("%SCRIPTS_HOME%/scalac.profile".Expand()); } }
-  public static String staticJavaopts { get { return profile.ElementAtOrDefault(0) ?? ""; } }
-  public static String staticScalaopts { get { return profile.ElementAtOrDefault(1) ?? ""; } }
+  public static String staticJavaopts { get { return (profile.ElementAtOrDefault(0) ?? "").Expand(); } }
+  public static String staticScalaopts { get { return (profile.ElementAtOrDefault(1) ?? "").Expand(); } }
 
-  public String defaultJavaopts { get { return staticJavaopts + (dir.IsChildOrEquivalentTo("%PROJECTS%\\KeplerUnderRefactoring".Expand()) ? " -Dscala.repl.vids=1 -Dscala.repl.autoruncode=%HOME%/.scala_autorun -Dscala.repl.maxprintstring=0" : "");; } }
+  // public String defaultJavaopts { get { return staticJavaopts + (dir.IsChildOrEquivalentTo("%PROJECTS%\\KeplerUnderRefactoring".Expand()) ? " -Dscala.repl.vids=1 -Dscala.repl.autoruncode=%HOME%/.scala_autorun -Dscala.repl.maxprintstring=0" : "");; } }
+  public String defaultJavaopts { get { return staticJavaopts; } }
   public String defaultScalaopts { get { return staticScalaopts; } }
 
   public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }

@@ -452,7 +452,7 @@ public class Kep : Git {
   [Action]
   public override ExitCode open() {
     if (inTest) { Config.action = "run-test"; return runTest(); }
-    else if (inPlayground) { Config.action = "run"; return run(); }
+    else if (inPlayground && file.Extension != ".class" && file.Extension != ".jar" && file.Extension != ".log") { Config.action = "run"; return run(); }
     else return base.open();
   }
 
@@ -479,7 +479,7 @@ public class Kep : Git {
     } else if (profile == "reify") {
       filter = (fullName, shortName, text0) => {
         var text = text0();
-        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("Manifest") || text.Contains("ClassTag") || text.Contains("TypeTag") || text.Contains("ConcreteTypeTag");
+        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("Manifest") || text.Contains("ClassTag") || text.Contains("AbsTypeTag") || text.Contains("TypeTag");
         var neg = shortName.StartsWith("test\\files\\run\\macro-def-path-dependent");
         return pos && !neg;
       };
@@ -551,7 +551,7 @@ public class Kep : Git {
           var rxFailed = @"(testing: \[\.\.\.\](?<filename>.*?)\s*\[FAILED\]$)|(Possible compiler crash during test of: (?<filename>.*?)$)";
           var rx = kind == "failed" ? rxFailed : rxSucceeded;
           var m = Regex.Match(line, rx);
-          return m.Success ? m.Result("${filename}") : null;
+          return m.Success ? m.Result("${filename}").Replace("/", "\\") : null;
         }).Where(fragment => fragment != null).Distinct().ToList();
         fragments.ForEach(fragment => {
           var neg = fragment.Contains("\\scalap\\");
