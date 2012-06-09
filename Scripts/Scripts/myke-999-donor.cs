@@ -14,10 +14,9 @@ using ZetaLongPaths;
 [Connector(name = "donor", priority = 999, description =
   "Wraps the development workflow of scalatest donor for Kepler")]
 public class Donor : Kep {
-  public bool kur { get { return dir.IsChildOrEquivalentTo(@"%PROJECTS%\DonorUnderRefactoring".Expand()); } }
-  public String donneeName() { return kur ? "Kur" : "Kepler"; }
-  public Prj donnee() { return kur ? new Kur() : new Kep(); }
-  public override String project { get { return kur ? @"%PROJECTS%\DonorUnderRefactoring".Expand() : @"%PROJECTS%\Donor".Expand(); } }
+  public String donneeName() { return "Kepler"; }
+  public Prj donnee() { return new Kep(); }
+  public override String project { get { return @"%PROJECTS%\Donor".Expand(); } }
 
   public override String profile { get { return profileAlt; } }
   public override String profileClean { get { return profileAltClean; } }

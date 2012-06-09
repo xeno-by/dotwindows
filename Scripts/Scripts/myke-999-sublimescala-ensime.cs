@@ -10,20 +10,20 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-[Connector(name = "Ensime", priority = 999, description =
-  "Wraps the development workflow of project Ensime.")]
+[Connector(name = "sublimescala-ensime", priority = 999, description =
+  "Wraps the development workflow of the Ensime subproject of the SublimeScala project.")]
 
-public class Ensime : Git {
-  public override String project { get { return @"%PROJECTS%\Ensime".Expand(); } }
+public class SublimeScalaEnsime : Git {
+  public override String project { get { return @"%PROJECTS%\SublimeScala\Ensime".Expand(); } }
 
   public override bool accept() {
     if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
     return dir.IsChildOrEquivalentTo(project);
   }
 
-  public Ensime() : base() { init(); }
-  public Ensime(FileInfo file) : base(file) { init(); }
-  public Ensime(DirectoryInfo dir) : base(dir) { init(); }
+  public SublimeScalaEnsime() : base() { init(); }
+  public SublimeScalaEnsime(FileInfo file) : base(file) { init(); }
+  public SublimeScalaEnsime(DirectoryInfo dir) : base(dir) { init(); }
   private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   [Action]

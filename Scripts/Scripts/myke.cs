@@ -827,22 +827,22 @@ public static class FileSystem {
 
   public static bool IsParentOf(this FileSystemInfo fsi1, FileSystemInfo fsi2) {
     if (fsi1 == null || fsi2 == null) return false;
-    return fsi2.GetRealPath().FullName.ToUpper().StartsWith(fsi1.GetRealPath().FullName.ToUpper());
+    return fsi2.GetRealPath().FullName.ToUpper().Replace("/", "\\").StartsWith(fsi1.GetRealPath().FullName.ToUpper().Replace("/", "\\") + "\\");
   }
 
   public static bool IsParentOf(this FileSystemInfo fsi1, String fsi2) {
     if (fsi1 == null || fsi2 == null) return false;
-    return fsi2.GetRealPath().ToUpper().StartsWith(fsi1.GetRealPath().FullName.ToUpper());
+    return fsi2.GetRealPath().ToUpper().Replace("/", "\\").StartsWith(fsi1.GetRealPath().FullName.ToUpper().Replace("/", "\\") + "\\");
   }
 
   public static bool IsParentOf(this String fsi1, FileSystemInfo fsi2) {
     if (fsi1 == null || fsi2 == null) return false;
-    return fsi2.GetRealPath().FullName.ToUpper().StartsWith(fsi1.GetRealPath().ToUpper());
+    return fsi2.GetRealPath().FullName.ToUpper().Replace("/", "\\").StartsWith(fsi1.GetRealPath().ToUpper().Replace("/", "\\") + "\\");
   }
 
   public static bool IsParentOf(this String fsi1, String fsi2) {
     if (fsi1 == null || fsi2 == null) return false;
-    return fsi2.GetRealPath().ToUpper().StartsWith(fsi1.GetRealPath().ToUpper());
+    return fsi2.GetRealPath().ToUpper().Replace("/", "\\").StartsWith(fsi1.GetRealPath().ToUpper().Replace("/", "\\") + "\\");
   }
 
   public static bool IsParentOrEquivalentTo(this FileSystemInfo fsi1, FileSystemInfo fsi2) {

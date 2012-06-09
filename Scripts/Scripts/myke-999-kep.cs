@@ -650,23 +650,6 @@ public class Kep : Git {
     }
   }
 
-  private ExitCode transplantFileToKur(String from, String to) {
-    from = project + "\\" + from.Replace("/", "\\");
-    to = new Kur().project + "\\" + to.Replace("/", "\\");
-    print("  * Copying {0} to {1}... ", from, to);
-
-    try {
-      ExitCode status = -1;
-      if (File.Exists(from)) status = CopyFile(from, to);
-      if (status) println("[  OK  ]");
-      return status;
-    } catch (Exception ex) {
-      println("[FAILED]");
-      println(ex);
-      return -1;
-    }
-  }
-
   private static ExitCode CopyFile(string sourceFile, string destFile) {
     try {
       File.Copy(sourceFile, destFile, true);
@@ -718,23 +701,6 @@ public class Kep : Git {
       status = status && transplantFile(source + "lib/scala-reflect.jar", "lib/scala-reflect.jar");
     }
     status = status && transplantFile(source + "lib/scala-compiler.jar", "lib/scala-compiler.jar");
-    return status;
-  }
-
-  [Action, MenuItem(description = "Deploy to Kur", priority = 999.3)]
-  public virtual ExitCode deployStarrToKur() {
-    var status1 = Console.batch("git add \"*\"", home: root);
-    status1 = status1 && Console.batch("git commit -m wip", home: root);
-    status1 = status1 && Console.batch("git push", home: root);
-//    status1 = status1 && Console.batch("git pull origin topic/typetags/v2", home: new Kep().root);
-    var status = println();
-    status = status && println("Transplanting starr to Kepler...");
-    status = status && runAnt("locker.unlock palo.done");
-    status = status && transplantFileToKur("build/palo/lib/scala-library.jar", "lib/scala-library.jar");
-    if (File.Exists(project + "/" + "build/palo/lib/scala-reflect.jar")) {
-      status = status && transplantFileToKur("build/palo/lib/scala-reflect.jar", "lib/scala-reflect.jar");
-    }
-    status = status && transplantFileToKur("build/palo/lib/scala-compiler.jar", "lib/scala-compiler.jar");
     return status;
   }
 }
