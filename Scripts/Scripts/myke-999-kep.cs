@@ -17,6 +17,8 @@ using ZetaLongPaths;
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
+  protected override String transplantTo { get { return project; } }
+
   public virtual String profile { get { return "locker.unlock locker.done"; } }
   public virtual String profileAlt { get { return "build"; } }
   public virtual String profileClean { get { return "locker.clean"; } }
@@ -631,45 +633,6 @@ public class Kep : Git {
     var url = getJenkinsUrl(remote);
     if (url == null) return null;
     else return url + "&branch=" + branch;
-  }
-
-  private ExitCode transplantFile(String from, String to) {
-    from = project + "\\" + from.Replace("/", "\\");
-    to = project + "\\" + to.Replace("/", "\\");
-    print("  * Copying {0} to {1}... ", from, to);
-
-    try {
-      ExitCode status = -1;
-      if (File.Exists(from)) status = CopyFile(from, to);
-      if (status) println("[  OK  ]");
-      return status;
-    } catch (Exception ex) {
-      println("[FAILED]");
-      println(ex);
-      return -1;
-    }
-  }
-
-  private static ExitCode CopyFile(string sourceFile, string destFile) {
-    try {
-      File.Copy(sourceFile, destFile, true);
-      return 0;
-    } catch (Exception ex) {
-      println("[FAILED]");
-      println(ex);
-      return -1;
-    }
-  }
-
-  [Action]
-  public virtual ExitCode deployMaven() {
-    var result = new Donor().compile();
-    result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-library.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-library\2.10.0-SNAPSHOT\scala-library-2.10.0-20120417.011253-317.jar");
-    if (File.Exists(@"C:\Projects\Kepler\build\locker\lib\scala-reflect.jar")) {
-      result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-reflect.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-library\2.10.0-SNAPSHOT\scala-reflect-2.10.0-20120417.011253-000.jar");
-    }
-    result = result && CopyFile(@"C:\Projects\Kepler\build\locker\lib\scala-compiler.jar", @"C:\Users\xeno.by\.m2\repository\org\scala-lang\scala-compiler\2.10.0-SNAPSHOT\scala-compiler-2.10.0-20120417.011253-314.jar");
-    return result;
   }
 
   [Action, MenuItem(description = "Deploy to Kep", priority = 999.2)]

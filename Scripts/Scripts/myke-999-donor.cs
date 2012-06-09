@@ -17,6 +17,7 @@ public class Donor : Kep {
   public String donneeName() { return "Kepler"; }
   public Prj donnee() { return new Kep(); }
   public override String project { get { return @"%PROJECTS%\Donor".Expand(); } }
+  protected override String transplantTo { get { return donnee().project; } }
 
   public override String profile { get { return profileAlt; } }
   public override String profileClean { get { return profileAltClean; } }
@@ -85,93 +86,6 @@ public class Donor : Kep {
       }
 
       return status;
-    }
-  }
-
-  public ExitCode transplantFile(String from, String to) {
-    from = project + "\\" + from.Replace("/", "\\");
-    // var to5 = new Kep5().project + "\\" + to.Replace("/", "\\");
-    to = donnee().project + "\\" + to.Replace("/", "\\");
-    print("  * Copying {0} to {1}... ", from, to);
-
-    try {
-      ExitCode status = -1;
-      // if (File.Exists(from)) status = CopyFile(from, to) && CopyFile(from, to5);
-      if (File.Exists(from)) status = CopyFile(from, to);
-      if (status) println("[  OK  ]");
-      return status;
-    } catch (Exception ex) {
-      println("[FAILED]");
-      println(ex);
-      return -1;
-    }
-  }
-
-  public static ExitCode CopyFile(string sourceFile, string destFile) {
-    try {
-      File.Copy(sourceFile, destFile, true);
-      return 0;
-    } catch (Exception ex) {
-      println("[FAILED]");
-      println(ex);
-      return -1;
-    }
-  }
-
-  public ExitCode transplantDir(String from, String to) {
-    from = project + "\\" + from.Replace("/", "\\");
-    // var to5 = new Kep5().project + "\\" + to.Replace("/", "\\");
-    to = donnee().project + "\\" + to.Replace("/", "\\");
-    print("  * Copying {0} to {1}... ", from, to);
-
-    try {
-      ExitCode status = -1;
-      // status = CopyDirectory(from, to) && CopyDirectory(from, to5);
-      status = CopyDirectory(from, to);
-      if (status) println("[  OK  ]");
-      return status;
-    } catch (Exception ex) {
-      println("[FAILED]");
-      println(ex);
-      return -1;
-    }
-  }
-
-  public static ExitCode CopyDirectory(string sourceFolder, string destFolder) {
-    try {
-      int iof = -1;
-      while ((iof = sourceFolder.IndexOf(".jar")) != -1) {
-        var archive = sourceFolder.Substring(0, iof + 4);
-        var insideArchive = sourceFolder.Substring(iof + 4);
-        var temp = Path.GetTempFileName() + ".unpack";
-        var status = Console.batch(String.Format("unzip -qq \"{0}\" -d \"{1}\"", archive, temp));
-        if (!status) { println("[FAILED]"); return status; }
-        sourceFolder = temp + "\\" + insideArchive;
-      }
-
-      if (ZlpIOHelper.DirectoryExists(destFolder)) ZlpIOHelper.DeleteDirectory(destFolder, true);
-      if (!ZlpIOHelper.DirectoryExists(destFolder)) ZlpIOHelper.CreateDirectory(destFolder);
-
-      var files = new ZlpDirectoryInfo(sourceFolder).GetFiles();
-      foreach (var file in files) {
-        var name = ZlpPathHelper.GetFileNameFromFilePath(file.FullName);
-        var dest = ZlpPathHelper.Combine(destFolder, name);
-        file.CopyTo(dest, true);
-      }
-
-      var folders = new ZlpDirectoryInfo(sourceFolder).GetDirectories();
-      foreach (var folder in folders) {
-        var name = ZlpPathHelper.GetFileNameFromFilePath(folder.FullName);
-        var dest = ZlpPathHelper.Combine(destFolder, name);
-        var status = CopyDirectory(folder.FullName, dest);
-        if (!status) { println("[FAILED]"); return status; }
-      }
-
-      return 0;
-    } catch (Exception ex) {
-      println("[FAILED]");
-      println(ex);
-      return -1;
     }
   }
 }

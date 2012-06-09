@@ -33,11 +33,12 @@ public class SublimeScalaEnsime : Git {
 
   [Action]
   public virtual ExitCode rebuild() {
-    return Console.batch("sbt clean stage", home: root);
+    return clean() && compile();
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
-    return Console.batch("sbt stage", home: root);
+    var result = Console.batch("sbt stage", home: root);
+    return result && transplantDir("dist_2.10.0-SNAPSHOT", @"%APPDATA%\Sublime Text 2\Packages\SublimeEnsime\server");
   }
 }

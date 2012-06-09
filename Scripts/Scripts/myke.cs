@@ -19,6 +19,7 @@ using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 using LibGit2Sharp;
+using ZetaLongPaths;
 
 public class App {
   public static int Main(String[] args) {
@@ -1624,6 +1625,93 @@ public abstract class Base {
   protected static String readln(String prompt = null, String history = null) {
     return Console.readln(prompt, history);
   }
+
+  protected virtual String transplantFrom { get { return null; } }
+
+  protected virtual String transplantTo { get { return null; } }
+
+  protected ExitCode transplantFile(String from, String to) {
+    from = ((transplantFrom == null ? null : (transplantFrom + "\\")) + from).Expand().Replace("/", "\\");
+    to = ((transplantTo == null ? null : (transplantTo + "\\")) + to).Expand().Replace("/", "\\");
+    print("Copying {0} to {1}... ", from, to);
+
+    try {
+      ExitCode status = -1;
+      if (File.Exists(from)) status = CopyFile(from, to);
+      if (status) println("[  OK  ]");
+      return status;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  private ExitCode CopyFile(string sourceFile, string destFile) {
+    try {
+      File.Copy(sourceFile, destFile, true);
+      return 0;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  public ExitCode transplantDir(String from, String to) {
+    from = ((transplantFrom == null ? null : (transplantFrom + "\\")) + from).Expand().Replace("/", "\\");
+    to = ((transplantTo == null ? null : (transplantTo + "\\")) + to).Expand().Replace("/", "\\");
+    print("Copying {0} to {1}... ", from, to);
+
+    try {
+      ExitCode status = -1;
+      status = CopyDirectory(from, to);
+      if (status) println("[  OK  ]");
+      return status;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  private ExitCode CopyDirectory(string sourceFolder, string destFolder) {
+    try {
+      int iof = -1;
+      while ((iof = sourceFolder.IndexOf(".jar")) != -1) {
+        var archive = sourceFolder.Substring(0, iof + 4);
+        var insideArchive = sourceFolder.Substring(iof + 4);
+        var temp = Path.GetTempFileName() + ".unpack";
+        var status = Console.batch(String.Format("unzip -qq \"{0}\" -d \"{1}\"", archive, temp));
+        if (!status) { println("[FAILED]"); return status; }
+        sourceFolder = temp + "\\" + insideArchive;
+      }
+
+      if (ZlpIOHelper.DirectoryExists(destFolder)) ZlpIOHelper.DeleteDirectory(destFolder, true);
+      if (!ZlpIOHelper.DirectoryExists(destFolder)) ZlpIOHelper.CreateDirectory(destFolder);
+
+      var files = new ZlpDirectoryInfo(sourceFolder).GetFiles();
+      foreach (var file in files) {
+        var name = ZlpPathHelper.GetFileNameFromFilePath(file.FullName);
+        var dest = ZlpPathHelper.Combine(destFolder, name);
+        file.CopyTo(dest, true);
+      }
+
+      var folders = new ZlpDirectoryInfo(sourceFolder).GetDirectories();
+      foreach (var folder in folders) {
+        var name = ZlpPathHelper.GetFileNameFromFilePath(folder.FullName);
+        var dest = ZlpPathHelper.Combine(destFolder, name);
+        var status = CopyDirectory(folder.FullName, dest);
+        if (!status) { println("[FAILED]"); return status; }
+      }
+
+      return 0;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
 }
 
 public abstract class Conn : Base {
@@ -1711,6 +1799,7 @@ public abstract class Prj : Universal {
   public Prj(DirectoryInfo dir) : base(dir) { this.dir = this.dir ?? (project == null ? null : new DirectoryInfo(project)); }
 
   public virtual String project { get { return null; } }
+  protected override String transplantFrom { get { return project; } }
 
   public override DirectoryInfo root { get {
     if (project != null) {
