@@ -15,7 +15,7 @@ using ZetaLongPaths;
   "Wraps the development workflow of scalatest donor for Kepler")]
 public class Donor : Kep {
   public String donneeName() { return "Kepler"; }
-  public Prj donnee() { return new Kep(); }
+  public Kep donnee() { return new Kep(); }
   public override String project { get { return @"%PROJECTS%\Donor".Expand(); } }
   protected override String transplantTo { get { return donnee().project; } }
 
@@ -24,11 +24,6 @@ public class Donor : Kep {
   public override String profileLibrary { get { return profileAltLibrary; } }
   public override String profileReflect { get { return profileAltReflect; } }
   public override String profileCompiler { get { return profileAltCompiler; } }
-
-  public override bool accept() {
-    if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
-    return dir.IsChildOrEquivalentTo(project);
-  }
 
   public Donor() : base() { }
   public Donor(FileInfo file, Arguments arguments) : base(file, arguments) { this.arguments = arguments; }
@@ -39,13 +34,14 @@ public class Donor : Kep {
     if (inPlayground || inTest) {
       return base.compile();
     } else {
-      var status = Console.batch("ant " + profile + " -buildfile build.xml", home: root);
+      var status = Console.batch("ant " + profile + " -buildfile build.xml", home: project);
       if (!status) return -1;
 
       println();
       println("Transplanting partest to " + donneeName() + "...");
       status = status && transplantDir("build/quick/classes/partest", "build/locker/classes/partest");
       status = status && transplantDir("build/quick/classes/library/scala/actors", "build/locker/classes/library/scala/actors");
+      // status = status && transplantDir("build/pack/lib/scala-actors.jar/scala/actors", "build/locker/classes/library/scala/actors");
       status = status && transplantDir("build/quick/classes/scalap/scala/tools/scalap", "build/locker/classes/partest/scala/tools/scalap");
       status = status && transplantDir("build/quick/classes/scalacheck/org/scalacheck", "build/locker/classes/partest/org/scalacheck");
       status = status && transplantFile("build/pack/misc/scala-devel/plugins/continuations.jar", "build/locker/classes/continuations.jar");
@@ -72,17 +68,7 @@ public class Donor : Kep {
         }
 
         println();
-        println("Packing locker into jars...");
-        var classesDir = donnee().project + @"\build\locker\classes";
-        var jarDir = donnee().project + @"\build\locker\lib";
-        if (!Directory.Exists(jarDir)) Directory.CreateDirectory(jarDir);
-        status = status && print("  * scala-compiler... ") && Console.batch("jar cf ../lib/scala-compiler.jar -C compiler .", home: classesDir) && println("[  OK  ]");
-        if (Directory.Exists(classesDir + @"\\" + "reflect")) {
-          status = status && print("  * scala-reflect... ") && Console.batch("jar cf ../lib/scala-reflect.jar -C reflect .", home: classesDir) && println("[  OK  ]");
-        }
-        status = status && print("  * scala-library... ") && Console.batch("jar cf ../lib/scala-library.jar -C library .", home: classesDir) && println("[  OK  ]");
-        status = status && print("  * scala-partest... ") && Console.batch("jar cf ../lib/scala-partest.jar -C partest .", home: classesDir) && println("[  OK  ]");
-        if (!status) println("[FAILED]");
+        status = status && donnee().packLockerIntoJars();
       }
 
       return status;

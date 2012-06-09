@@ -17,7 +17,6 @@ using ZetaLongPaths;
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
-  protected override String transplantTo { get { return project; } }
 
   public virtual String profile { get { return "locker.unlock locker.done"; } }
   public virtual String profileAlt { get { return "build"; } }
@@ -32,8 +31,8 @@ public class Kep : Git {
 
   public virtual String antExecutable() { return "ant" + " -Dscalac.args=\"\"\"" + String.Join(" ", arguments.ToArray()) + "\"\"\""; }
   public virtual ExitCode runAnt(String commandLine) {
-    if (arguments.Contains("-Xprompt")) return Console.interactive(antExecutable() + " " + commandLine, home: root);
-    return Console.batch(antExecutable() + " " + commandLine + " -buildfile build.xml", home: root);
+    if (arguments.Contains("-Xprompt")) return Console.interactive(antExecutable() + " " + commandLine, home: project);
+    return Console.batch(antExecutable() + " " + commandLine + " -buildfile build.xml", home: project);
   }
 //  public virtual String antExecutable() { return "ant -Djavac.args=-Dmyke.comments=" + mykeComments().Replace(" ", "_"); }
 //  public virtual String mykeComments() {
@@ -47,11 +46,6 @@ public class Kep : Git {
 //      else return "macro materializers enabled";
 //    }
 //  }
-
-  public override bool accept() {
-    if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
-    return dir.IsChildOrEquivalentTo(project);
-  }
 
   protected Arguments arguments;
   public Kep() : base() { init(); }
@@ -345,7 +339,7 @@ public class Kep : Git {
     var incantation = Config.sublime ? "scala /S" : "scala";
     if (arguments.Count() > 0) incantation += " ";
     incantation = incantation + String.Join(" ", arguments.ToArray());
-    return Console.interactive(incantation, home: root);
+    return Console.interactive(incantation, home: project);
   }
 
   [Action, Meaningful]
@@ -381,7 +375,7 @@ public class Kep : Git {
       var scala = new Scala(dir, arguments);
       return scala.run();
 
-      //return Console.batch("partest files\\pos\\t1693.scala", home: root);
+      //return Console.batch("partest files\\pos\\t1693.scala", home: project);
     }
   }
 
@@ -448,7 +442,7 @@ public class Kep : Git {
     if (tests.Count == 0) { println("nothing to test!"); return -1; }
     traceln("[myke] testing: {0}", String.Join(" ", tests.ToArray()));
     var partest = @"%SCRIPTS_HOME%\partest.exe";
-    return Console.batch("\"\"" + partest + "\"\" " + String.Join(" ", tests.ToArray()), home: root + "\\test");
+    return Console.batch("\"\"" + partest + "\"\" " + String.Join(" ", tests.ToArray()), home: project + "\\test");
   }
 
   [Action]
@@ -635,8 +629,7 @@ public class Kep : Git {
     else return url + "&branch=" + branch;
   }
 
-  [Action, MenuItem(description = "Deploy to Kep", priority = 999.2)]
-  public virtual ExitCode deployStarr() {
+  public String mostUptodateLibs() {
     var loloLibraryJar = new FileInfo(root + @"\build\locker\lib\scala-library.jar");
     var loloReflectJar = new FileInfo(root + @"\build\locker\lib\scala-reflect.jar");
     var loloCompilerJar = new FileInfo(root + @"\build\locker\lib\scala-compiler.jar");
@@ -650,20 +643,52 @@ public class Kep : Git {
     var loloModTime = loloLibraryJar.Exists && loloCompilerJar.Exists ? (loloLibraryJar.LastWriteTime > loloCompilerJar.LastWriteTime ? loloLibraryJar.LastWriteTime : loloCompilerJar.LastWriteTime) : DateTime.MinValue;
     var paloModTime = paloLibraryJar.Exists && paloCompilerJar.Exists ? (paloLibraryJar.LastWriteTime > paloCompilerJar.LastWriteTime ? paloLibraryJar.LastWriteTime : paloCompilerJar.LastWriteTime) : DateTime.MinValue;
     var packModTime = packLibraryJar.Exists && packCompilerJar.Exists ? (packLibraryJar.LastWriteTime > packCompilerJar.LastWriteTime ? packLibraryJar.LastWriteTime : packCompilerJar.LastWriteTime) : DateTime.MinValue;
-    var source = (loloModTime > paloModTime && loloModTime > packModTime) ? "build/locker/" : (paloModTime > loloModTime && paloModTime > packModTime) ? "build/palo/" : "build/pack/";
+    if (loloModTime == DateTime.MinValue && paloModTime == DateTime.MinValue && packModTime == DateTime.MinValue) return null;
+    return (loloModTime > paloModTime && loloModTime > packModTime) ? "build/locker/" : (paloModTime > loloModTime && paloModTime > packModTime) ? "build/palo/" : "build/pack/";
+  }
 
-    var status = (loloModTime != DateTime.MinValue || paloModTime != DateTime.MinValue || packModTime != DateTime.MinValue) ? (ExitCode)0 : (ExitCode)(-1);
-    if (!status) {
-      println("Couldn't find neither pack nor palo nor lolo to deploy as a starr");
-      return status;
+  public ExitCode packLockerIntoJars() {
+    var classesDir = project + @"\build\locker\classes";
+    var jarDir = project + @"\build\locker\lib";
+    if (!Directory.Exists(jarDir)) Directory.CreateDirectory(jarDir);
+    var status = print("* scala-compiler... ") && Console.batch("jar cf ../lib/scala-compiler.jar -C compiler .", home: classesDir) && println("[  OK  ]");
+    if (Directory.Exists(classesDir + @"\\" + "reflect")) {
+      status = status && print("* scala-reflect... ") && Console.batch("jar cf ../lib/scala-reflect.jar -C reflect .", home: classesDir) && println("[  OK  ]");
     }
+    status = status && print("* scala-library... ") && Console.batch("jar cf ../lib/scala-library.jar -C library .", home: classesDir) && println("[  OK  ]");
+    status = status && print("* scala-partest... ") && Console.batch("jar cf ../lib/scala-partest.jar -C partest .", home: classesDir) && println("[  OK  ]");
+    if (!status) println("[FAILED]");
+    return status;
+  }
+
+  [Action, MenuItem(description = "Deploy to Starr", priority = 999.2)]
+  public virtual ExitCode deployStarr() {
+    var source = mostUptodateLibs();
+    if (source == null) { println("Couldn't find neither pack nor palo nor lolo to deploy"); return -1; }
 
     println("Deploying starr upon ourselves...");
-    status = status && transplantFile(source + "lib/scala-library.jar", "lib/scala-library.jar");
+    var status = transplantFile(source + "lib/scala-library.jar", project + "/lib/scala-library.jar");
     if (File.Exists(source + "lib/scala-reflect.jar")) {
-      status = status && transplantFile(source + "lib/scala-reflect.jar", "lib/scala-reflect.jar");
+      status = status && transplantFile(source + "lib/scala-reflect.jar", project + "/lib/scala-reflect.jar");
     }
-    status = status && transplantFile(source + "lib/scala-compiler.jar", "lib/scala-compiler.jar");
+    status = status && transplantFile(source + "lib/scala-compiler.jar", project + "/lib/scala-compiler.jar");
+    return status;
+  }
+
+  [Action, MenuItem(description = "Deploy to Ensime", priority = 999.1)]
+  public virtual ExitCode deployEnsime() {
+    var status = packLockerIntoJars();
+    if (!status) return status;
+
+    var source = mostUptodateLibs();
+    if (source == null) { println("Couldn't find neither pack nor palo nor lolo to deploy"); return -1; }
+
+    println("Deploying ourselves as a snapshot for Ensime...");
+    status = status && transplantFile(source + "lib/scala-library.jar", "%APPDATA%/Sublime Text 2/Packages/SublimeEnsime/scala/scala-library.jar");
+    if (File.Exists(project + "/" + source + "lib/scala-reflect.jar")) {
+      status = status && transplantFile(source + "lib/scala-reflect.jar", "%APPDATA%/Sublime Text 2/Packages/SublimeEnsime/scala/scala-reflect.jar");
+    }
+    status = status && transplantFile(source + "lib/scala-compiler.jar", "%APPDATA%/Sublime Text 2/Packages/SublimeEnsime/scala/scala-compiler.jar");
     return status;
   }
 }

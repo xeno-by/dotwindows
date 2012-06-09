@@ -13,10 +13,8 @@ using System.Text.RegularExpressions;
 public class Csc : Git {
   private Lines lines;
 
-  public Csc(FileInfo file, Lines lines) : base(file) {
-    this.lines = lines;
-    env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]cs)\\(([0-9]+),[0-9]+\\)";
-  }
+  public Csc(FileInfo file, Lines lines) : base(file) { this.lines = lines; init(); }
+  private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]cs)\\(([0-9]+),[0-9]+\\)"; }
 
   public virtual bool isconsole { get {
     return !lines.Any(line => line.Contains("[STAThread]"));
@@ -54,7 +52,7 @@ public class Csc : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    return Console.batch(compiler, home: root);
+    return Console.batch(compiler, home: dir);
   }
 
   public virtual String inferArguments() {
@@ -67,6 +65,6 @@ public class Csc : Git {
     if (status != 0) return -1;
 
     Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", file.FullName));
-    return Console.interactive(exe.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()), home: root);
+    return Console.interactive(exe.FullName.GetShortPath() + " " + (arguments.Count > 0 ? arguments.ToString() : readArguments()), home: dir);
   }
 }

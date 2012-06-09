@@ -13,11 +13,6 @@ using Microsoft.Win32;
 public class LibGit2SharpProject : Git {
   public override String project { get { return @"%PROJECTS%\LibGit2Sharp".Expand(); } }
 
-  public override bool accept() {
-    if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
-    return dir.IsChildOrEquivalentTo(project);
-  }
-
   public LibGit2SharpProject() : base() { init(); }
   public LibGit2SharpProject(FileInfo file) : base(file) { init(); }
   public LibGit2SharpProject(DirectoryInfo dir) : base(dir) { init(); }
@@ -28,7 +23,7 @@ public class LibGit2SharpProject : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
-    return Console.batch("msbuild LibGit2Sharp.sln", home: root) && deployDebug();
+    return Console.batch("msbuild LibGit2Sharp.sln", home: project) && deployDebug();
   }
 
   [Action]
@@ -38,7 +33,7 @@ public class LibGit2SharpProject : Git {
 
   [Action]
   public override ExitCode runTest() {
-    return Console.batch("msbuild CI-build.msbuild /target:Test", home: root);
+    return Console.batch("msbuild CI-build.msbuild /target:Test", home: project);
   }
 
   [Action, MenuItem(description = "Deploy Debug to Ubi", priority = 999.2)]
@@ -75,7 +70,7 @@ public class LibGit2SharpProject : Git {
 
   [Action, MenuItem(description = "Deploy Release to Ubi", priority = 999.2)]
   public virtual ExitCode deployRelease() {
-    var status = Console.batch("msbuild CI-build.msbuild", home: root);
+    var status = Console.batch("msbuild CI-build.msbuild", home: project);
     if (!status) return status;
 
     var mykedeploy = @"%TMP%\myke-self-deploy-release.bat".Expand();

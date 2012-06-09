@@ -49,7 +49,7 @@ public class Scala : Git {
         return new List<Object>{argument};
       }
     }).ToList();
-    sources = combo.OfType<FileInfo>().ToList();
+    sources = combo.OfType<FileInfo>().Where(fi => fi.Extension == ".scala").ToList();
     flags = combo.OfType<String>().ToList();
 
     env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)";
@@ -365,8 +365,8 @@ public class Scala : Git {
       status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => {
         if (!curr) return curr;
         var invocation = buildCompilerInvocation(compiler1);
-        if (invocation.Contains("-Xprompt")) return Console.interactive(invocation, home: root);
-        return Console.batch(invocation, home: root);
+        if (invocation.Contains("-Xprompt")) return Console.interactive(invocation, home: dir);
+        return Console.batch(invocation, home: dir);
       });
 
       var parent_reg = Registry.CurrentUser.OpenSubKey(parent_key, true) ?? Registry.CurrentUser.CreateSubKey(parent_key);
@@ -424,8 +424,8 @@ public class Scala : Git {
   public virtual ExitCode run() {
     Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", compiler));
     Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", compiler));
-//    return compile() && Console.interactive(buildRunnerInvocation(readMainclass(), readArguments()), home: root);
-    return compile() && Console.batch(buildRunnerInvocation(readMainclass(), readArguments()), home: root);
+//    return compile() && Console.interactive(buildRunnerInvocation(readMainclass(), readArguments()), home: dir);
+    return compile() && Console.batch(buildRunnerInvocation(readMainclass(), readArguments()), home: dir);
   }
 
   [Action, DontTrace]

@@ -13,20 +13,15 @@ using System.Xml.XPath;
 [Connector(name = "sublimescala-scalariform", priority = 999, description =
   "Wraps the development workflow of the Scalariform subproject of the SublimeScala project.")]
 
-public class SublimeScalaScalariform : Git {
+public class SublimeScalaScalariform : Sbt {
   public override String project { get { return @"%PROJECTS%\SublimeScala\Scalariform".Expand(); } }
-
-  public override bool accept() {
-    if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
-    return dir.IsChildOrEquivalentTo(project);
-  }
 
   public SublimeScalaScalariform() : base() {}
   public SublimeScalaScalariform(FileInfo file, Arguments arguments) : base(file) {}
   public SublimeScalaScalariform(DirectoryInfo dir, Arguments arguments) : base(dir) {}
 
-  [Default, Action]
-  public virtual ExitCode compile() {
-    return Console.batch("sbt \"project scalariform\" publish".Expand(), home: root);
+  [Default, MenuItem(description = "Deploy to Sublime", priority = 999.2)]
+  public virtual ExitCode deploy() {
+    return Console.batch("sbt \"project scalariform\" publish".Expand(), home: project);
   }
 }

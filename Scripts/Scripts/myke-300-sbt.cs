@@ -14,9 +14,10 @@ using System.Text.RegularExpressions;
 public class Sbt : Git {
   public virtual String sbtproject { get { return null; } }
 
-  public Sbt() : base() {}
-  public Sbt(FileInfo file) : base(file) {}
-  public Sbt(DirectoryInfo dir) : base(dir) {}
+  public Sbt() : base() { init(); }
+  public Sbt(FileInfo file) : base(file) { init(); }
+  public Sbt(DirectoryInfo dir) : base(dir) { init(); }
+  private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   public override String project { get { return sbtroot == null ? null : sbtroot.FullName; } }
   public DirectoryInfo sbtroot { get {
@@ -37,26 +38,32 @@ public class Sbt : Git {
   }
 
   public override bool accept() {
-    if (Config.verbose) println("sbtroot = {0}, dir = {1}", sbtroot, dir.FullName);
-    return dir.IsChildOrEquivalentTo(sbtroot);
+    var projectOverriden = this.GetType().GetProperty("project").DeclaringType != typeof(Sbt);
+    if (projectOverriden) {
+      if (Config.verbose) println("project is overriden. going to base");
+      return base.accept();
+    } else {
+      if (Config.verbose) println("sbtroot = {0}, dir = {1}", sbtroot, dir.FullName);
+      return sbtroot != null && project.IsChildOrEquivalentTo(sbtroot);
+    }
   }
 
   [Action]
   public virtual ExitCode clean() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} clean", preamble), home: root);
+    return Console.batch(String.Format("{0} clean", preamble), home: sbtroot);
   }
 
   [Action]
   public virtual ExitCode rebuild() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} clean compile", preamble), home: root);
+    return Console.batch(String.Format("{0} clean compile", preamble), home: sbtroot);
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} compile", preamble), home: root);
+    return Console.batch(String.Format("{0} compile", preamble), home: sbtroot);
   }
 
   private class ProjectInfo {
@@ -70,7 +77,7 @@ public class Sbt : Git {
     if (log.Exists) log.Delete();
 
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    Console.batch(String.Format("{0} compile \"show runtime:scala-home\" \"show runtime:dependency-classpath\" \"show discovered-main-classes\" | tee {1}", preamble, log.FullName), home: root);
+    Console.batch(String.Format("{0} compile \"show runtime:scala-home\" \"show runtime:dependency-classpath\" \"show discovered-main-classes\" | tee {1}", preamble, log.FullName), home: dir);
 
     if (!log.Exists) return null;
     var lines = File.ReadAllLines(log.FullName);
@@ -118,7 +125,7 @@ public class Sbt : Git {
     var options = new List<String>();
     options.Add("-deprecation");
     options.Add("-classpath " + String.Join(";", info.classpath.Select(path => path.GetShortPath())));
-    return Console.interactive(scala + " " + String.Join(" ", options.ToArray()));
+    return Console.interactive(scala + " " + String.Join(" ", options.ToArray()), home: sbtroot);
   }
 
   [Action, Meaningful]
@@ -149,12 +156,12 @@ public class Sbt : Git {
     options.Add(mainclass);
     Func<String> readArguments = () => Console.readln(prompt: "Run arguments", history: String.Format("run {0}", root.FullName));
     options.Add(arguments.Count > 0 ? arguments.ToString() : readArguments());
-    return Console.interactive(scala + " " + String.Join(" ", options.ToArray()));
+    return Console.interactive(scala + " " + String.Join(" ", options.ToArray()), home: sbtroot);
   }
 
   [Action]
   public override ExitCode runTest() {
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} test", preamble), home: root);
+    return Console.batch(String.Format("{0} test", preamble), home: sbtroot);
   }
 }

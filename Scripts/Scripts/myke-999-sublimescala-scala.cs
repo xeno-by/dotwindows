@@ -16,11 +16,6 @@ using System.Xml.XPath;
 public class SublimeScalaScala : Kep {
   public override String project { get { return @"%PROJECTS%\SublimeScala\Scala".Expand(); } }
 
-  public override bool accept() {
-    if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
-    return dir.IsChildOrEquivalentTo(project);
-  }
-
   public SublimeScalaScala() : base() {}
   public SublimeScalaScala(FileInfo file, Arguments arguments) : base(file, arguments) {}
   public SublimeScalaScala(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) {}

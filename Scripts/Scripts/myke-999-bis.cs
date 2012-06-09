@@ -26,13 +26,13 @@ public class Bis : Git {
 
   [Action, Default]
   public virtual ExitCode compile() {
-    return Console.batch("nmake makefile_vc", home: root);
+    return Console.batch("nmake makefile_vc", home: project);
   }
 
   [Action]
   public virtual ExitCode run() {
     env["meaningful"] = "0";
-    return Console.ui("Far.exe", home: root + @"\Release.32.vc");
+    return Console.ui("Far.exe", home: project + @"\Release.32.vc");
   }
 
   [Action, MenuItem(description = "Deploy to Program Files (x86)", priority = 999.2)]

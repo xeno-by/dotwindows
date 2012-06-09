@@ -1649,6 +1649,8 @@ public abstract class Base {
 
   private ExitCode CopyFile(string sourceFile, string destFile) {
     try {
+      var parentDir = new DirectoryInfo(Path.GetDirectoryName(destFile));
+      if (!parentDir.Exists) parentDir.Create();
       File.Copy(sourceFile, destFile, true);
       return 0;
     } catch (Exception ex) {
@@ -1800,6 +1802,11 @@ public abstract class Prj : Universal {
 
   public virtual String project { get { return null; } }
   protected override String transplantFrom { get { return project; } }
+
+  public override bool accept() {
+    if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
+    return project != null && dir.IsChildOrEquivalentTo(project);
+  }
 
   public override DirectoryInfo root { get {
     if (project != null) {
@@ -2075,10 +2082,9 @@ public abstract class Git : Prj {
       return new DirectoryInfo(project);
     }
 
-    // note. this leads to dubious results. don't put it here
-    //if (repo != null) {
-    //  return repo;
-    //}
+    if (repo != null) {
+      return repo;
+    }
 
     return dir;
   } }

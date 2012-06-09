@@ -13,20 +13,10 @@ using System.Xml.XPath;
 [Connector(name = "sublimescala-scalarefactoring", priority = 999, description =
   "Wraps the development workflow of the ScalaRefactoring subproject of the SublimeScala project.")]
 
-public class SublimeScalaScalaRefactoring : Git {
+public class SublimeScalaScalaRefactoring : Maven {
   public override String project { get { return @"%PROJECTS%\SublimeScala\ScalaRefactoring".Expand(); } }
-
-  public override bool accept() {
-    if (Config.verbose) println("project = {0}, dir = {1}", project.Expand(), dir.FullName);
-    return dir.IsChildOrEquivalentTo(project);
-  }
 
   public SublimeScalaScalaRefactoring() : base() {}
   public SublimeScalaScalaRefactoring(FileInfo file, Arguments arguments) : base(file) {}
   public SublimeScalaScalaRefactoring(DirectoryInfo dir, Arguments arguments) : base(dir) {}
-
-  [Default, Action]
-  public virtual ExitCode compile() {
-    return Console.batch("mvn deploy -DrepositoryId=sublimescala.org -Durl=file://%HOME%/.m2/repository -DpomFile=pom.xml -DaltDeploymentRepository=sublimescala.org::default::file://%HOME%/.m2/repository".Expand(), home: root);
-  }
 }
