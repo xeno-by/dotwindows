@@ -23,12 +23,27 @@ public class SublimeScalaEnsime : Sbt {
   [Action]
   public override ExitCode compile() {
     // return base.compile();
-    return deploy();
+    return deployToSublime();
   }
 
   [Action, MenuItem(description = "Deploy to Sublime", priority = 999.2)]
-  public virtual ExitCode deploy() {
+  public virtual ExitCode deployToSublime() {
     var result = Console.batch("sbt stage", home: project);
     return result && transplantDir("dist_2.10.0-SNAPSHOT", @"%APPDATA%\Sublime Text 2\Packages\SublimeEnsime\server");
+  }
+
+  [Action, MenuItem(description = "Deploy to Downloads", priority = 999.1)]
+  public virtual ExitCode deployToDownload() {
+    var result = deployToSublime();
+
+    var version = "ensime_2.10.0-SNAPSHOT-0.9.4";
+    var src = @"%APPDATA%\Sublime Text 2\Packages\SublimeEnsime\server".Expand();
+    var dest = (@"%TMP%\" + version).Expand();
+    result = result && transplantDir(src, dest);
+
+    var archive = version + ".tar.gz";
+    result = result && Console.batch(String.Format("tar -pvczf {0} {1}", archive, version), home: "%TMP%".Expand());
+    return result && transplantFile("%TMP%\\" + archive, "D:\\" + archive);
+    // todo. would be great to programmatically deploy to Github's downloads
   }
 }

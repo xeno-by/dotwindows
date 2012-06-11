@@ -1,4 +1,4 @@
-// build this with "csc /r:System.Windows.Forms.dll /t:winexe sublime.cs"
+// build this with "csc /r:System.Windows.Forms.dll /r:ManagedWinapi.dll /t:winexe sublime.cs"
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using ManagedWinapi.Windows;
 
 public class App {
   [STAThread]
@@ -183,13 +184,11 @@ public class App {
         Thread.Sleep(50);
         PostprocessSublimeWindow();
       } else {
-        if (builder.ToString() == "untitled - Sublime Text 2") {
-          SendMessage(sublime.MainWindowHandle, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-        } else {
-          // MessageBox.Show(builder.ToString());
-          SetForegroundWindow(sublime.MainWindowHandle);
-          ShowWindow(sublime.MainWindowHandle, SW_MAXIMIZE);
-        }
+        Thread.Sleep(50);
+        var killees = SystemWindow.AllToplevelWindows.Where(win => win.Title == "untitled - Sublime Text 2").ToList();
+        killees.ForEach(killee => SendMessage(killee.HWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero));
+        SetForegroundWindow(sublime.MainWindowHandle);
+        ShowWindow(sublime.MainWindowHandle, SW_MAXIMIZE);
       }
     }
   }

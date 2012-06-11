@@ -1631,8 +1631,8 @@ public abstract class Base {
   protected virtual String transplantTo { get { return null; } }
 
   protected ExitCode transplantFile(String from, String to) {
-    from = ((transplantFrom == null ? null : (transplantFrom + "\\")) + from).Expand().Replace("/", "\\");
-    to = ((transplantTo == null ? null : (transplantTo + "\\")) + to).Expand().Replace("/", "\\");
+    from = (from.Expand().Contains(":") ? from : ((transplantFrom == null ? null : (transplantFrom + "\\")) + from)).Expand().Replace("/", "\\");
+    to = (to.Expand().Contains(":") ? to : ((transplantTo == null ? null : (transplantTo + "\\")) + to)).Expand().Replace("/", "\\");
     print("Copying {0} to {1}... ", from, to);
 
     try {
@@ -1647,7 +1647,7 @@ public abstract class Base {
     }
   }
 
-  private ExitCode CopyFile(string sourceFile, string destFile) {
+  public ExitCode CopyFile(string sourceFile, string destFile) {
     try {
       var parentDir = new DirectoryInfo(Path.GetDirectoryName(destFile));
       if (!parentDir.Exists) parentDir.Create();
@@ -1661,8 +1661,8 @@ public abstract class Base {
   }
 
   public ExitCode transplantDir(String from, String to) {
-    from = ((transplantFrom == null ? null : (transplantFrom + "\\")) + from).Expand().Replace("/", "\\");
-    to = ((transplantTo == null ? null : (transplantTo + "\\")) + to).Expand().Replace("/", "\\");
+    from = (from.Expand().Contains(":") ? from : ((transplantFrom == null ? null : (transplantFrom + "\\")) + from)).Expand().Replace("/", "\\");
+    to = (to.Expand().Contains(":") ? to : ((transplantTo == null ? null : (transplantTo + "\\")) + to)).Expand().Replace("/", "\\");
     print("Copying {0} to {1}... ", from, to);
 
     try {
@@ -1677,7 +1677,7 @@ public abstract class Base {
     }
   }
 
-  private ExitCode CopyDirectory(string sourceFolder, string destFolder) {
+  public ExitCode CopyDirectory(string sourceFolder, string destFolder) {
     try {
       int iof = -1;
       while ((iof = sourceFolder.IndexOf(".jar")) != -1) {
@@ -2202,39 +2202,60 @@ public abstract class Git : Prj {
   [Action, DontTrace, MenuItem(hotkey = "a", description = "Show branch at GitHub", priority = 120)]
   public virtual ExitCode smartShowBranchAtGithub() {
     if (!verifyRepo()) return -1;
-    var branch = Config.sanitizedRawTarget;
-    if (branch == "") branch = getCurrentBranch();
-    var url = getBranchUrl(branch);
-    if (url == null) return -1;
-    return Console.ui(url);
+    var gitStatus = getCurrentStatus();
+    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
+      var branch = Config.sanitizedRawTarget;
+      if (branch == "") branch = getCurrentBranch();
+      var url = getBranchUrl(branch);
+      if (url == null) return -1;
+      return Console.ui(url);
+    } else {
+      return smartCommit();
+    }
   }
 
   [Action, DontTrace, MenuItem(hotkey = "q", description = "Show commit at GitHub", priority = 110)]
   public virtual ExitCode smartShowCommitAtGithub() {
     if (!verifyRepo()) return -1;
-    var commit = Config.sanitizedRawTarget;
-    if (commit == "") commit = getCurrentHead();
-    var url = getCommitUrl(commit);
-    if (url == null) return -1;
-    return Console.ui(url);
+    var gitStatus = getCurrentStatus();
+    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
+      println("Nothing to commit");
+      var commit = Config.sanitizedRawTarget;
+      if (commit == "") commit = getCurrentHead();
+      var url = getCommitUrl(commit);
+      if (url == null) return -1;
+      return Console.ui(url);
+    } else {
+      return smartCommit();
+    }
   }
 
   [Action, DontTrace, MenuItem(hotkey = "x", description = "Show file at GitHub (current revision)", priority = 90)]
   public virtual ExitCode smartShowFileAtGithubRevisionAware() {
     if (!verifyRepo()) return -1;
-    var file = Config.rawTarget;
-    var url = getFileUrlRevisionAware(file);
-    if (url == null) return -1;
-    return Console.ui(url);
+    var gitStatus = getCurrentStatus();
+    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
+      var file = Config.rawTarget;
+      var url = getFileUrlRevisionAware(file);
+      if (url == null) return -1;
+      return Console.ui(url);
+    } else {
+      return smartCommit();
+    }
   }
 
   [Action, DontTrace, MenuItem(hotkey = "c", description = "Show file at GitHub (revision-agnostic)", priority = 80)]
   public virtual ExitCode smartShowFileAtGithubRevisionAgnostic() {
     if (!verifyRepo()) return -1;
-    var file = Config.rawTarget;
-    var url = getFileUrlRevisionAgnostic(file);
-    if (url == null) return -1;
-    return Console.ui(url);
+    var gitStatus = getCurrentStatus();
+    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
+      var file = Config.rawTarget;
+      var url = getFileUrlRevisionAgnostic(file);
+      if (url == null) return -1;
+      return Console.ui(url);
+    } else {
+      return smartCommit();
+    }
   }
 
   [Action, DontTrace]
@@ -2431,8 +2452,11 @@ public abstract class Git : Prj {
     var normalizedFile = file.GetRealPath().Replace("\\", "/");
     var normalizedRoot = root.FullName.GetRealPath().Replace("\\", "/");
 
+    var nomorehacks = false;
     Action<String, String> hackFile = (Action<String, String>)((String from, String to) => { if (normalizedFile.StartsWith(from)) normalizedFile = to + normalizedFile.Substring(from.Length); });
-    Action<String, String> hackRoot = (Action<String, String>)((String from, String to) => { if (normalizedRoot.StartsWith(from)) normalizedRoot = to; });
+    Action<String, String> hackRoot = (Action<String, String>)((String from, String to) => { if (!nomorehacks && normalizedRoot.StartsWith(from)) { normalizedRoot = to; nomorehacks = true; } });
+    hackRoot("D:/Dropbox/Software/Sublime/Packages/SublimeEnsime", "D:/Dropbox/Software/Sublime/Packages/SublimeEnsime");
+    hackRoot("D:/Dropbox/Software/Sublime/Packages/sublime-ensime", "D:/Dropbox/Software/Sublime/Packages/sublime-ensime");
     hackRoot("D:/Dropbox/Software/Sublime/", "D:/Dropbox/Software/Sublime/");
     hackFile("C:/Program Files (x86)/scripts/", "C:/Program Files (x86)/scripts/Scripts/Scripts/");
 
@@ -2450,8 +2474,11 @@ public abstract class Git : Prj {
     var normalizedFile = file.GetRealPath().Replace("\\", "/");
     var normalizedRoot = root.FullName.GetRealPath().Replace("\\", "/");
 
+    var nomorehacks = false;
     Action<String, String> hackFile = (Action<String, String>)((String from, String to) => { if (normalizedFile.StartsWith(from)) normalizedFile = to + normalizedFile.Substring(from.Length); });
-    Action<String, String> hackRoot = (Action<String, String>)((String from, String to) => { if (normalizedRoot.StartsWith(from)) normalizedRoot = to; });
+    Action<String, String> hackRoot = (Action<String, String>)((String from, String to) => { if (!nomorehacks && normalizedRoot.StartsWith(from)) { normalizedRoot = to; nomorehacks = true; } });
+    hackRoot("D:/Dropbox/Software/Sublime/Packages/SublimeEnsime", "D:/Dropbox/Software/Sublime/Packages/SublimeEnsime");
+    hackRoot("D:/Dropbox/Software/Sublime/Packages/sublime-ensime", "D:/Dropbox/Software/Sublime/Packages/sublime-ensime");
     hackRoot("D:/Dropbox/Software/Sublime/", "D:/Dropbox/Software/Sublime/");
     hackFile("C:/Program Files (x86)/scripts/", "C:/Program Files (x86)/scripts/Scripts/Scripts/");
 
