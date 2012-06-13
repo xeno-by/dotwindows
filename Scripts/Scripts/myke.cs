@@ -2183,6 +2183,14 @@ public abstract class Git : Prj {
     return Console.batch("git push origin +" + branch, home: repo.GetRealPath());
   }
 
+  [Action, DontTrace, MenuItem(description = "Pull from upstream", priority = 9999)]
+  public virtual ExitCode smartPullFromUpstream() {
+    if (!verifyRepo()) return -1;
+    var branch = Config.sanitizedRawTarget;
+    if (branch == "") branch = getCurrentBranch();
+    return Console.batch("git pull upstream " + branch, home: repo.GetRealPath());
+  }
+
   [Action, DontTrace, MenuItem(hotkey = "z", description = "Submit pull request", priority = 190)]
   public virtual ExitCode smartPullRequest() {
     if (!verifyRepo()) return -1;

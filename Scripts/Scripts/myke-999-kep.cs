@@ -17,6 +17,8 @@ using ZetaLongPaths;
 
 public class Kep : Git {
   public override String project { get { return @"%PROJECTS%\Kepler".Expand(); } }
+  public virtual String metadata { get { return @"%PROJECTS%\Metadata\Kepler".Expand(); } }
+  public override bool accept() { return base.accept() || (this.GetType() == typeof(Kep) && dir.IsChildOrEquivalentTo(metadata)); }
 
   public virtual String profile { get { return "locker.unlock locker.done"; } }
   public virtual String profileAlt { get { return "build"; } }
