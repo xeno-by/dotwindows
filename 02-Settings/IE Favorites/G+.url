@@ -1,0 +1,12 @@
+[DEFAULT]
+BASEURL=https://plus.google.com/u/0/stream/circles/p2a5e8752889f4033?gpcaz=e9a90091
+[DOC_gtn-roster-iframe-id]
+BASEURL=https://talkgadget.google.com/talkgadget/notifierclient?authuser=0&client=sm&prop=homepage&nav=true&fid=gtn-roster-iframe-id&ts=0&debug=undefined&os=Win32&stime=1339698924066&fb=false&re=true&no=true&hc=undefined&ref=undefined&xpc=%7B%22cn%22:%22e873kn%22,%22tp%22:1,%22ifrid%22:%22gtn-roster-iframe-id%22,%22pu%22:%22https://talkgadget.google.com/talkgadget/%22%7D&ua=Mozilla/5.0+(compatible;+MSIE+9.0;+Windows+NT+6.1;+WOW64;+Trident/5.0;+SLCC2;+.NET+CLR+2.0.50727;+.NET4.0C;+.NET4.0E;+.NET+CLR+3.5.30729;+.NET+CLR+3.0.30729)&pvt=AMP3uWYjMhcfPDHQiS5tVozllh8qF_WBpgzJrVQwzVGe1_JAxUqs1KRAx1Lqdwxm-qbZAYH2DN6RmafVlEoq3WqdlQz4y7Q6zQ%3D%3D&href=https://plus.google.com/_/apps-static/_/js/home/b,s/rt%3Dh/ver%3DtMP4r-y-v7M.en_US./sv%3D1/am%3D!jcuDKJ4lzGGJlP3iMXy5sVEYdBWw-XBUHiOBrNhU2Wga/d%3D1/rs%3DAItRSTM0El5KylhgRm40Q8bEeBmBdovvgw?rel%3D1&pos=r&uiv=2&hl=en-US&hpc=true&pal=1&uqp=false&sl=false&zx=3u21891tempd&retry_module_load=2
+ORIGURL=https://talkgadget.google.com/talkgadget/notifierclient?authuser=0&client=sm&prop=homepage&nav=true&fid=gtn-roster-iframe-id&ts=0&debug=undefined&os=Win32&stime=1339698924066&fb=false&re=true&no=true&hc=undefined&ref=undefined&xpc=%7B%22cn%22%3A%22e873kn%22%2C%22tp%22%3A1%2C%22ifrid%22%3A%22gtn-roster-iframe-id%22%2C%22pu%22%3A%22https%3A%2F%2Ftalkgadget.google.com%2Ftalkgadget%2F%22%7D&ua=Mozilla%2F5.0%20(compatible%3B%20MSIE%209.0%3B%20Windows%20NT%206.1%3B%20WOW64%3B%20Trident%2F5.0%3B%20SLCC2%3B%20.NET%20CLR%202.0.50727%3B%20.NET4.0C%3B%20.NET4.0E%3B%20.NET%20CLR%203.5.30729%3B%20.NET%20CLR%203.0.30729)&pvt=AMP3uWYjMhcfPDHQiS5tVozllh8qF_WBpgzJrVQwzVGe1_JAxUqs1KRAx1Lqdwxm-qbZAYH2DN6RmafVlEoq3WqdlQz4y7Q6zQ%3D%3D&href=https%3A%2F%2Fplus.google.com%2F_%2Fapps-static%2F_%2Fjs%2Fhome%2Fb%2Cs%2Frt%3Dh%2Fver%3DtMP4r-y-v7M.en_US.%2Fsv%3D1%2Fam%3D!jcuDKJ4lzGGJlP3iMXy5sVEYdBWw-XBUHiOBrNhU2Wga%2Fd%3D1%2Frs%3DAItRSTM0El5KylhgRm40Q8bEeBmBdovvgw%3Frel%3D1&pos=r&uiv=2&hl=en-US&hpc=true&pal=1&uqp=false&sl=false&host=1&zx=3u21891tempd
+[{000214A0-0000-0000-C000-000000000046}]
+Prop3=19,11
+[InternetShortcut]
+URL=https://plus.google.com/u/0/stream/circles/p2a5e8752889f4033?gpcaz=e9a90091#stream/circles/p2a5e8752889f4033
+IDList=
+IconFile=https://ssl.gstatic.com/s2/oz/images/faviconr2.ico
+IconIndex=1

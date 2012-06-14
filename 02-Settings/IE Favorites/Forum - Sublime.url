@@ -1,0 +1,9 @@
+[DEFAULT]
+BASEURL=http://www.sublimetext.com/forum/search.php?search_id=newposts
+[{000214A0-0000-0000-C000-000000000046}]
+Prop3=19,2
+[InternetShortcut]
+URL=http://www.sublimetext.com/forum/search.php?search_id=newposts
+IDList=
+IconFile=http://www.sublimetext.com/favicon.ico
+IconIndex=1

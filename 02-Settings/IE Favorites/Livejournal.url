@@ -1,0 +1,16 @@
+[DEFAULT]
+BASEURL=http://xeno-by.livejournal.com/friends/
+[DOC_fb_xdm_frame_http]
+BASEURL=http://static.ak.facebook.com/connect/xd_arbiter.php?version=8
+ORIGURL=http://static.ak.facebook.com/connect/xd_arbiter.php?version=8#channel=fc4b0f445da51b&origin=http%3A%2F%2Fxeno-by.livejournal.com&channel_path=%2Ffriends%2F%3Ffb_xd_fragment%23xd_sig%3Df1ec23866bc69e3%26&transport=postmessage
+[DOC_fb_xdm_frame_https]
+BASEURL=https://s-static.ak.facebook.com/connect/xd_arbiter.php?version=8
+ORIGURL=https://s-static.ak.facebook.com/connect/xd_arbiter.php?version=8#channel=fc4b0f445da51b&origin=http%3A%2F%2Fxeno-by.livejournal.com&channel_path=%2Ffriends%2F%3Ffb_xd_fragment%23xd_sig%3Df1ec23866bc69e3%26&transport=postmessage
+[DOC_f4c0fa233148b5]
+BASEURL=http://www.facebook.com/dialog/oauth?api_key=214181831945836&app_id=214181831945836&channel_url=http%3A%2F%2Fstatic.ak.facebook.com%2Fconnect%2Fxd_arbiter.php%3Fversion%3D8%23cb%3Df13cdbff8b113%26origin%3Dhttp%253A%252F%252Fxeno-by.livejournal.com%252Ffc4b0f445da51b%26domain%3Dxeno-by.livejournal.com%26relation%3Dparent.parent&client_id=214181831945836&display=none&domain=xeno-by.livejournal.com&locale=en_US&origin=1&redirect_uri=http%3A%2F%2Fstatic.ak.facebook.com%2Fconnect%2Fxd_arbiter.php%3Fversion%3D8%23cb%3Df123d09fb71ee3f%26origin%3Dhttp%253A%252F%252Fxeno-by.livejournal.com%252Ffc4b0f445da51b%26domain%3Dxeno-by.livejournal.com%26relation%3Dparent%26frame%3Df4c0fa233148b5&response_type=token%2Csigned_request%2Ccode&sdk=joey
+ORIGURL=http://www.facebook.com/dialog/oauth?api_key=214181831945836&app_id=214181831945836&channel_url=http%3A%2F%2Fstatic.ak.facebook.com%2Fconnect%2Fxd_arbiter.php%3Fversion%3D8%23cb%3Df13cdbff8b113%26origin%3Dhttp%253A%252F%252Fxeno-by.livejournal.com%252Ffc4b0f445da51b%26domain%3Dxeno-by.livejournal.com%26relation%3Dparent.parent&client_id=214181831945836&display=none&domain=xeno-by.livejournal.com&locale=en_US&origin=1&redirect_uri=http%3A%2F%2Fstatic.ak.facebook.com%2Fconnect%2Fxd_arbiter.php%3Fversion%3D8%23cb%3Df123d09fb71ee3f%26origin%3Dhttp%253A%252F%252Fxeno-by.livejournal.com%252Ffc4b0f445da51b%26domain%3Dxeno-by.livejournal.com%26relation%3Dparent%26frame%3Df4c0fa233148b5&response_type=token%2Csigned_request%2Ccode&sdk=joey
+[{000214A0-0000-0000-C000-000000000046}]
+Prop3=19,2
+[InternetShortcut]
+URL=http://xeno-by.livejournal.com/friends/
+IDList=

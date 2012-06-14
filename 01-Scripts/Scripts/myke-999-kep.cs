@@ -20,13 +20,13 @@ public class Kep : Git {
   public virtual String metadata { get { return @"%PROJECTS%\Metadata\Kepler".Expand(); } }
   public override bool accept() { return base.accept() || (this.GetType() == typeof(Kep) && dir.IsChildOrEquivalentTo(metadata)); }
 
-  public virtual String profile { get { return "locker.unlock locker.done"; } }
+  public virtual String profile { get { return "fastlocker"; } }
   public virtual String profileAlt { get { return "build"; } }
   public virtual String profileClean { get { return "locker.clean"; } }
   public virtual String profileAltClean { get { return "clean"; } }
-  public virtual String profileLibrary { get { return "locker.unlock locker.lib"; } }
-  public virtual String profileReflect { get { return "locker.unlock locker.reflect"; } }
-  public virtual String profileCompiler { get { return "locker.unlock locker.comp"; } }
+  public virtual String profileLibrary { get { return "fastlocker.lib"; } }
+  public virtual String profileReflect { get { return "fastlocker.reflect"; } }
+  public virtual String profileCompiler { get { return "fastlocker.comp"; } }
   public virtual String profileAltLibrary { get { return "quick.lib"; } }
   public virtual String profileAltReflect { get { return "quick.reflect"; } }
   public virtual String profileAltCompiler { get { return "quick.comp"; } }

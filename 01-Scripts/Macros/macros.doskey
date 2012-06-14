@@ -9,6 +9,7 @@ time="%SCRIPTS_HOME%\time.exe" $*
 type="%SCRIPTS_HOME%\type.exe" $*
 echo="%CYGROOT%\bin\echo.exe" $*
 hm=cd /D "%HOME%"
+ad=cd /D "%APPDATA%"
 tmp=cd /D "%HOME%\AppData\Local\Temp"
 cyg=cd /D "%CYGROOT%"
 cyl=cd /D "%CYGLINKS%"

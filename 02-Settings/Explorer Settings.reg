@@ -281,3 +281,8 @@ REGEDIT4
 "ValueName"="TypeAhead"
 "DefaultValue"=dword:00000000
 "HKeyRoot"=dword:80000001
+
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\*]
+"AlwaysShowExt"=""

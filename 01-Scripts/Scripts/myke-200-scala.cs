@@ -365,7 +365,7 @@ public class Scala : Git {
       status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => {
         if (!curr) return curr;
         var invocation = buildCompilerInvocation(compiler1);
-        if (invocation.Contains("-Xprompt")) return Console.interactive(invocation, home: dir);
+        if (invocation != null && invocation.Contains("-Xprompt")) return Console.interactive(invocation, home: dir);
         return Console.batch(invocation, home: dir);
       });
 

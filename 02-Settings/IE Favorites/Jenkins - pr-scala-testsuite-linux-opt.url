@@ -1,0 +1,9 @@
+[DEFAULT]
+BASEURL=https://scala-webapps.epfl.ch/jenkins/view/pr-validators/job/pr-scala-testsuite-linux-opt/
+[{000214A0-0000-0000-C000-000000000046}]
+Prop3=19,11
+[InternetShortcut]
+URL=https://scala-webapps.epfl.ch/jenkins/view/pr-validators/job/pr-scala-testsuite-linux-opt/
+IDList=
+IconFile=https://scala-webapps.epfl.ch/jenkins/static/09160b53/favicon.ico
+IconIndex=1
