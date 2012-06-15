@@ -2210,60 +2210,39 @@ public abstract class Git : Prj {
   [Action, DontTrace, MenuItem(hotkey = "a", description = "Show branch at GitHub", priority = 120)]
   public virtual ExitCode smartShowBranchAtGithub() {
     if (!verifyRepo()) return -1;
-    var gitStatus = getCurrentStatus();
-    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
-      var branch = Config.sanitizedRawTarget;
-      if (branch == "") branch = getCurrentBranch();
-      var url = getBranchUrl(branch);
-      if (url == null) return -1;
-      return Console.ui(url);
-    } else {
-      return smartCommit();
-    }
+    var branch = Config.sanitizedRawTarget;
+    if (branch == "") branch = getCurrentBranch();
+    var url = getBranchUrl(branch);
+    if (url == null) return -1;
+    return smartPush() && Console.ui(url);
   }
 
   [Action, DontTrace, MenuItem(hotkey = "q", description = "Show commit at GitHub", priority = 110)]
   public virtual ExitCode smartShowCommitAtGithub() {
     if (!verifyRepo()) return -1;
-    var gitStatus = getCurrentStatus();
-    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
-      println("Nothing to commit");
-      var commit = Config.sanitizedRawTarget;
-      if (commit == "") commit = getCurrentHead();
-      var url = getCommitUrl(commit);
-      if (url == null) return -1;
-      return Console.ui(url);
-    } else {
-      return smartCommit();
-    }
+    var commit = Config.sanitizedRawTarget;
+    if (commit == "") commit = getCurrentHead();
+    var url = getCommitUrl(commit);
+    if (url == null) return -1;
+    return smartPush() && Console.ui(url);
   }
 
   [Action, DontTrace, MenuItem(hotkey = "x", description = "Show file at GitHub (current revision)", priority = 90)]
   public virtual ExitCode smartShowFileAtGithubRevisionAware() {
     if (!verifyRepo()) return -1;
-    var gitStatus = getCurrentStatus();
-    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
-      var file = Config.rawTarget;
-      var url = getFileUrlRevisionAware(file);
-      if (url == null) return -1;
-      return Console.ui(url);
-    } else {
-      return smartCommit();
-    }
+    var file = Config.rawTarget;
+    var url = getFileUrlRevisionAware(file);
+    if (url == null) return -1;
+    return smartPush() && Console.ui(url);
   }
 
   [Action, DontTrace, MenuItem(hotkey = "c", description = "Show file at GitHub (revision-agnostic)", priority = 80)]
   public virtual ExitCode smartShowFileAtGithubRevisionAgnostic() {
     if (!verifyRepo()) return -1;
-    var gitStatus = getCurrentStatus();
-    if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
-      var file = Config.rawTarget;
-      var url = getFileUrlRevisionAgnostic(file);
-      if (url == null) return -1;
-      return Console.ui(url);
-    } else {
-      return smartCommit();
-    }
+    var file = Config.rawTarget;
+    var url = getFileUrlRevisionAgnostic(file);
+    if (url == null) return -1;
+    return smartPush() && Console.ui(url);
   }
 
   [Action, DontTrace]
