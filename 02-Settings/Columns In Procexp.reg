@@ -1,0 +1,136 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Sysinternals\Process Explorer]
+"EulaAccepted"=dword:00000001
+"Windowplacement"=hex:2c,00,00,00,02,00,00,00,03,00,00,00,00,00,00,00,00,00,00,\
+  00,ff,ff,ff,ff,ff,ff,ff,ff,64,00,00,00,32,00,00,00,bc,02,00,00,26,02,00,00
+"FindWindowplacement"=hex:2c,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,96,00,00,00,96,00,00,00,00,00,00,00,00,00,\
+  00,00
+"SysinfoWindowplacement"=hex:2c,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,\
+  00,00,00
+"PropWindowplacement"=hex:2c,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,00,\
+  00,00
+"DllPropWindowplacement"=hex:2c,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,\
+  00,00,00
+"Font"=hex:08,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,90,01,00,00,00,00,\
+  00,cc,00,00,00,00,4d,53,20,53,68,65,6c,6c,20,44,6c,67,00,00,00,00,00,00,00,\
+  00,a0,ee,40,00,00,00,00,00,00,00,37,00
+"Divider"=hex:00,00,00,00,00,00,f0,3f
+"SavedDivider"=hex:00,00,00,00,00,00,e0,3f
+"ProcessImageColumnWidth"=dword:000000c8
+"ShowUnnamedHandles"=dword:00000000
+"ShowDllView"=dword:00000000
+"HandleSortColumn"=dword:00000000
+"HandleSortDirection"=dword:00000001
+"DllSortColumn"=dword:00000000
+"DllSortDirection"=dword:00000001
+"ProcessSortColumn"=dword:ffffffff
+"ProcessSortDirection"=dword:00000001
+"HighlightServices"=dword:00000001
+"HighlightOwnProcesses"=dword:00000001
+"HighlightRelocatedDlls"=dword:00000000
+"HighlightJobs"=dword:00000001
+"HighlightNewProc"=dword:00000001
+"HighlightDelProc"=dword:00000001
+"HighlightPacked"=dword:00000001
+"HighlightNetProcess"=dword:00000001
+"HighlightDuration"=dword:000003e8
+"ShowCpuFractions"=dword:00000001
+"ShowLowerpane"=dword:00000000
+"ShowAllUsers"=dword:00000001
+"ShowProcessTree"=dword:00000001
+"SymbolWarningShown"=dword:00000000
+"HideWhenMinimized"=dword:00000000
+"AlwaysOntop"=dword:00000000
+"OneInstance"=dword:00000000
+"NumColumnSets"=dword:00000000
+"ConfirmKill"=dword:00000001
+"RefreshRate"=dword:000003e8
+"PrcessColumnCount"=dword:0000000d
+"DllColumnCount"=dword:00000004
+"HandleColumnCount"=dword:00000002
+"DefaultProcPropPage"=dword:00000000
+"DefaultDllPropPage"=dword:00000000
+"DbgHelpPath"="C:\\Windows\\system32\\dbghelp.dll"
+"SymbolPath"=""
+"ColorPacked"=dword:00d418d2
+"ColorOwn"=dword:00ffd0d0
+"ColorServices"=dword:00d0d0ff
+"ColorRelocatedDlls"=dword:0000ffff
+"ColorJobs"=dword:00006cd0
+"ColorDelProc"=dword:000000ff
+"ColorNewProc"=dword:0000ff00
+"ColorNet"=dword:0000ffff
+"StatusBarColumns"=dword:00002015
+"ShowAllCpus"=dword:00000000
+"Opacity"=dword:00000064
+"VerifySignatures"=dword:00000000
+"ToolbarBands"=hex:10,01,00,00,00,00,00,00,00,00,00,00,64,00,00,00,01,00,00,00,\
+  00,00,00,00,64,00,00,00,02,00,00,00,00,00,00,00,64,00,00,00,03,00,00,00,00,\
+  00,00,00,64,00,00,00,04,00,00,00,00,00,00,00,64,00,00,00,04,00,00,00,00,00,\
+  00,00,64,00,00,00,04,00,00,00,00,00,00,00,64,00,00,00,04,00,00,00,00,00,00,\
+  00
+"UseGoogle"=dword:00000000
+"ShowNewProcesses"=dword:00000000
+"TrayCPUHistory"=dword:00000001
+"ShowIoTray"=dword:00000000
+"ShowPhysTray"=dword:00000000
+"ShowCommitTray"=dword:00000000
+"StackWindowPlacement"=hex:00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00
+"Path"="C:\\Program Files (x86)\\scripts\\procexp.exe"
+
+[HKEY_CURRENT_USER\Software\Sysinternals\Process Explorer\DllColumnMap]
+"0"=dword:0000001a
+"1"=dword:0000002a
+"2"=dword:00000409
+"3"=dword:00000019
+
+[HKEY_CURRENT_USER\Software\Sysinternals\Process Explorer\DllColumns]
+"0"=dword:0000006e
+"1"=dword:000000b4
+"2"=dword:0000008c
+"3"=dword:00000064
+
+[HKEY_CURRENT_USER\Software\Sysinternals\Process Explorer\HandleColumnMap]
+"0"=dword:00000015
+"1"=dword:00000016
+
+[HKEY_CURRENT_USER\Software\Sysinternals\Process Explorer\HandleColumns]
+"0"=dword:00000064
+"1"=dword:000001c2
+
+[HKEY_CURRENT_USER\Software\Sysinternals\Process Explorer\ProcessColumnMap]
+"0"=dword:00000003
+"1"=dword:00000004
+"2"=dword:0000041f
+"3"=dword:00000429
+"4"=dword:00000012
+"5"=dword:0000045a
+"6"=dword:00000427
+"7"=dword:0000052f
+"8"=dword:00000531
+"9"=dword:00000534
+"10"=dword:00000408
+"11"=dword:00000026
+"12"=dword:00000409
+
+[HKEY_CURRENT_USER\Software\Sysinternals\Process Explorer\ProcessColumns]
+"0"=dword:000000c8
+"1"=dword:00000028
+"2"=dword:00000028
+"3"=dword:00000031
+"4"=dword:00000037
+"5"=dword:00000067
+"6"=dword:00000053
+"7"=dword:00000049
+"8"=dword:00000038
+"9"=dword:00000038
+"10"=dword:00000357
+"11"=dword:00000096
+"12"=dword:0000008c

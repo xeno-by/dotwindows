@@ -433,7 +433,7 @@ void Edit::FastShow()
 		if (EndSeq && *EndSeq)
 			OutStr[OutStrLength++]=L'\xB6'; //L'\x266A';
 	}
-	
+
 	OutStr[OutStrLength]=0;
 	SetColor(Color);
 
@@ -3290,7 +3290,7 @@ int EditControl::AutoCompleteProc(bool Manual,bool DelBlock,int& BackKey)
 									ComplMenu.ProcessKey(KEY_DOWN);
 									break;
 								}
- 
+
 							case KEY_SHIFTDEL:
 							case KEY_SHIFTNUMDEL:
 								{

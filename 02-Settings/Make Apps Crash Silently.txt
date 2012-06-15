@@ -1,0 +1,10 @@
+Links:
+* http://blogs.msdn.com/b/shawnfa/archive/2004/07/15/184490.aspx
+* http://www.howtogeek.com/howto/7863/disable-error-reporting-in-xp-vista-and-windows-7/
+
+1) HKLM\Software\Microsoft\.NetFramework\DbgJITDebugLaunchSetting => 1
+2) HKLM\Software\Wow6432Node\Microsoft\.NetFramework\DbgJITDebugLaunchSetting => 1
+3) Action Center –> Change Action Center Settings –> Problem Reporting Settings => Never check for solutions
+4) User Configuration \ Administrative Templates \ Windows Components \ Windows Error Reporting and under Setting double click on Disable Windows Error Reporting
+5) HKLM\Software\Microsoft\Windows\Windows Error Reporting\DontShowUI => 1
+6) HKLM\Software\Wow6432Node\Microsoft\Windows\Windows Error Reporting\DontShowUI => 1

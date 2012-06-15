@@ -1,0 +1,66 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Rapid Environment Editor]
+"onExitConfirmation"=dword:00000000
+"onDeleteConfirmation"=dword:00000000
+"checkForUpdates"=dword:00000000
+"showInformation"=dword:00000000
+"showReadOnly"=dword:00000001
+"skin"="Default"
+"isMaximized"=dword:00000001
+"left"=dword:00000167
+"top"=dword:0000003c
+"width"=dword:00000287
+"height"=dword:00000260
+"language"="English"
+"id"=dword:4e977e4b
+
+[HKEY_CURRENT_USER\Software\Rapid Environment Editor\Exclusions]
+
+[HKEY_CURRENT_USER\Software\Rapid Environment Editor\tbInterface]
+"Rev"="2000"
+"Visible"="1"
+"DockedTo"="tbxDockToolbar"
+"LastDock"="tbxDockToolbar"
+"DockRow"="1"
+"DockPos"="0"
+"FloatLeft"="0"
+"FloatTop"="0"
+"FloatRightX"="0"
+"DisplayMode"="0"
+
+[HKEY_CURRENT_USER\Software\Rapid Environment Editor\tbMain]
+"Rev"="2000"
+"Visible"="1"
+"DockedTo"="tbxDockToolbar"
+"LastDock"="tbxDockToolbar"
+"DockRow"="0"
+"DockPos"="0"
+"FloatLeft"="0"
+"FloatTop"="0"
+"FloatRightX"="0"
+"DisplayMode"="0"
+
+[HKEY_CURRENT_USER\Software\Rapid Environment Editor\tbUser]
+"Rev"="2000"
+"Visible"="1"
+"DockedTo"="tbxDockToolbar"
+"LastDock"="tbxDockToolbar"
+"DockRow"="1"
+"DockPos"="1"
+"FloatLeft"="0"
+"FloatTop"="0"
+"FloatRightX"="0"
+"DisplayMode"="0"
+
+[HKEY_CURRENT_USER\Software\Rapid Environment Editor\tbxMainmenu]
+"Rev"="2000"
+"Visible"="1"
+"DockedTo"="tbxDockMainmenu"
+"LastDock"="tbxDockMainmenu"
+"DockRow"="0"
+"DockPos"="0"
+"FloatLeft"="0"
+"FloatTop"="0"
+"FloatRightX"="0"
+"DisplayMode"="0"

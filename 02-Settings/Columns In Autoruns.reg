@@ -1,0 +1,18 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Sysinternals\AutoRuns]
+"EulaAccepted"=dword:00000001
+"showall"=dword:00000000
+"shownomicrosoft"=dword:00000000
+"verifysignatures"=dword:00000000
+"font"=hex:f5,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,00,90,01,00,00,00,00,\
+  00,cc,00,00,00,00,4d,53,20,53,61,6e,73,20,53,65,72,69,66,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00
+"column0"=dword:000000de
+"columnPos0"=dword:00000000
+"column1"=dword:000000f1
+"columnPos1"=dword:00000001
+"column2"=dword:00000091
+"columnPos2"=dword:00000002
+"column3"=dword:0000024d
+"columnPos3"=dword:00000003

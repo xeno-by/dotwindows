@@ -1,0 +1,162 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg]
+"LastID"="5"
+"DiskSpinDownMax"="3600"
+"DiskSpinDownMin"="3"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\GlobalPowerPolicy]
+"Policies"=hex:01,00,00,00,01,00,00,00,01,00,00,00,03,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\PowerPolicies]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\PowerPolicies\0]
+"Policies"=hex:01,00,00,00,02,00,00,00,04,00,00,00,02,00,00,00,02,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,84,03,00,00,00,00,00,00,02,00,00,00,04,00,\
+  00,c0,00,00,00,00,02,00,00,00,04,00,00,c0,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\PowerPolicies\1]
+"Policies"=hex:01,00,00,00,02,00,00,00,03,00,00,00,03,00,00,00,03,00,00,00,60,\
+  09,00,00,2c,01,00,00,80,25,00,00,f4,1a,00,00,32,32,00,00,02,00,00,00,04,00,\
+  00,c0,00,00,00,00,02,00,00,00,04,00,00,c0,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\PowerPolicies\2]
+"Policies"=hex:01,00,00,00,02,00,00,00,03,00,00,00,02,00,00,00,02,00,00,00,00,\
+  00,00,00,84,03,00,00,00,00,00,00,9c,18,00,00,32,32,00,00,02,00,00,00,04,00,\
+  00,c0,00,00,00,00,02,00,00,00,04,00,00,c0,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\PowerPolicies\3]
+"Policies"=hex:01,00,00,00,02,00,00,00,04,00,00,00,02,00,00,00,02,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,5a,5a,00,00,02,00,00,00,04,00,\
+  00,c0,00,00,00,00,02,00,00,00,04,00,00,c0,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\PowerPolicies\4]
+"Policies"=hex:01,00,00,00,02,00,00,00,04,00,00,00,02,00,00,00,02,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,04,29,00,00,00,00,00,00,02,00,00,00,04,00,\
+  00,c0,00,00,00,00,02,00,00,00,04,00,00,c0,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\PowerPolicies\5]
+"Policies"=hex:01,00,00,00,02,00,00,00,04,00,00,00,02,00,00,00,02,00,00,00,00,\
+  00,00,00,00,00,00,00,dc,05,00,00,98,0d,00,00,00,00,00,00,02,00,00,00,04,00,\
+  00,c0,00,00,00,00,02,00,00,00,04,00,00,c0,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\ProcessorPolicies]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\ProcessorPolicies\0]
+"Policies"=hex:01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,a0,\
+  86,01,00,a0,86,01,00,a0,86,01,00,28,32,00,00,02,00,00,00,a0,86,01,00,a0,86,\
+  01,00,a0,86,01,00,28,3c,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,01,\
+  00,28,50,00,00,01,00,00,00,01,00,00,00,03,00,00,00,00,00,00,00,03,00,00,00,\
+  a0,86,01,00,a0,86,01,00,a0,86,01,00,0a,14,00,00,02,00,00,00,a0,86,01,00,a0,\
+  86,01,00,a0,86,01,00,14,28,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,\
+  01,00,14,46,00,00,01,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\ProcessorPolicies\1]
+"Policies"=hex:01,00,00,00,01,00,00,00,03,00,00,00,00,00,00,00,03,00,00,00,a0,\
+  86,01,00,a0,86,01,00,a0,86,01,00,28,32,00,00,02,00,00,00,a0,86,01,00,a0,86,\
+  01,00,a0,86,01,00,28,3c,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,01,\
+  00,28,50,00,00,01,00,00,00,01,00,00,00,03,00,00,00,00,00,00,00,03,00,00,00,\
+  a0,86,01,00,a0,86,01,00,a0,86,01,00,0a,14,00,00,02,00,00,00,a0,86,01,00,a0,\
+  86,01,00,a0,86,01,00,14,28,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,\
+  01,00,14,46,00,00,01,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\ProcessorPolicies\2]
+"Policies"=hex:01,00,00,00,01,00,00,00,03,00,00,00,00,00,00,00,03,00,00,00,a0,\
+  86,01,00,a0,86,01,00,a0,86,01,00,28,32,00,00,02,00,00,00,a0,86,01,00,a0,86,\
+  01,00,a0,86,01,00,28,3c,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,01,\
+  00,28,50,00,00,01,00,00,00,01,00,00,00,02,00,00,00,00,00,00,00,03,00,00,00,\
+  a0,86,01,00,a0,86,01,00,a0,86,01,00,0a,14,00,00,02,00,00,00,a0,86,01,00,a0,\
+  86,01,00,a0,86,01,00,14,28,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,\
+  01,00,14,46,00,00,01,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\ProcessorPolicies\3]
+"Policies"=hex:01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,a0,\
+  86,01,00,a0,86,01,00,a0,86,01,00,28,32,00,00,02,00,00,00,a0,86,01,00,a0,86,\
+  01,00,a0,86,01,00,28,3c,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,01,\
+  00,28,50,00,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,\
+  a0,86,01,00,a0,86,01,00,a0,86,01,00,0a,14,00,00,02,00,00,00,a0,86,01,00,a0,\
+  86,01,00,a0,86,01,00,14,28,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,\
+  01,00,14,50,00,00,01,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\ProcessorPolicies\4]
+"Policies"=hex:01,00,00,00,01,00,00,00,03,00,00,00,00,00,00,00,03,00,00,00,a0,\
+  86,01,00,a0,86,01,00,a0,86,01,00,28,32,00,00,02,00,00,00,a0,86,01,00,a0,86,\
+  01,00,a0,86,01,00,28,3c,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,01,\
+  00,28,50,00,00,01,00,00,00,01,00,00,00,03,00,00,00,00,00,00,00,03,00,00,00,\
+  a0,86,01,00,a0,86,01,00,a0,86,01,00,0a,14,00,00,02,00,00,00,a0,86,01,00,a0,\
+  86,01,00,a0,86,01,00,14,28,00,00,03,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,\
+  01,00,14,46,00,00,01,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Controls Folder\PowerCfg\ProcessorPolicies\5]
+"Policies"=hex:01,00,00,00,01,00,00,00,03,00,00,00,00,00,00,00,03,00,00,00,a0,\
+  86,01,00,a0,86,01,00,a0,86,01,00,28,32,00,00,02,00,00,00,a0,86,01,00,a0,86,\
+  01,00,a0,86,01,00,28,3c,00,00,02,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,01,\
+  00,28,50,00,00,01,00,00,00,01,00,00,00,02,00,00,00,00,00,00,00,03,00,00,00,\
+  a0,86,01,00,a0,86,01,00,a0,86,01,00,0a,14,00,00,02,00,00,00,a0,86,01,00,a0,\
+  86,01,00,a0,86,01,00,14,28,00,00,02,00,00,00,a0,86,01,00,a0,86,01,00,a0,86,\
+  01,00,14,41,00,00,01,00,00,00
+
+REGEDIT4
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg]
+"CurrentPowerPolicy"="0"
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg\GlobalPowerPolicy]
+"Policies"=hex:01,00,00,00,00,00,00,00,03,00,00,00,10,00,00,00,00,00,00,00,03,\
+  00,00,00,10,00,00,00,02,00,00,00,03,00,00,00,00,00,00,00,02,00,00,00,03,00,\
+  00,00,00,00,00,00,02,00,00,00,01,00,00,00,00,00,00,00,02,00,00,00,01,00,00,\
+  00,00,00,00,00,01,00,00,00,03,00,00,00,03,00,00,00,00,00,00,c0,01,00,00,00,\
+  05,00,00,00,01,00,00,00,0a,00,00,00,00,00,00,00,03,00,00,00,01,00,00,00,01,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
+  00,16,00,00,00
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg\PowerPolicies]
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg\PowerPolicies\0]
+"Name"="Home/Office Desk"
+"Description"="This scheme is suited to most home or desktop computers that are left plugged in all the time."
+"Policies"=hex:01,00,00,00,02,00,00,00,01,00,00,00,00,00,00,00,02,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,2c,01,00,00,32,32,00,03,04,00,00,00,04,00,\
+  00,00,00,00,00,00,00,00,00,00,b0,04,00,00,2c,01,00,00,00,00,00,00,58,02,00,\
+  00,01,01,64,50,64,64,00,00
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg\PowerPolicies\1]
+"Name"="Portable/Laptop"
+"Description"="This scheme is designed for extended battery life for portable computers on the road."
+"Policies"=hex:01,00,00,00,02,00,00,00,01,00,00,00,00,00,00,00,02,00,00,00,01,\
+  00,00,00,00,00,00,00,b0,04,00,00,2c,01,00,00,32,32,03,03,04,00,00,00,04,00,\
+  00,00,00,00,00,00,00,00,00,00,84,03,00,00,2c,01,00,00,08,07,00,00,2c,01,00,\
+  00,01,01,64,50,64,64,00,00
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg\PowerPolicies\2]
+"Name"="Presentation"
+"Description"="This scheme keeps the monitor on for doing presentations."
+"Policies"=hex:01,00,00,00,02,00,00,00,01,00,00,00,00,00,00,00,02,00,00,00,01,\
+  00,00,00,00,00,00,00,00,00,00,00,84,03,00,00,32,32,03,02,04,00,00,00,04,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,2c,01,00,\
+  00,01,01,50,50,64,64,00,00
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg\PowerPolicies\3]
+"Name"="Always On"
+"Description"="This scheme keeps the computer running so that it can be accessed from the network.  Use this scheme if you do not have network wakeup hardware."
+"Policies"=hex:01,00,00,00,02,00,00,00,01,00,00,00,00,00,00,00,02,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,32,32,00,00,04,00,00,00,04,00,\
+  00,00,00,00,00,00,00,00,00,00,b0,04,00,00,84,03,00,00,00,00,00,00,08,07,00,\
+  00,00,01,64,64,64,64,00,00
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg\PowerPolicies\4]
+"Name"="Minimal Power Management"
+"Description"="This scheme keeps the computer on and optimizes it for high performance."
+"Policies"=hex:01,00,00,00,02,00,00,00,01,00,00,00,00,00,00,00,02,00,00,00,00,\
+  00,00,00,00,00,00,00,00,00,00,00,2c,01,00,00,32,32,03,03,04,00,00,00,04,00,\
+  00,00,00,00,00,00,00,00,00,00,84,03,00,00,2c,01,00,00,00,00,00,00,84,03,00,\
+  00,00,01,64,64,64,64,00,00
+
+[HKEY_CURRENT_USER\Control Panel\PowerCfg\PowerPolicies\5]
+"Name"="Max Battery"
+"Description"="This scheme is extremely aggressive for saving power."
+"Policies"=hex:01,00,00,00,02,00,00,00,01,00,00,00,00,00,00,00,02,00,00,00,05,\
+  00,00,00,00,00,00,00,b0,04,00,00,78,00,00,00,32,32,03,02,04,00,00,00,04,00,\
+  00,00,00,00,00,00,00,00,00,00,84,03,00,00,3c,00,00,00,00,00,00,00,b4,00,00,\
+  00,01,01,64,32,64,64,00,00

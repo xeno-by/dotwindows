@@ -1,0 +1,10 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Console\Far Manager]
+"FontSize"=dword:00120000
+
+[HKEY_CURRENT_USER\Console\%SystemRoot%_system32_cmd.exe]
+"FontSize"=dword:00120008
+
+[HKEY_CURRENT_USER\Console]
+"FontSize"=dword:00120008

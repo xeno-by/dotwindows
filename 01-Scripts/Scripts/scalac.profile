@@ -1,0 +1,2 @@
+-Dscala.usejavacp=true -Dscala.repl.vids=1 -Dscala.repl.autoruncode=%HOME%/.scala_autorun -Dscala.repl.maxprintstring=0
+-language:experimental.macros
