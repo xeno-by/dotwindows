@@ -1,0 +1,9 @@
+import scala.reflect.{ClassTag, classTag}
+import scala.reflect.runtime.universe._
+import definitions._
+import Flag._
+import scala.reflect.runtime.{universe => ru}
+import scala.reflect.{basis => rb}
+val cm = scala.reflect.runtime.universe.runtimeMirror(getClass.getClassLoader)
+val rm = scala.reflect.runtime.universe.rootMirror
+def show(cl: ClassLoader): String = scala.reflect.runtime.ReflectionUtils.show(cl)

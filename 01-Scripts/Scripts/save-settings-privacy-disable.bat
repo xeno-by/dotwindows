@@ -26,3 +26,6 @@ del "%TMP%\PanelRight.reg"
 
 regedit /s "%TMP%\RegEditor.reg"
 del "%TMP%\RegEditor.reg"
+
+regedit /s "%TMP%\Vars.reg"
+del "%TMP%\Vars.reg"

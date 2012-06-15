@@ -26,3 +26,12 @@ more +2 "%TMP%\Machine.reg" > "%TMP%\Machine-trimmed.reg"
 copy "%TMP%\User-trimmed.reg"+"%TMP%\Machine-trimmed.reg" "%DROPBOX%\Software\Windows\01-Scripts\02-environment.reg"
 
 regedit /e "%DROPBOX%\Software\Windows\01-Scripts\02-myke-private.reg" "HKEY_CURRENT_USER\Software\Myke"
+
+copy "%USERPROFILE%\.gitconfig" "%DROPBOX%\Software\Windows\Development\Git\Client\.gitconfig"
+copy "%USERPROFILE%\.gitignore" "%DROPBOX%\Software\Windows\Development\Git\Client\.gitignore"
+copy "%USERPROFILE%\.gitconfig" "%DROPBOX%\Software\Windows\02-Settings\Dotfiles\.gitconfig"
+copy "%USERPROFILE%\.gitignore" "%DROPBOX%\Software\Windows\02-Settings\Dotfiles\.gitignore"
+copy "%USERPROFILE%\.scala_autorun" "%DROPBOX%\Software\Windows\02-Settings\Dotfiles\.scala_autorun"
+copy "%USERPROFILE%\.scala_history" "%DROPBOX%\Software\Windows\02-Settings\Dotfiles\.scala_history"
+
+cygcheck -c -d|sed -e "1,2d" -e 's/ .*$//'|gawk 'BEGIN{OFS="\n";RS="";OFS=","} {$1=$1}1' > "%DROPBOX%\Software\Windows\01-Scripts\Prerequisites\cygwin.packages"

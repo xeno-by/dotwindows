@@ -1,0 +1,16 @@
+[user]
+  name = Eugene Burmako
+  email = xeno.by@gmail.com
+[log]
+  date = relative
+  decorate = short
+  abbrev = 10
+  abbrevCommit = true
+[core]
+  autocrlf = false
+  filemode = false
+  abbrev = 10
+  quotepath = true
+  excludesFile = ~/.gitignore
+[rerere]
+  enabled = 1

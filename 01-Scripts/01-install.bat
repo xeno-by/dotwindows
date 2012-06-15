@@ -23,4 +23,5 @@ if not exist %CYGHOME% mkdir %CYGHOME%
 if not exist %CYGROOT%\home\xeno_by mklink %CYGROOT%\home\xeno_by %CYGHOME% /D
 if not exist %CYGROOT%\home\administrator mklink %CYGROOT%\home\administrator %CYGHOME% /D
 
-"%~dp0\Prerequisites\cygwin.exe"
+regedit /S "%~dp0\Prerequisites\cygwin.reg"
+"%~dp0\Prerequisites\cygwin.bat"
