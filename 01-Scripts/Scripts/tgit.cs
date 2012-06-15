@@ -19,8 +19,11 @@ public class App {
 
     var tgit = @"C:\Program Files\TortoiseGit\bin\TortoiseProc.exe";
     var p = Process.Start(tgit, String.Join(",", new []{cmd, path}));
-    Thread.Sleep(100);
-    MoveWindow(p.MainWindowHandle, 960, 0, 960, 1160, true);
+
+    if (cmd != "commit") {
+      Thread.Sleep(100);
+      MoveWindow(p.MainWindowHandle, 960, 0, 960, 1160, true);
+    }
   }
 
   [DllImport("user32.dll", SetLastError = true)]

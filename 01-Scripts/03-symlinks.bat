@@ -9,6 +9,7 @@ deploy-symlink "%XENODRIVE%\Video" "%USERPROFILE%\Videos"
 if not exist "%HOMEDRIVE%\Projects" mkdir "%HOMEDRIVE%\Projects"
 deploy-symlink "%HOMEDRIVE%\Projects" "%USERPROFILE%\Projects"
 deploy-symlink "%DROPBOX%\Wallpapers" "%USERPROFILE%\Pictures\Wallpapers"
+deploy-symlink "%DROPBOX%\Passwords" "%USERPROFILE%\.ssh"
 
 if defined CYGROOT (
   deploy-symlink "%XENODRIVE%" "%CYGROOT%\media\XENO"
@@ -21,6 +22,8 @@ if defined CYGHOME (
   deploy-symlink "%XENODRIVE%\Music" "%CYGHOME%\Music"
   deploy-symlink "%XENODRIVE%\Video" "%CYGHOME%\Videos"
   deploy-symlink "%HOMEDRIVE%\Projects" "%CYGHOME%\Projects"
+  deploy-symlink "%USERPROFILE%\.ssh" "%CYGHOME%\.ssh"
+  deploy-symlink "%USERPROFILE%\.ssh" "%CYGHOME%\..\xeno.by\.ssh"
 )
 
 deploy-symlink "%SOFTWARE%\..\Opera\sessions" "%APPDATA%\Opera\Opera\sessions"
