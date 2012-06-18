@@ -102,8 +102,8 @@ public class Kep : Git {
     } else {
       var mods = arguments;
       var library = mods.Contains("library");
-      var reflect = mods.Contains("reflect");
-      var compiler = mods.Count() == 0 || mods.Contains("compiler");
+      var reflect = mods.Count() == 0 || mods.Contains("reflect");
+      var compiler = mods.Contains("compiler");
       var reflectAndCompiler = mods.Contains("reflect-and-compiler");
       var altLibrary = mods.Contains("alt") || mods.Contains("alt-library");
       var altReflect = mods.Contains("alt-reflect");

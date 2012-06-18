@@ -43,7 +43,8 @@ public class SublimeScalaEnsime : Sbt {
 
     var archive = version + ".tar.gz";
     result = result && Console.batch(String.Format("tar -pvczf {0} {1}", archive, version), home: "%TMP%".Expand());
-    return result && transplantFile("%TMP%\\" + archive, "D:\\" + archive);
+    var destination = "D:\\" + archive;
+    return result && transplantFile("%TMP%\\" + archive, destination) && println("Wrote the archive to " + destination);
     // todo. would be great to programmatically deploy to Github's downloads
   }
 }
