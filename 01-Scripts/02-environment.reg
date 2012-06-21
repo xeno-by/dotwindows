@@ -281,5 +281,6 @@ Windows Registry Editor Version 5.00
 "windows_tracing_flags"="3"
 "XENODRIVE"="d:"
 "XPS2IMG_HOME"="C:\\Program Files (x86)\\xps2img"
+"VBOX_INSTALL_PATH"="C:\\Program Files\\Oracle\\VirtualBox\\"
 
 
