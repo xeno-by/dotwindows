@@ -663,17 +663,16 @@ public class Kep : Git {
     return status;
   }
 
-  [Action, MenuItem(description = "Deploy to Starr", priority = 999.2)]
-  public virtual ExitCode deployStarr() {
+  [Action, MenuItem(description = "Deploy to Kepler", priority = 999.2)]
+  public virtual ExitCode deployKepler() {
     var source = mostUptodateLibs();
     if (source == null) { println("Couldn't find neither pack nor palo nor lolo to deploy"); return -1; }
 
     println("Deploying starr upon ourselves...");
-    var status = transplantFile(source + "lib/scala-library.jar", project + "/lib/scala-library.jar");
-    if (File.Exists(source + "lib/scala-reflect.jar")) {
-      status = status && transplantFile(source + "lib/scala-reflect.jar", project + "/lib/scala-reflect.jar");
-    }
-    status = status && transplantFile(source + "lib/scala-compiler.jar", project + "/lib/scala-compiler.jar");
+    var target = new Kep().project;
+    var status = transplantFile(source + "lib/scala-library.jar", target + "/lib/scala-library.jar");
+    status = status && transplantFile(source + "lib/scala-reflect.jar", target + "/lib/scala-reflect.jar");
+    status = status && transplantFile(source + "lib/scala-compiler.jar", target + "/lib/scala-compiler.jar");
     return status;
   }
 
@@ -687,9 +686,7 @@ public class Kep : Git {
 
     println("Deploying ourselves as a snapshot for Ensime...");
     status = status && transplantFile(source + "lib/scala-library.jar", "%APPDATA%/Sublime Text 2/Packages/SublimeEnsime/scala/scala-library.jar");
-    if (File.Exists(project + "/" + source + "lib/scala-reflect.jar")) {
-      status = status && transplantFile(source + "lib/scala-reflect.jar", "%APPDATA%/Sublime Text 2/Packages/SublimeEnsime/scala/scala-reflect.jar");
-    }
+    status = status && transplantFile(source + "lib/scala-reflect.jar", "%APPDATA%/Sublime Text 2/Packages/SublimeEnsime/scala/scala-reflect.jar");
     status = status && transplantFile(source + "lib/scala-compiler.jar", "%APPDATA%/Sublime Text 2/Packages/SublimeEnsime/scala/scala-compiler.jar");
     return status;
   }

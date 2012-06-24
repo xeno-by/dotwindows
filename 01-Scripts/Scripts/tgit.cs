@@ -22,7 +22,8 @@ public class App {
 
     if (cmd != "commit") {
       Thread.Sleep(100);
-      MoveWindow(p.MainWindowHandle, 960, 0, 960, 1160, true);
+      // MoveWindow(p.MainWindowHandle, 960, 0, 960, 1160, true);
+      MoveWindow(p.MainWindowHandle, 683, 0, 683, 728, true);
     }
   }
 
