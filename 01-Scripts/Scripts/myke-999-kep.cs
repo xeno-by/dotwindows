@@ -450,7 +450,7 @@ public class Kep : Git {
   [Action]
   public override ExitCode open() {
     if (inTest) { Config.action = "run-test"; return runTest(); }
-    else if (inPlayground && file.Extension == "scala") { Config.action = "run"; return run(); }
+    else if (inPlayground && file.Extension == ".scala") { Config.action = "run"; return run(); }
     else return base.open();
   }
 
