@@ -5,6 +5,7 @@
 ;= goto end
 
 ;= Favorite directories
+p=ping google.com
 time="%SCRIPTS_HOME%\time.exe" $*
 type="%SCRIPTS_HOME%\type.exe" $*
 echo="%CYGROOT%\bin\echo.exe" $*
@@ -33,6 +34,7 @@ bis=cd /D "%DROPBOX%\Software\Windows\Far Manager\Sources"
 prj=cd /D "%PROJECTS%"
 fos=cd /D "%DROPBOX%\Projects\Foundations of Software\Documents"
 aa=cd /D "%DROPBOX%\Projects\Advanced Algorithms\Documents"
+icfp=cd /D "%PROJECTS%\ICFP"
 sri=cd /D "%PROJECTS%\Scalariform"
 sre=cd /D "%PROJECTS%\ScalaRefactoring"
 pg=cd /D "%DROPBOX%\Scratchpad\Scala"

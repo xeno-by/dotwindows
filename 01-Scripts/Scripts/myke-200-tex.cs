@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "tex", priority = 200, description =
+[Connector(name = "tex", priority = 201, description =
   "Compiles tex files using pdflatex.\r\n" +
   "Supports the idiom of master files (i.e. ones that have to be built instead of the target one).")]
 

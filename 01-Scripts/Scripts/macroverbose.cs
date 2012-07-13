@@ -1,4 +1,4 @@
-// build this with "csc /t:winexe verbose.cs"
+// build this with "csc /t:winexe macroverbose.cs"
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 public class App {
   [STAThread]
   public static void Main(String[] args) {
-    var profile = File.ReadAllText("%SCRIPTS_HOME%/scalac.verbose".Expand());
+    var profile = File.ReadAllText("%SCRIPTS_HOME%/scalac.macroverbose".Expand());
     File.WriteAllText("%SCRIPTS_HOME%/scalac.profile".Expand(), profile);
   }
 }

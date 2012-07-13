@@ -1,0 +1,3379 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PowerShellFar</name>
+    </assembly>
+    <members>
+        <member name="T:PowerShellFar.Commands.BaseCmdlet">
+            <summary>
+            PowerShellFar base cmdlet.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Commands.BaseCmdlet.AddCmdlets(System.Management.Automation.Runspaces.RunspaceConfiguration)">
+            <summary>
+            Adds cmdlets to a configuration.
+            </summary>
+        </member>
+        <member name="T:My.Enumerator`2">
+            <summary>
+            Enumerator based on yet another one.
+            </summary>
+            <remarks>
+            You have to override <see cref="M:My.Enumerator`2.MoveNext"/>.
+            </remarks>
+            <typeparam name="S">Source type.</typeparam>
+            <typeparam name="T">Result type.</typeparam>
+        </member>
+        <member name="M:My.Enumerator`2.MoveNext">
+            <summary>
+            Calls _enumerator.MoveNext() and set _current.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.EditorConsole">
+            <summary>
+            Editor console.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.EditorConsole.CreateConsole(System.Boolean)">
+            <summary>
+            Creates an editor console.
+            </summary>
+            <remarks>
+            With prompt may return null if a user cancels.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.EditorConsole.OnKeyDown(System.Object,FarNet.KeyEventArgs)">
+            <summary>
+            Called on key in psfconsole.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Format.SetupPanelMode(System.Collections.Generic.IList{PowerShellFar.Meta})">
+            <summary>
+            Gets meta objects for columns.
+            </summary>
+            <returns>Meta objects ready for column mapping.</returns>
+        </member>
+        <member name="T:PowerShellFar.Help">
+            <summary>
+            Help tools.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.JobCommand">
+            <summary>
+            Job command (a command name or a script block).
+            </summary>
+            <remarks>
+            Normally you should not create instances directly.
+            When needed they are created internally from strings or script blocks.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.JobCommand.#ctor(System.String)">
+            <summary>
+            Creates a command from a command name.
+            </summary>
+            <param name="commandName">Command name or script file name/path.</param>
+        </member>
+        <member name="M:PowerShellFar.JobCommand.#ctor(System.Management.Automation.ScriptBlock)">
+            <summary>
+            Creates a command from a script block.
+            </summary>
+            <param name="scriptBlock">Job script block.</param>
+        </member>
+        <member name="M:PowerShellFar.JobCommand.#ctor(System.String,System.Boolean)">
+            <summary>
+            Creates a command from text.
+            </summary>
+            <param name="commandText">Cmdlet/script name or script code.</param>
+            <param name="isScript">Command text is script code.</param>
+        </member>
+        <member name="P:PowerShellFar.JobCommand.Command">
+            <summary>
+            Command name or code.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.AnyPanel">
+            <summary>
+            Base class of PowerShellFar panels.
+            </summary>
+            <remarks>
+            <para>
+            Terminology (both for names and documentation):
+            "files" (<c>FarFile</c>) are elements of <see cref="T:FarNet.Panel"/>;
+            "items" (<c>PSObject</c>) are <see cref="P:FarNet.FarFile.Data"/> attached to "files".
+            Note that null and ".." items are not processed (e.g. by <see cref="P:PowerShellFar.AnyPanel.ShownItems"/>
+            and <see cref="P:PowerShellFar.AnyPanel.SelectedItems"/>).
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIOpenFile(FarNet.FarFile)">
+            <summary>
+            Opens the file using <see cref="P:PowerShellFar.AnyPanel.AsOpenFile"/> or the default method.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.OpenFile(FarNet.FarFile)">
+            <summary>
+            Opens a file.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.DoEditFile(FarNet.FarFile)">
+            <summary>
+            <see cref="M:PowerShellFar.AnyPanel.UIEditFile(FarNet.FarFile)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIEditFile(FarNet.FarFile)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.DoViewFile(FarNet.FarFile)">
+            <summary>
+            <see cref="M:PowerShellFar.AnyPanel.UIViewFile(FarNet.FarFile)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIViewFile(FarNet.FarFile)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIViewAll">
+            <summary>
+            Shows all files information using <see cref="P:PowerShellFar.AnyPanel.AsViewAll"/> or the default method.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.#ctor(FarNet.Explorer)">
+            <summary>
+            Default panel.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.OpenChildBegin(FarNet.Panel)">
+            
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.ShowHelpForPanel">
+            <summary>
+            Shows help.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.ShowMenu">
+            <summary>
+            Shows help menu (e.g. called on [F1]).
+            </summary>
+            <seealso cref="E:PowerShellFar.AnyPanel.MenuCreating"/>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIApply">
+            <summary>Apply command.</summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIAttributes">
+            <summary>Attributes action.</summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIHelp">
+            <summary>
+            Shows help or the panel menu.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIMode">
+            <summary>Mode action.</summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIOpenFileMembers">
+            
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UpdateRedraw(System.Boolean)">
+            <summary>
+            Updates Far data and redraws.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UpdateRedraw(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Updates Far data and redraws with positions.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.OpenFileMembers(FarNet.FarFile)">
+            <summary>
+            Opens the file member panel.
+            </summary>
+            <remarks>
+            The base method propagates lookup openers.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.AddLookup(System.String,System.Object)">
+            <summary>
+			Adds a lookup handler.
+		</summary><param name="name">
+			Name of a <see cref="T:PowerShellFar.ListPanel"/> file.
+		</param><param name="handler">Handler of [Enter] on a file.</param><remarks>
+			<para>
+				These handles are used by <see cref="T:PowerShellFar.ListPanel"/> but often they are added to
+				<see cref="T:PowerShellFar.TablePanel"/> and then internally passed in its child <see cref="T:PowerShellFar.ListPanel"/>.
+			</para>
+			<para>
+				Example: if this is a <see cref="T:PowerShellFar.DataPanel"/> then the added handler will be called when
+				[Enter] is pressed on its child <see cref="T:PowerShellFar.MemberPanel"/> file with the specified name.
+				Normally the task of this handler is to start another table containing values to be selected
+				and to set a handler triggered on [Enter] there (see <see cref="P:PowerShellFar.AnyPanel.Lookup"/>).
+				Example script: <c>Test-Panel-DbNotes-.ps1</c>.
+			</para>
+		</remarks>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.AddLookup(System.Collections.IDictionary)">
+            <summary>
+            Adds name/handler pairs to the lookup collection.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.HelpMenuCreate">
+            <summary>
+            Creates or gets existing menu.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.HelpMenuInitItems(PowerShellFar.HelpMenuItems,PowerShellFar.PanelMenuEventArgs)">
+            <summary>
+            Derived should add its items, then call base.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIKeyPressed(System.Int32,FarNet.KeyStates)">
+            
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UICloneFile(FarNet.CloneFileEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.AnyPanel.UIRenameFile(FarNet.RenameFileEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.AsOpenFile">
+            <summary>
+            Gets or sets the script to open a file (e.g. on [Enter]).
+            Arguments: 0: this panel, 1: <see cref="T:FarNet.OpenFileEventArgs"/>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.AsEditFile">
+            <summary>
+            <see cref="M:PowerShellFar.AnyPanel.UIEditFile(FarNet.FarFile)"/> worker.
+            Arguments: 0: this panel, 1: <see cref="T:FarNet.FarFile"/>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.AsViewFile">
+            <summary>
+            <see cref="M:PowerShellFar.AnyPanel.UIViewFile(FarNet.FarFile)"/> worker.
+            Arguments: 0: this panel, 1: <see cref="T:FarNet.FarFile"/>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.AsViewAll">
+            <summary>
+            Gets or sets the script to show all files information (e.g. on [F3] on the dots).
+            Arguments: 0: this panel.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.ShownItems">
+            <summary>
+            Gets all items. See <see cref="T:PowerShellFar.AnyPanel"/> remarks.
+            </summary>
+            <remarks>
+            Items are returned according to the current panel filter and sort order.
+            <para>
+            WARNING: it is <c>IEnumerable</c>, not a list or an array.
+            </para>
+            <example>
+            OK:
+            <code>
+            foreach($item in $panel.ShownItems) { ... }
+            $panel.ShownItems | ...
+            </code>
+            ERROR:
+            <code>
+            $panel.ShownItems.Count
+            $panel.ShownItems[$index]
+            </code>
+            OK: use operator @() when you really want an array:
+            <code>
+            $items = @($panel.ShownItems)
+            $items.Count
+            $items[$index]
+            </code>
+            </example>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.SelectedItems">
+            <summary>
+            Gets selected items. See <see cref="T:PowerShellFar.AnyPanel"/> and <see cref="P:PowerShellFar.AnyPanel.ShownItems"/> remarks.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.CurrentItem">
+            <summary>
+            Gets the current item. It can be null (e.g. if ".." is the current file).
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.IgnoreDirectoryFlag">
+            <summary>
+            Tells to treat the items as not directories even if they have a directory flag.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.Lookup">
+            <summary>
+            Sets a handler called on [Enter] and makes this panel lookup.
+            </summary>
+            <remarks>
+            If it is set than [Enter] triggers this handler and closes the panel.
+            This is normally used for selecting an item from a table.
+            The task of this handler is to use this selected item.
+            <para>
+            Lookup panels are usually derived from <see cref="T:PowerShellFar.TablePanel"/>.
+            Panels derived from <see cref="T:PowerShellFar.ListPanel"/> also can be lookup but this scenario is not tested.
+            </para>
+            </remarks>
+            <seealso cref="M:PowerShellFar.MemberPanel.CreateDataLookup(System.String[])"/>
+        </member>
+        <member name="P:PowerShellFar.AnyPanel.UserWants">
+            <summary>
+            The last user action.
+            </summary>
+        </member>
+        <member name="E:PowerShellFar.AnyPanel.MenuCreating">
+            <summary>
+            Called when the panel help menu is just created (e.g. on [F1]).
+            </summary>
+            <remarks>
+            You may add your menu items to the menu. The sender of the event is this panel (<c>$this</c>).
+            </remarks>
+            <seealso cref="M:PowerShellFar.AnyPanel.ShowMenu"/>
+        </member>
+        <member name="T:PowerShellFar.PanelMenuEventArgs">
+            <summary>
+            Arguments of the <see cref="E:PowerShellFar.AnyPanel.MenuCreating"/> event.
+            </summary>
+            <remarks>
+            Handlers should add their menu items to the panel menu.
+            If needed, e.g. to decide to set items disabled or not include them at all,
+            they should use ready <see cref="P:PowerShellFar.PanelMenuEventArgs.CurrentFile"/> and <see cref="P:PowerShellFar.PanelMenuEventArgs.SelectedList"/>
+            instead of requesting them from the panel.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PanelMenuEventArgs.Menu">
+            <summary>
+            Menu for adding items.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.PanelMenuEventArgs.CurrentFile">
+            <summary>
+            Facility: the current file.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.PanelMenuEventArgs.SelectedList">
+            <summary>
+            Facility: the selected file list.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.TableExplorer">
+            <summary>
+            Abstract table explorer.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.PowerExplorer">
+            <summary>
+            Explorer designed for PowerShell scripts.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.#ctor(System.Guid)">
+            <summary>
+            New explorer with its type ID.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoGetFiles(FarNet.GetFilesEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.GetFiles(FarNet.GetFilesEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.GetFiles(FarNet.GetFilesEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoExploreDirectory(FarNet.ExploreDirectoryEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExploreDirectory(FarNet.ExploreDirectoryEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.ExploreDirectory(FarNet.ExploreDirectoryEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoExploreLocation(FarNet.ExploreLocationEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExploreLocation(FarNet.ExploreLocationEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.ExploreLocation(FarNet.ExploreLocationEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoExploreParent(FarNet.ExploreParentEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExploreParent(FarNet.ExploreParentEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.ExploreParent(FarNet.ExploreParentEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoExploreRoot(FarNet.ExploreRootEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExploreRoot(FarNet.ExploreRootEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.ExploreRoot(FarNet.ExploreRootEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoGetContent(FarNet.GetContentEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.GetContent(FarNet.GetContentEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.GetContent(FarNet.GetContentEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoSetFile(FarNet.SetFileEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.SetFile(FarNet.SetFileEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.SetFile(FarNet.SetFileEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoSetText(FarNet.SetTextEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.SetText(FarNet.SetTextEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.SetText(FarNet.SetTextEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoCloneFile(FarNet.CloneFileEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.CloneFile(FarNet.CloneFileEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.CloneFile(FarNet.CloneFileEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoCreateFile(FarNet.CreateFileEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.CreateFile(FarNet.CreateFileEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.CreateFile(FarNet.CreateFileEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoOpenFile(FarNet.OpenFileEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.OpenFile(FarNet.OpenFileEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.OpenFile(FarNet.OpenFileEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoRenameFile(FarNet.RenameFileEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.RenameFile(FarNet.RenameFileEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.RenameFile(FarNet.RenameFileEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoAcceptFiles(FarNet.AcceptFilesEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.AcceptFiles(FarNet.AcceptFilesEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.AcceptFiles(FarNet.AcceptFilesEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoImportFiles(FarNet.ImportFilesEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.ImportFiles(FarNet.ImportFilesEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.ImportFiles(FarNet.ImportFilesEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoExportFiles(FarNet.ExportFilesEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExportFiles(FarNet.ExportFilesEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.ExportFiles(FarNet.ExportFilesEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoDeleteFiles(FarNet.DeleteFilesEventArgs)">
+            <summary>
+            <see cref="M:FarNet.Explorer.DeleteFiles(FarNet.DeleteFilesEventArgs)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DeleteFiles(FarNet.DeleteFilesEventArgs)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoCreatePanel">
+            <summary>
+            <see cref="M:FarNet.Explorer.CreatePanel"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.CreatePanel">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.DoEnterPanel(FarNet.Panel)">
+            <summary>
+            <see cref="M:FarNet.Explorer.EnterPanel(FarNet.Panel)"/> worker.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PowerExplorer.EnterPanel(FarNet.Panel)">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.Cache">
+            <summary>
+            Gets the collection ready to use as the file cache, if needed.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.Data">
+            <summary>
+            Gets or sets the user data object.
+            </summary>
+            <remarks>
+            Normally it should be set on creation to describe the assigned explorer location,
+            so that other explorer methods can use this information. There is no much sense
+            to change these data later (note: each explorer deals with one fixed location).
+            But it is fine to cache files in here and refresh them when needed.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsGetFiles">
+            <summary>
+            <see cref="M:FarNet.Explorer.GetFiles(FarNet.GetFilesEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.ExplorerEventArgs"/>.
+            <para>
+            The script outputs files or nothing. In the latter case the predefined <see cref="P:PowerShellFar.PowerExplorer.Cache"/> list is used.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsExploreDirectory">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExploreDirectory(FarNet.ExploreDirectoryEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.ExploreDirectoryEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsExploreLocation">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExploreLocation(FarNet.ExploreLocationEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.ExploreLocationEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsExploreParent">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExploreParent(FarNet.ExploreParentEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.ExplorerEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsExploreRoot">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExploreRoot(FarNet.ExploreRootEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.ExplorerEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsGetContent">
+            <summary>
+            <see cref="M:FarNet.Explorer.GetContent(FarNet.GetContentEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.GetContentEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsSetFile">
+            <summary>
+            <see cref="M:FarNet.Explorer.SetFile(FarNet.SetFileEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.SetFileEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsSetText">
+            <summary>
+            <see cref="M:FarNet.Explorer.SetText(FarNet.SetTextEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.SetTextEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsCloneFile">
+            <summary>
+            <see cref="M:FarNet.Explorer.CloneFile(FarNet.CloneFileEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.CloneFileEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsCreateFile">
+            <summary>
+            <see cref="M:FarNet.Explorer.CreateFile(FarNet.CreateFileEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.CreateFileEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsOpenFile">
+            <summary>
+            <see cref="M:FarNet.Explorer.OpenFile(FarNet.OpenFileEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.OpenFileEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsRenameFile">
+            <summary>
+            <see cref="M:FarNet.Explorer.RenameFile(FarNet.RenameFileEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.RenameFileEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsAcceptFiles">
+            <summary>
+            <see cref="M:FarNet.Explorer.AcceptFiles(FarNet.AcceptFilesEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.AcceptFilesEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsImportFiles">
+            <summary>
+            <see cref="M:FarNet.Explorer.ImportFiles(FarNet.ImportFilesEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.ImportFilesEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsExportFiles">
+            <summary>
+            <see cref="M:FarNet.Explorer.ExportFiles(FarNet.ExportFilesEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.ExportFilesEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsDeleteFiles">
+            <summary>
+            <see cref="M:FarNet.Explorer.DeleteFiles(FarNet.DeleteFilesEventArgs)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.DeleteFilesEventArgs"/>.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsCreatePanel">
+            <summary>
+            <see cref="M:FarNet.Explorer.CreatePanel"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.PowerExplorer.AsEnterPanel">
+            <summary>
+            <see cref="M:FarNet.Explorer.EnterPanel(FarNet.Panel)"/> worker.
+            </summary>
+            <remarks>
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.Panel"/> to be updated.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.TableExplorer.#ctor(System.Guid)">
+            
+        </member>
+        <member name="P:PowerShellFar.TableExplorer.Columns">
+            <summary>
+			Columns definitions. Set it only when the panel has no files.
+		</summary><remarks>
+			Items of this array are similar to <c>Format-Table</c> parameter <c>-Property</c> items.
+			Strings define properties and the same column names; hashtables provide more information:
+			properties or script blocks, column titles, widths, types, and format strings.
+			See <see cref="T:PowerShellFar.Meta"/> remarks about use of dictionaries as items
+			and <see cref="P:FarNet.PanelPlan.Columns"/> about column types.
+			<para>
+				Columns of <see cref="T:PowerShellFar.DataPanel"/> can be mapped only to properties,
+				that is to data table fields. Script blocks are not supported.
+			</para>
+			<para>
+				Special case: 'N' column (Name) of <see cref="T:PowerShellFar.ItemPanel"/> is always mapped to the <c>PSChildName</c>
+				for providers with container items (e.g. Registry). For this column any custom data source is ignored.
+				But it has to be included to describe other information: position, title, width, format string.
+				Note: if column types are not specified then normally the first column is treated as 'N'.
+			</para>
+		</remarks>
+        </member>
+        <member name="M:PowerShellFar.DataExplorer.DoCreatePanel">
+            
+        </member>
+        <member name="M:PowerShellFar.DataExplorer.DoGetFiles(FarNet.GetFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.DataExplorer.DoDeleteFiles(FarNet.DeleteFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.DataExplorer.DoCreateFile(FarNet.CreateFileEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.DataExplorer.DoGetContent(FarNet.GetContentEventArgs)">
+            
+        </member>
+        <member name="T:PowerShellFar.Entry">
+            <summary>
+            FarNet module host for internal use.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Entry.#ctor">
+            
+        </member>
+        <member name="M:PowerShellFar.Entry.Connect">
+            
+        </member>
+        <member name="M:PowerShellFar.Entry.Disconnect">
+            
+        </member>
+        <member name="M:PowerShellFar.Entry.CanExit">
+            
+        </member>
+        <member name="M:PowerShellFar.Entry.Invoking">
+            
+        </member>
+        <member name="P:PowerShellFar.Entry.Instance">
+            <summary>
+            For internal use.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.Msg(System.Exception)">
+            <summary>
+            Shows an error.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.Message(System.String)">
+            <summary>
+            Shows a message.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.CreateViewer(System.String)">
+            <summary>
+            Creates standard Far viewer ready for opening (F3)
+            </summary>
+            <param name="filePath">Existing file to view.</param>
+        </member>
+        <member name="M:PowerShellFar.A.SetPropertyValue(System.String,System.String,System.Object)">
+            <summary>
+            Sets an item property value as it is.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.WriteErrors(System.IO.TextWriter,System.Collections.IEnumerable)">
+            <summary>
+            Writes invocation errors.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.WriteException(System.IO.TextWriter,System.Exception)">
+            <summary>
+            Writes invocation exception.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.SetContentUI(System.String,System.String)">
+            <summary>
+            Sets an item content, shows errors.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.Out(System.Management.Automation.PowerShell,System.Collections.IEnumerable)">
+            <summary>
+            Outputs to the default formatter.
+            </summary>
+            <param name="ps">Pipeline.</param>
+            <param name="input">Input objects.</param>
+        </member>
+        <member name="M:PowerShellFar.A.OutReason(System.Management.Automation.PowerShell,System.Exception)">
+            <summary>
+            Outputs an exception or its error record.
+            </summary>
+            <param name="ps">Pipeline.</param>
+            <param name="ex">Exception.</param>
+        </member>
+        <member name="M:PowerShellFar.A.ShowError(System.Management.Automation.PowerShell)">
+            <summary>
+            Shows errors, if any, in a message box and returns true, else just returns false.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.SetCurrentDirectoryFinally(System.String)">
+            <summary>
+            Sets current directory, shows errors but does not throw.
+            </summary>
+            <param name="currentDirectory">null or a path.</param>
+        </member>
+        <member name="M:PowerShellFar.A.FindDisplayProperty(System.Management.Automation.PSObject)">
+            <summary>
+            Finds heuristically a property to be used to display the object.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.GetCommonBaseType(System.Object)">
+            <summary>
+            Gets heuristic base type suitable to be common for mixed sets.
+            </summary>
+            <remarks>
+            This method should be consistent with redirection in <see cref="M:PowerShellFar.A.FindTableControl(System.String,System.String)"/>.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.A.FindTableControl(System.String,System.String)">
+            <summary>
+            Finds an available table control.
+            </summary>
+            <param name="typeName">The type name. To be redirected for some types.</param>
+            <param name="tableName">Optional table name to find.</param>
+            <returns>Found table control or null.</returns>
+            <remarks>
+            Type name redirection should be consistent with <see cref="M:PowerShellFar.A.GetCommonBaseType(System.Object)"/>.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.A.GetChildItems(System.String)">
+            <summary>
+            Robust Get-ChildItem.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.InvokeCode(System.String,System.Object[])">
+            <summary>
+            Invokes the script code.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.InvokeScript(System.Management.Automation.ScriptBlock,System.Object[])">
+            <summary>
+            Invokes the handler-like script and returns the result collection.
+            </summary>
+            <param name="script">The script block to invoke.</param>
+            <param name="args">Script arguments.</param>
+        </member>
+        <member name="M:PowerShellFar.A.InvokeScriptReturnAsIs(System.Management.Automation.ScriptBlock,System.Object[])">
+            <summary>
+            Invokes the handler-like script and returns the result as it is.
+            </summary>
+            <param name="script">The script block to invoke.</param>
+            <param name="args">Script arguments.</param>
+        </member>
+        <member name="M:PowerShellFar.A.FileNameList(System.Collections.Generic.IList{FarNet.FarFile})">
+            <summary>
+            Collects names of files.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.A.InvokeFormatList(System.Object,System.Boolean)">
+            <summary>
+            Invokes Format-List with output to string.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.A.Psf">
+            <summary>PowerShellFar actor.</summary>
+        </member>
+        <member name="P:PowerShellFar.A.OutCommand">
+            <summary>
+            Command for formatted output of everything.
+            </summary>
+            <remarks>
+            "Out-Default" is not suitable for external apps, output goes to console.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.A.FormatEnumerationLimit">
+            <summary>
+            Gets the $FormatEnumerationLimit if it is sane or 4.
+            </summary>
+        </member>
+        <member name="T:My.VoidEnumerator`1">
+            <summary>
+            Void enumerator.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Commands.BaseMenuCmdlet">
+            <summary>
+            Common features of menu cmdlets.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Commands.BaseTextCmdlet">
+            <summary>
+            Common features of cmdlets opening text files.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Commands.BasePanelCmdlet">
+            <summary>
+            Common panel parameters.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Commands.NewFarFileCommand.Name">
+            <summary>
+            See <see cref="P:FarNet.FarFile.Name"/>.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Converter">
+            <summary>
+            Convertion tools.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Converter.ParseBoolean(System.String)">
+            <summary>
+            Extends possible Boolean input with 0 and 1.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Converter.IsPrimitiveType(System.Type)">
+            <summary>
+            Primitive type is represented by one line string with no or primitive formatting.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Converter.IsLinearType(System.Type)">
+            <summary>
+            Linear type is a primitive type or other type representable by one line string.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Converter.InfoToLine(System.Management.Automation.PSPropertyInfo)">
+            <summary>
+            Converts property info to a string. Null is represented by default value string.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Converter.Parse(System.Management.Automation.PSPropertyInfo,System.Object)">
+            <summary>
+            Converts a value to a another value using property info.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Converter.SetProperties(System.Object,System.Collections.IDictionary,System.Boolean)">
+            <summary>
+            Sets a target object properties from a dictionary.
+            </summary>
+            <param name="target">Object which properties are set.</param>
+            <param name="dictionary">Dictionary: keys are property names, values are to be assigned.</param>
+            <param name="strict">Throw if a property is not found.</param>
+            <exception cref="T:System.ArgumentException">Property is not found.</exception>
+        </member>
+        <member name="M:PowerShellFar.Converter.FormatEnumerable(System.Collections.IEnumerable,System.Int32)">
+            <summary>
+            Formats the enumerable as a string to show.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Converter.FormatValue(System.Object,System.Int32)">
+            <summary>
+            Formats the enumerable as a string to show.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Cast`1">
+            <summary>
+            Casts to a type.
+            </summary>
+            <typeparam name="T">A type to convert to.</typeparam>
+        </member>
+        <member name="M:PowerShellFar.Cast`1.From(System.Object)">
+            <summary>
+            Casts from object or PSObject.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.ScriptAction`1">
+            <summary>
+            Combined delegate or script action with one parameter.
+            Script variables: <c>$this</c> is the target object (sender).
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ScriptAction`1.#ctor(System.Action{`0})">
+            
+        </member>
+        <member name="M:PowerShellFar.ScriptAction`1.#ctor(System.Management.Automation.ScriptBlock)">
+            
+        </member>
+        <member name="M:PowerShellFar.ScriptAction`1.Invoke(`0)">
+            
+        </member>
+        <member name="T:PowerShellFar.ScriptHandler`1">
+            <summary>
+            Combined delegate or script with two parameters.
+            Script variables: <c>$this</c> is the target object (sender), <c>$_</c> is the arguments.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ScriptHandler`1.#ctor(System.EventHandler{`0})">
+            
+        </member>
+        <member name="M:PowerShellFar.ScriptHandler`1.#ctor(System.Management.Automation.ScriptBlock)">
+            
+        </member>
+        <member name="M:PowerShellFar.ScriptHandler`1.#ctor(System.Object)">
+            
+        </member>
+        <member name="M:PowerShellFar.ScriptHandler`1.Invoke(System.Object,`0)">
+            
+        </member>
+        <member name="T:PowerShellFar.TreeFile">
+            <summary>
+            Item of <see cref="T:PowerShellFar.TreePanel"/>.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.TreeFile._State">
+            <summary>
+            0: not yet opened and not filled; +1: opened and filled; -1: closed and filled.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TreeFile.#ctor">
+            <summary>
+            Creates an tree file.
+            </summary>
+            <remarks>
+            This method is normaly not recommended, use <see cref="M:PowerShellFar.TreeFileCollection.Add"/>
+            to create and add a new file to its parent in one shot.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.TreeFile.Expand">
+            <summary>
+            Expands the child files. <see cref="P:PowerShellFar.TreeFile.Fill"/> must be defined.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Name">
+            <summary>
+            File name.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Owner">
+            <summary>
+            Used internally.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Description">
+            <summary>
+            File description.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Data">
+            <summary>
+            User data.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Path">
+            <summary>
+            Item path. It can be used for filling, for example.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Length">
+            <summary>
+            Number of child files to be displayed.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Parent">
+            <summary>
+            Parent item.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Fill">
+            <summary>
+            Action that fills child items <see cref="P:PowerShellFar.TreeFile.ChildFiles"/>.
+            Normally it uses <see cref="P:PowerShellFar.TreeFile.Name"/> or <see cref="P:PowerShellFar.TreeFile.Path"/> to recognize children to add.
+            If this info is not enough, use <see cref="P:FarNet.FarFile.Data"/> property to store extra information.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.IsNode">
+            <summary>
+            Gets true if it is a node item, i.e. not a leaf item.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Level">
+            <summary>
+            Item level. Top items have level 0, their children have level 1 and so on.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Root">
+            <summary>
+            Item root.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.ChildFiles">
+            <summary>
+            Child items. They are filled by <see cref="P:PowerShellFar.TreeFile.Fill"/>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TreeFile.Attributes">
+            <summary>
+            For internal use.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.TreeFileCollection">
+            <summary>
+            Collection of tree files, children of a parent file.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TreeFileCollection.Add">
+            <summary>
+            Creates a new child file and adds it to the collection.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TreeFileCollection.ClearItems">
+            
+        </member>
+        <member name="M:PowerShellFar.TreeFileCollection.InsertItem(System.Int32,PowerShellFar.TreeFile)">
+            
+        </member>
+        <member name="M:PowerShellFar.TreeFileCollection.RemoveItem(System.Int32)">
+            
+        </member>
+        <member name="M:PowerShellFar.TreeFileCollection.SetItem(System.Int32,PowerShellFar.TreeFile)">
+            
+        </member>
+        <member name="T:PowerShellFar.FileMetaComparer">
+            <summary>
+            Compares files by meta data of the attached file data.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FileMetaComparer.#ctor(PowerShellFar.Meta)">
+            
+        </member>
+        <member name="M:PowerShellFar.FileMetaComparer.#ctor(System.String)">
+            
+        </member>
+        <member name="M:PowerShellFar.FileMetaComparer.Equals(FarNet.FarFile,FarNet.FarFile)">
+            
+        </member>
+        <member name="M:PowerShellFar.FileMetaComparer.GetHashCode(FarNet.FarFile)">
+            
+        </member>
+        <member name="T:PowerShellFar.FolderExplorer">
+            <summary>
+            Folder tree explorer.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.TreeExplorer">
+            <summary>
+            Explorer of a tree.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TreeExplorer.#ctor">
+            <summary>
+            New tree explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TreeExplorer.#ctor(System.Guid)">
+            <summary>
+            New tree explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TreeExplorer.GetFiles(FarNet.GetFilesEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.TreeExplorer.RootFiles">
+            <summary>
+            Root files.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FolderExplorer.#ctor(System.String)">
+            <summary>
+            New folder explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FolderExplorer.CreatePanel">
+            
+        </member>
+        <member name="M:PowerShellFar.FolderExplorer.ExploreParent(FarNet.ExploreParentEventArgs)">
+            
+        </member>
+        <member name="T:PowerShellFar.FormatExplorer">
+            <summary>
+            Formatted table explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FormatExplorer.#ctor(System.Guid)">
+            
+        </member>
+        <member name="M:PowerShellFar.FormatExplorer.DoGetFiles(FarNet.GetFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.FormatExplorer.BuildFiles(System.Collections.ObjectModel.Collection{System.Management.Automation.PSObject})">
+            
+        </member>
+        <member name="P:PowerShellFar.FormatExplorer.Columns">
+            <summary>
+			Columns definitions. Set it only when the panel has no files.
+		</summary><remarks>
+			Items of this array are similar to <c>Format-Table</c> parameter <c>-Property</c> items.
+			Strings define properties and the same column names; hashtables provide more information:
+			properties or script blocks, column titles, widths, types, and format strings.
+			See <see cref="T:PowerShellFar.Meta"/> remarks about use of dictionaries as items
+			and <see cref="P:FarNet.PanelPlan.Columns"/> about column types.
+			<para>
+				Columns of <see cref="T:PowerShellFar.DataPanel"/> can be mapped only to properties,
+				that is to data table fields. Script blocks are not supported.
+			</para>
+			<para>
+				Special case: 'N' column (Name) of <see cref="T:PowerShellFar.ItemPanel"/> is always mapped to the <c>PSChildName</c>
+				for providers with container items (e.g. Registry). For this column any custom data source is ignored.
+				But it has to be included to describe other information: position, title, width, format string.
+				Note: if column types are not specified then normally the first column is treated as 'N'.
+			</para>
+		</remarks>
+        </member>
+        <member name="T:PowerShellFar.FormatPanel">
+            <summary>
+            Formatted table panel.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.TablePanel">
+            <summary>
+            Abstract table panel.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TablePanel.#ctor(PowerShellFar.TableExplorer)">
+            
+        </member>
+        <member name="M:PowerShellFar.TablePanel.HelpMenuInitItems(PowerShellFar.HelpMenuItems,PowerShellFar.PanelMenuEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.TablePanel.Explorer">
+            
+        </member>
+        <member name="P:PowerShellFar.TablePanel.Columns">
+            <summary>
+			Columns definitions. Set it only when the panel has no files.
+		</summary><remarks>
+			Items of this array are similar to <c>Format-Table</c> parameter <c>-Property</c> items.
+			Strings define properties and the same column names; hashtables provide more information:
+			properties or script blocks, column titles, widths, types, and format strings.
+			See <see cref="T:PowerShellFar.Meta"/> remarks about use of dictionaries as items
+			and <see cref="P:FarNet.PanelPlan.Columns"/> about column types.
+			<para>
+				Columns of <see cref="T:PowerShellFar.DataPanel"/> can be mapped only to properties,
+				that is to data table fields. Script blocks are not supported.
+			</para>
+			<para>
+				Special case: 'N' column (Name) of <see cref="T:PowerShellFar.ItemPanel"/> is always mapped to the <c>PSChildName</c>
+				for providers with container items (e.g. Registry). For this column any custom data source is ignored.
+				But it has to be included to describe other information: position, title, width, format string.
+				Note: if column types are not specified then normally the first column is treated as 'N'.
+			</para>
+		</remarks>
+        </member>
+        <member name="P:PowerShellFar.TablePanel.ExcludeMemberPattern">
+            <summary>
+            Regular expression pattern of members to be excluded in a child <see cref="T:PowerShellFar.ListPanel"/>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.TablePanel.HideMemberPattern">
+            <summary>
+            Regular expression pattern of members to be hidden in a child <see cref="T:PowerShellFar.ListPanel"/>.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FormatPanel.#ctor(PowerShellFar.FormatExplorer)">
+            
+        </member>
+        <member name="M:PowerShellFar.FormatPanel.Open">
+            
+        </member>
+        <member name="M:PowerShellFar.FormatPanel.UIGetFiles(FarNet.GetFilesEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.FormatPanel.Explorer">
+            
+        </member>
+        <member name="P:PowerShellFar.FormatPanel.HelpMenuTextOpenFileMembers">
+            <summary>
+            Gets a list of ready files or a collection of PS objects.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.ItemMapFile">
+            <summary>
+            Provider item map file.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.SystemMapFile">
+            <summary>
+            System item map file.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.History.ReadLines">
+            <summary>
+            Gets history lines.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.History.Update(System.String[])">
+            <summary>
+            Removes dupes and extra lines.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.History.AddLine(System.String)">
+            <summary>
+            Add a new history line.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.History.ShowHistory">
+            <summary>
+            For Actor.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.History.Cache">
+            <summary>
+            History list used for getting commands by Up/Down.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.History.CacheIndex">
+            <summary>
+            History list current index.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.ItemExplorer">
+            <summary>
+            PowerShell provider item explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.#ctor(System.String)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoCreatePanel">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoAcceptFiles(FarNet.AcceptFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoDeleteFiles(FarNet.DeleteFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoGetContent(FarNet.GetContentEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoExploreDirectory(FarNet.ExploreDirectoryEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoExploreParent(FarNet.ExploreParentEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoExploreRoot(FarNet.ExploreRootEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoRenameFile(FarNet.RenameFileEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoCreateFile(FarNet.CreateFileEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoSetText(FarNet.SetTextEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemExplorer.DoCloneFile(FarNet.CloneFileEventArgs)">
+            
+        </member>
+        <member name="T:PowerShellFar.ListPanel">
+            <summary>
+            Base panel for property list, member list and etc.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ListPanel.OpenFile(FarNet.FarFile)">
+            <summary>
+            Puts a value into the command line or opens a lookup panel or member panel.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ListPanel.SetUserValue(System.Management.Automation.PSPropertyInfo,System.String)">
+            <summary>
+            Sets new value.
+            </summary>
+            <param name="info">Property info.</param>
+            <param name="value">New value.</param>
+        </member>
+        <member name="M:PowerShellFar.ListPanel.OnInvokingCommand(System.Object,FarNet.CommandLineEventArgs)">
+            <summary>
+            Calls base or assigns a value to the current property.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ListPanel.CanClose">
+            ?? Must be called last
+        </member>
+        <member name="M:PowerShellFar.ListPanel.UISetNulls">
+            <summary>
+            It deletes property values = assigns nulls.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ListPanel.UIKeyPressed(System.Int32,FarNet.KeyStates)">
+            
+        </member>
+        <member name="P:PowerShellFar.ListPanel.Target">
+            <summary>
+            The target object.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.EditorKit">
+            <summary>
+            Editor tools.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.EditorKit.ExpandCode(FarNet.ILine)">
+            <summary>
+            Expands PowerShell code in an edit line.
+            </summary>
+            <param name="editLine">Editor line, command line or dialog edit box line; if null then <see cref="P:FarNet.IFar.Line"/> is used.</param>
+            <seealso cref="M:PowerShellFar.Actor.ExpandCode(FarNet.ILine)"/>
+        </member>
+        <member name="M:PowerShellFar.EditorKit.OnKeyDownPSFile(System.Object,FarNet.KeyEventArgs)">
+            <summary>
+            Called on key in *.ps1.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.MemberExplorer">
+            <summary>
+            Explorer of an object members (properties by default or all members).
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.MemberExplorer.#ctor(System.Object)">
+            <summary>
+            New member explorer with an object.
+            </summary>
+            <param name="instance">An object which members are shown.</param>
+        </member>
+        <member name="M:PowerShellFar.MemberExplorer.CreatePanel">
+            
+        </member>
+        <member name="M:PowerShellFar.MemberExplorer.GetFiles(FarNet.GetFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.MemberExplorer.GetContent(FarNet.GetContentEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.MemberExplorer.SetText(FarNet.SetTextEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.MemberExplorer.DeleteFiles(FarNet.DeleteFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.MemberExplorer.CreateFile(FarNet.CreateFileEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.MemberExplorer.ExcludeMemberPattern">
+            <summary>
+            Regular expression pattern of members to be excluded.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.MemberExplorer.HideMemberPattern">
+            <summary>
+            Regular expression pattern of members to be hidden.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.MemberPanel">
+            <summary>
+            Object member panel, e.g. property list to view or edit values.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.MemberPanel.#ctor(PowerShellFar.MemberExplorer)">
+            <summary>
+            New panel with the member explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.MemberPanel.WhenMemberChanged(System.Object)">
+            <summary>
+            Should be called when an item property is changed.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.MemberPanel.UIMode">
+            <summary>
+            Changes modes: properties, members, static
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.MemberPanel.CreateDataLookup(System.String[])">
+            <summary>
+            Creates a lookup handler designed only for <see cref="T:System.Data.DataRow"/>.
+            </summary>
+            <param name="namePairs">Destination and source field name pairs.</param>
+            <returns>Lookup handler to assigned to <see cref="P:PowerShellFar.AnyPanel.Lookup"/>.</returns>
+            <remarks>
+            This panel <see cref="P:PowerShellFar.MemberPanel.Value"/> and lookup panel items should be <see cref="T:System.Data.DataRow"/> objects,
+            e.g. this panel shows members of a row from parent <see cref="T:PowerShellFar.DataPanel"/>
+            and a lookup panel is also <see cref="T:PowerShellFar.DataPanel"/>.
+            <para>
+            The returned handler copies data from the source (lookup) row to the destination row using
+            destination and source field name pairs, e.g.: <c>dst1, src1 [, dst2, src2 [, ...]]</c>.
+            Example script: <c>Test-Panel-DbNotes-.ps1</c>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.MemberPanel.SaveData">
+            <summary>
+            Calls one of:
+            *) the <see cref="P:PowerShellFar.MemberPanel.AsSaveData"/> script, if any;
+            *) the parent panel to save data if this is a child panel.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.MemberPanel.CanClose">
+            ??
+        </member>
+        <member name="M:PowerShellFar.MemberPanel.HelpMenuInitItems(PowerShellFar.HelpMenuItems,PowerShellFar.PanelMenuEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.MemberPanel.UICreateFile(FarNet.CreateFileEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.MemberPanel.Explorer">
+            <summary>
+            Gets the <see cref="T:PowerShellFar.MemberExplorer"/>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.MemberPanel.DefaultTitle">
+            
+        </member>
+        <member name="P:PowerShellFar.MemberPanel.Modified">
+            <summary>
+            Gets or sets data modification flag.
+            </summary>
+            <remarks>
+            It is set internally on any interactive data change.
+            If data are changed externally the flag should be set.
+            If this flag is set the panel asks to save modified data
+            and calls the <see cref="P:PowerShellFar.MemberPanel.AsSaveData"/> script, if any.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.MemberPanel.Value">
+            <summary>
+            Object which member list is shown at the panel.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.MemberPanel.AsSaveData">
+            <summary>
+            Gets or sets the script called to save modified data.
+            It has to save data and set <see cref="P:PowerShellFar.MemberPanel.Modified"/> to false.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.ItemPanel">
+            <summary>
+            PowerShell provider item panel.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ItemPanel.#ctor(System.String)">
+            <summary>
+            Creates a panel for provider items at the given location.
+            </summary>
+            <param name="path">Path to start at.</param>
+        </member>
+        <member name="M:PowerShellFar.ItemPanel.#ctor">
+            <summary>
+            Creates a panel for provider items at the current location.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ItemPanel.UIExplorerEntered(FarNet.ExplorerEnteredEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemPanel.HelpMenuInitItems(PowerShellFar.HelpMenuItems,PowerShellFar.PanelMenuEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemPanel.UISetText(FarNet.SetTextEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ItemPanel.OnThatFileChanged(FarNet.Panel,System.EventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.ItemPanel.Drive">
+            <summary>
+            Fixed drive name.
+            </summary>
+            <remarks>
+            When a drive is fixed the panel is used for some custom operations on this drive items.
+            </remarks>
+        </member>
+        <member name="T:PowerShellFar.Meta">
+            <summary>
+            Meta information of properties or calculated values.
+            </summary>
+            <remarks>
+            It is created internally from a string (property name), a script block (getting data from $_),
+            or a dictionary (keys: <c>Name</c>/<c>Label</c>, <c>Expression</c>, <c>Type</c>, <c>Width</c>, and <c>Alignment</c>).
+            <para>
+            <b>Name</b> or <b>Label</b>: display name for a value from a script block or alternative name for a property.
+            It is used as a Far panel column title.
+            </para>
+            <para>
+            <b>Expression</b>: a property name or a script block operating on $_.
+            <c>Name</c>/<c>Label</c> is usually needed for a script block, but it can be used with a property name, too.
+            </para>
+            <para>
+            <b>Kind</b>: Far column kind (the key name comes from PowerShell).
+            See <see cref="P:FarNet.PanelPlan.Columns"/>.
+            </para>
+            <para>
+            <b>Width</b>: Far column width: positive: absolute width, negative: percentage.
+            Positive widths are ignored if a panel is too narrow to display all columns.
+            </para>
+            <para>
+            <b>Alignment</b>: if the width is positive <c>Right</c> alignment can be used.
+            If a panel is too narrow to display all columns this option can be ignored.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Meta.AsMeta(System.Object)">
+            <summary>
+            Similar to AsPSObject().
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.#ctor(System.String)">
+            <summary>
+            New from a property.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.#ctor(System.Management.Automation.ScriptBlock)">
+            <summary>
+            New from a script operating on $_.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.#ctor(System.Management.Automation.DisplayEntry,System.Management.Automation.TableControlColumnHeader)">
+            <summary>
+            New from format table control data.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.#ctor(System.Object)">
+            <summary>
+            New from supported types: <c>string</c>, <c>ScriptBlock</c>, and <c>IDictionary</c>.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.Export">
+            <summary>
+            Gets PowerShell code.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.GetValue(System.Object)">
+            <summary>
+            Gets a meta value.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.Get``1(System.Object)">
+            <summary>
+            Gets a meta value of specified type (actual or default).
+            CA: not recommended to be public in this form.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.GetString(System.Object)">
+            <summary>
+            Gets a meta value as a string, formatted if <see cref="P:PowerShellFar.Meta.FormatString"/> is set and
+            aligned if <see cref="P:PowerShellFar.Meta.Width"/> is positive and <see cref="P:PowerShellFar.Meta.Alignment"/> is <c>Right</c>.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.GetInt64(System.Object)">
+            <summary>
+            Gets meta value as Int64 (actual or 0).
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Meta.EvaluateDateTime(System.Object)">
+            <summary>
+            Gets a meta value as DateTime (actual or default).
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Meta.Property">
+            <summary>
+            Property name.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Meta.Script">
+            <summary>
+            Script block operating on $_.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Meta.Name">
+            
+        </member>
+        <member name="P:PowerShellFar.Meta.Kind">
+            
+        </member>
+        <member name="P:PowerShellFar.Meta.Width">
+            
+        </member>
+        <member name="P:PowerShellFar.Meta.Alignment">
+            <summary>
+            Alignment type.
+            </summary>
+            <remarks>
+            Alignment type can be specified if <see cref="P:PowerShellFar.Meta.Width"/> is set to a positive value.
+            Currently only <c>Right</c> type is supported.
+            </remarks>
+            <example>
+            <code>
+            # Column 'Length': width 15, right aligned values:
+            Get-ChildItem | Out-FarPanel Name, @{ e='Length'; w=15; a='Right' }
+            </code>
+            </example>
+        </member>
+        <member name="P:PowerShellFar.Meta.FormatString">
+            <summary>
+            Format string.
+            </summary>
+            <example>
+            <code>
+            # Column 'Length': width 15 and right aligned numbers with thousand separators (e.g. 3,230,649)
+            Get-ChildItem | Out-FarPanel Name, @{ e='Length'; w=15; f='{0,15:n0}' }
+            </code>
+            </example>
+        </member>
+        <member name="M:PowerShellFar.TextOutputWriter.Append(System.String)">
+            <summary>
+            1 of 3 actual writers.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TextOutputWriter.AppendLine">
+            <summary>
+            2 of 3 actual writers.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TextOutputWriter.AppendLine(System.String)">
+            <summary>
+            3 of 3 actual writers.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.EditorOutputWriter1">
+            <summary>
+            Trivial editor writer, for example asynchronous.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.EditorOutputWriter1.Editor">
+            <summary>
+            The editor.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.EditorOutputWriter1.WriteCount">
+            <summary>
+            Write call count.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.EditorOutputWriter2">
+            <summary>
+            Advanced editor synchronous writer.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.ObjectExplorer">
+            <summary>
+            .NET objects explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ObjectExplorer.#ctor">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectExplorer.DoCreatePanel">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectExplorer.DoAcceptFiles(FarNet.AcceptFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectExplorer.DoDeleteFiles(FarNet.DeleteFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectExplorer.DoGetContent(FarNet.GetContentEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectExplorer.DoImportFiles(FarNet.ImportFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectExplorer.DoOpenFile(FarNet.OpenFileEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectExplorer.DoCreateFile(FarNet.CreateFileEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.ObjectExplorer.AsGetData">
+            <summary>
+            Gets or sets the script getting raw file data objects.
+            Arguments: 0: this explorer, 1: <see cref="T:FarNet.ExplorerEventArgs"/>.
+            </summary>
+            <remarks>
+            The script returns raw data to be represented as files with the data attached.
+            It should not operate directly on existing or new files, it is done internally.
+            <para>
+            Normally it is used together with custom columns
+            otherwise default formatting is not always suitable.
+            </para>
+            </remarks>
+            <example>Panel-Job-.ps1, Panel-Process-.ps1</example>
+        </member>
+        <member name="T:PowerShellFar.PropertyExplorer">
+            <summary>
+            Explorer of a provider item properties.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.#ctor(System.String)">
+            <summary>
+            New property explorer with a provider item path.
+            </summary>
+            <param name="itemPath">Item path.</param>
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.CreatePanel">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.GetFiles(FarNet.GetFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.GetContent(FarNet.GetContentEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.SetText(FarNet.SetTextEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.DeleteFiles(FarNet.DeleteFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.AcceptFiles(FarNet.AcceptFilesEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.RenameFile(FarNet.RenameFileEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.CreateFile(FarNet.CreateFileEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyExplorer.CloneFile(FarNet.CloneFileEventArgs)">
+            
+        </member>
+        <member name="T:PowerShellFar.RawUI">
+            <summary>
+            Implements PSHostRawUserInterface.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Settings">
+            <summary>
+            PowerShellFar settings. Exposed as <c>$Psf.Settings</c>
+            </summary>
+            <remarks>
+            Properties <see cref="P:PowerShellFar.Settings.StartupCode"/> and <see cref="P:PowerShellFar.Settings.StartupEdit"/> are stored
+            in a file and can be changed in the module settings panel.
+            <para>
+            Other properties are session preferences and normally set in the profile.
+            </para>
+            <example>Profile-.ps1</example>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Settings.PopupMenu(FarNet.IListMenu)">
+            <summary>
+            Sets popup list menu.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Settings.ListMenu(FarNet.IListMenu)">
+            <summary>
+            Sets list menu.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.Default">
+            
+        </member>
+        <member name="P:PowerShellFar.Settings.StartupCode">
+            <summary>
+            See .hlf
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.StartupEdit">
+            <summary>
+            See .hlf
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.PopupAutoSelect">
+            <summary>
+            <see cref="P:FarNet.IListMenu.AutoSelect"/> for popup menus.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.PopupMaxHeight">
+            <summary>
+            <see cref="P:FarNet.IAnyMenu.MaxHeight"/> for popup menus.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.PopupNoShadow">
+            <summary>
+            <see cref="P:FarNet.IListMenu.NoShadow"/> for popup menus.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.ListMenuFilterOptions">
+            <summary>
+            <see cref="P:FarNet.IListMenu.FilterOptions"/> for list menus.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.ListMenuFilterKey">
+            <summary>
+            <see cref="P:FarNet.IListMenu.FilterKey"/> for list menus.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.ListMenuScreenMargin">
+            <summary>
+            <see cref="P:FarNet.IListMenu.ScreenMargin"/> for list menus.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.ListMenuUsualMargins">
+            <summary>
+            <see cref="P:FarNet.IListMenu.UsualMargins"/> for list menus.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.MaximumHistoryCount">
+            <summary>
+            The maximum number of history commands kept in a file. In fact, 10% more is allowed.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.MaximumPanelColumnCount">
+            <summary>
+            The maximum number of columns allowed in free format panels.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.MaximumPanelFileCount">
+            <summary>
+            The maximum number of files to show before confirmation in some panels.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Settings.FormatEnumerationLimit">
+            <summary>
+            Determines how many enumerated items are included in a display.
+            </summary>
+            <remarks>
+            The default is the $FormatEnumerationLimit value, usually 4.
+            <para>
+            See PowerShell help about_Preference_Variables, $FormatEnumerationLimit.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Settings.ExternalViewerFileName">
+            <summary>
+            Gets or sets the external viewer application path.
+            </summary>
+            <remarks>
+            By default it is empty and external Far viewer is used.
+            <example>
+            See <see cref="P:PowerShellFar.Settings.ExternalViewerArguments"/>
+            </example>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Settings.ExternalViewerArguments">
+            <summary>
+            Gets or sets the command line arguments for the external viewer.
+            </summary>
+            <remarks>
+            It is used together with <see cref="P:PowerShellFar.Settings.ExternalViewerFileName"/>.
+            Use "{0}" where a file path should be inserted.
+            <example>
+            <code>
+            $Psf.Settings.ExternalViewerFileName = "$env:FARHOME\Far.exe"
+            $Psf.Settings.ExternalViewerArguments = '/m /p /v "{0}"'
+            </code>
+            </example>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Settings.CommandForegroundColor">
+            
+        </member>
+        <member name="P:PowerShellFar.Settings.DebugForegroundColor">
+            
+        </member>
+        <member name="P:PowerShellFar.Settings.ErrorForegroundColor">
+            
+        </member>
+        <member name="P:PowerShellFar.Settings.VerboseForegroundColor">
+            
+        </member>
+        <member name="P:PowerShellFar.Settings.WarningForegroundColor">
+            
+        </member>
+        <member name="T:PowerShellFar.StepperState">
+            <summary>
+            Stepper states. See <see cref="P:PowerShellFar.Stepper.State"/>, <see cref="E:PowerShellFar.Stepper.StateChanged"/>.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.StepperState.None">
+            <summary>
+            Stepper is just created and processing is not started.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.StepperState.Loading">
+            <summary>
+            Stepper is getting steps by invoking a step unit.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.StepperState.Parsing">
+            <summary>
+            Step sequence is being parsed for sanity checks.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.StepperState.Stepping">
+            <summary>
+            Step processing is in progress.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.StepperState.Completed">
+            <summary>
+            All steps have been processed.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.StepperState.Failed">
+            <summary>
+            An error has stopped the processing. See <see cref="P:PowerShellFar.Stepper.Error"/>.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Stepper">
+            <summary>
+            Invoker of steps: key sequences, script blocks and scripts returning steps.
+            </summary>
+            <remarks>
+            Requirement: .NET menu item must have a hotkey (set by [F4]) in the Far plugin menu [F11].
+            <para>
+            This object is exposed as <see cref="P:PowerShellFar.Actor.Stepper"/> to the step script block being invoked.
+            A step may call <c>$Psf.Stepper.Go()</c> to insert extra steps to be invoked immediately after.
+            </para>
+            <para>
+            Output of script blocks is normally ignored (except a script block or new keys, see below),
+            use <c>Write-Host</c> or <c>$Far.Write()</c> to write some information to the screen.
+            Do not call other <c>Write-*</c> cmdlets, they may fail because streams may be not opened.
+            </para>
+            <para>
+            If a script block being invoked returns a string or another script block then <see cref="M:FarNet.IFar.PostStepAfterKeys(System.String,System.Action)"/>
+            or <see cref="M:FarNet.IFar.PostStepAfterStep(System.Action,System.Action)"/> is called for the next step instead of usual <see cref="M:FarNet.IFar.PostStep(System.Action)"/>.
+            The returned keys or script normally start modal UI (dialog, editor and etc.). The next step in the sequence
+            will be invoked when modal UI element has started.
+            </para>
+            </remarks>
+            <example>Test-Stepper-.ps1, "Test-Stepper+.ps1", "Test-Dialog+.ps1".</example>
+        </member>
+        <member name="M:PowerShellFar.Stepper.#ctor">
+            <summary>
+            Creates a stepper.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.Stepper._StepIndex">
+            <summary>
+            Current step index.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.Stepper._UnitIndex">
+            <summary>
+            Current unit index.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Stepper.Go(System.Object[])">
+            <summary>
+            Adds the step sequence and posts the first step or inserts the sequence just after the step being invoked.
+            </summary>
+            <param name="steps">Script blocks and key sequences.</param>
+            <remarks>
+            If it is called in order to start the sequence then normally it should be the last command in a script.
+            </remarks>
+            <seealso cref="M:PowerShellFar.Actor.Go(System.Object[])"/>
+        </member>
+        <member name="M:PowerShellFar.Stepper.PostUnit(System.Object)">
+            <summary>
+            Posts a step unit command.
+            </summary>
+            <param name="command">Step unit command: text code or a script block.</param>
+            <remarks>
+            Step unit command is any command that returns steps, for example a step unit script path.
+            <para>
+            The command is posted to the end of the internal queue.
+            Note that the order of posted units may be significant for the results.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Stepper.Go">
+            <summary>
+            Starts posted steps and step units processing.
+            </summary>
+            <remarks>
+            Normally this should be the last command in the script.
+            If step processing is already in progress then this call is ignored.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Stepper.RunningInstance">
+            <summary>
+            The only allowed running instance.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Stepper.StepCount">
+            <summary>
+            Total count of steps processed so far.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Stepper.UnitCount">
+            <summary>
+            Total count of units processed so far.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Stepper.AskDefault">
+            <summary>
+            Default initial <see cref="P:PowerShellFar.Stepper.Ask"/> value.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Stepper.Ask">
+            <summary>
+            Tells to ask for actions before each step.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Stepper.CurrentUnit">
+            <summary>
+            Current unit script block if any or null.
+            </summary>
+        </member>
+        <member name="E:PowerShellFar.Stepper.StateChanged">
+            <summary>
+            Event is triggered when the stepper state has changed.
+            </summary>
+            <remarks>
+            It is designed mostly for logging and monitoring tasks.
+            Other scenarios are not recommended.
+            <para>
+            New state is exposed for a script handler as <c>$this.State</c>
+            which is the <see cref="P:PowerShellFar.Stepper.State"/> property of the stepper.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Stepper.State">
+            <summary>
+            Current state. See <see cref="E:PowerShellFar.Stepper.StateChanged"/> event.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Stepper.Error">
+            <summary>
+            The error that has stopped the processing.
+            </summary>
+            <remarks>
+            This error is usually a PowerShell error which is also kept as the <c>$Error[0]</c> item.
+            Note that this is not always the case and the error may be not stored in the <c>$Error</c> list at all.
+            </remarks>
+        </member>
+        <member name="T:PowerShellFar.Res">
+            <summary>
+            Resource strings.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Word">
+            <summary>
+            Invariand words and strings.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.UI.SelectMenu.SelectDrive(System.String,System.Boolean)">
+            <summary>
+            Returns e.g. MyDrive:
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.UI.SelectMenu.SelectShare(System.String)">
+            <summary>
+            Select a share
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.ObjectPanel">
+            <summary>
+            .NET objects panel.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ObjectPanel.#ctor(PowerShellFar.ObjectExplorer)">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectPanel.#ctor">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectPanel.AddObject(System.Object)">
+            <summary>
+            Adds a single objects to the panel as it is.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ObjectPanel.AddObjects(System.Object)">
+            <summary>
+            Adds objects to the panel.
+            </summary>
+            <param name="values">Objects represented by enumerable or a single object.</param>
+        </member>
+        <member name="M:PowerShellFar.ObjectPanel.SaveData">
+            <summary>
+            Exports objects to Clixml file.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ObjectPanel.SetFileName(FarNet.FarFile)">
+            <summary>
+            Sets file name if any suitable exists.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.ObjectPanel.HelpMenuInitItems(PowerShellFar.HelpMenuItems,PowerShellFar.PanelMenuEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.ObjectPanel.CollectData">
+            <summary>
+            Files data.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.ObjectPanel.Explorer">
+            
+        </member>
+        <member name="P:PowerShellFar.ObjectPanel.DefaultTitle">
+            
+        </member>
+        <member name="T:PowerShellFar.FarHost">
+            <summary>
+            PowerShellFar host implementation.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FarHost.#ctor(System.Management.Automation.Host.PSHostUserInterface)">
+            <summary>
+            Construct an instance of this PSHost implementation.
+            Keep a reference to the hosting application object.
+            </summary>
+            <param name="ui">Host UI.</param>
+        </member>
+        <member name="M:PowerShellFar.FarHost.EnterNestedPrompt">
+            <summary>
+            Instructs the host to interrupt the currently running pipeline and start a new nested input loop.
+            An input loop is the cycle of prompt, input, and execute.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FarHost.ExitNestedPrompt">
+            <summary>
+            Instructs the host to exit the currently running input loop.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FarHost.NotifyBeginApplication">
+            <summary>
+            Called before an external application process is started.
+            It is used to save state that the child process may alter
+            so the parent can restore that state when the child exits.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FarHost.NotifyEndApplication">
+            <summary>
+            Called after an external application process finishes.
+            It is used to restore state that the child process may have altered.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FarHost.SetShouldExit(System.Int32)">
+            <summary>
+            Indicates to the host that an exit has been requested.
+            It passes the exit code that the host should use when exiting the process.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.FarHost.Name">
+            <summary>
+            The host name: FarHost
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.FarHost.CurrentCulture">
+            <summary>
+            Gets the current culture to use.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.FarHost.CurrentUICulture">
+            <summary>
+            Gets the current UI culture to use.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.FarHost.InstanceId">
+            <summary>
+            Gets the GUID generated once.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.FarHost.UI">
+            <summary>
+            Gets the UI instance.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.FarHost.Version">
+            <summary>
+            Gets the assembly version.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Actor">
+            <summary>
+            PowerShellFar tools exposed by the global variable <c>$Psf</c>.
+            </summary>
+            <remarks>
+            Global PowerShell variables:
+            <c>$Far</c> is an instance of <see cref="T:FarNet.IFar"/>, it exposes FarNet tools.
+            <c>$Psf</c> is the only instance of this class, it exposes PowerShellFar tools.
+            <para>
+            There is no 'Exiting' event because in PS V2 there is a native way using <c>Register-EngineEvent</c>, see examples.
+            Do not use native Far UI in such a handler, it may not work on exiting. GUI dialogs still can be used.
+            This way works for any workspace where <c>Register-EngineEvent</c> is called, so that
+            it can be used by background jobs (PSF and PS), async consoles (local and remote), and etc.
+            </para>
+            </remarks>
+            <example>
+            <code>
+            # Do some job on exiting
+            Register-EngineEvent -SourceIdentifier PowerShell.Exiting -Action { $Far.Message('See you', 'Exit', 'Gui') }
+            </code>
+            </example>
+        </member>
+        <member name="M:PowerShellFar.Actor.CancelKeyPress(System.Object,System.ConsoleCancelEventArgs)">
+            <summary>
+            Stops the running pipeline.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.Connect">
+            <summary>
+            Called on connection internally.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.Disconnect">
+            <summary>
+            Called on disconnection internally.
+            If there are background jobs it shows a dialog about them.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.Invoking">
+            <summary>
+            Called by FarNet on command line and by PowerShellFar on its actions.
+            </summary>
+            <remarks>
+            *) No Far (!) interaction is allowed, a macro can be in progress.
+            *) It opens a runspace if not yet and waits for it.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.SyncPaths">
+            <summary>
+            Sync provider location and current directory with Far state.
+            </summary>
+            <remarks>
+            Returned system path (if not null) must be restored by a called.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.Action(System.String,System.EventHandler)">
+            <summary>
+            Adds an action to all menus (Dialog, Editor, Panels, Viewer).
+            </summary>
+            <param name="text">Menu item text. Use ampersand to set a hotkey.</param>
+            <param name="handler">Action script block. Keep it simple, normally it should just call other commands.</param>
+            <remarks>
+            Actions can be added any time, but the best practice is to add them from the startup code.
+            <para>
+            Use $null action to add a separator to menus.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.Action(System.String,System.EventHandler,FarNet.ModuleToolOptions)">
+            <summary>
+            Adds an action to the specified menus (combination of Dialog, Editor, Panels, Viewer).
+            </summary>
+            <param name="text">Menu item text. Use ampersand to set a hotkey.</param>
+            <param name="handler">Action script block. Keep it simple, normally it should just call other commands.</param>
+            <param name="area">Where this action should be available in a menu: combination of Dialog, Editor, Panels, Viewer.</param>
+            <remarks>
+            Actions can be added any time, but the best practice is to add them from the startup code.
+            <para>
+            Use $null action to add a separator to menus.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.Editor">
+            <summary>
+            Gets the editor or throws.
+            </summary>
+            <remarks>
+            Gets the editor associated with the current window or fails if there is none.
+            Using it avoids boring checks in scripts designed for the current editor.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">Editor is not opened or its window is not current.</exception>
+        </member>
+        <member name="M:PowerShellFar.Actor.InputCode">
+            <summary>
+            Shows an input dialog and returns entered PowerShell code.
+            </summary>
+            <remarks>
+            It is called by the plugin menu command "Invoke input code". You may call it, too.
+            It is just an input box for any text but it is designed for PowerShell code input,
+            e.g. TabExpansion is enabled (by [Tab]).
+            <para>
+            The code is simply returned, if you want to execute it then call <see cref="M:PowerShellFar.Actor.InvokeInputCode"/>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.InvokeInputCode">
+            <summary>
+            Prompts to input code and invokes it.
+            Called on "Invoke input code".
+            </summary>
+            <remarks>
+            If it is called during a macro then commands are not added to the history.
+            Note: use of <c>CallPlugin()</c> (see FarNet Readme.txt) is often better for macros.
+            <para>
+            In order to input and get the code without invoking use the <see cref="M:PowerShellFar.Actor.InputCode"/> method.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.InvokeSelectedCode">
+            <summary>
+            Invokes the selected text or the current line text in the editor or the command line.
+            Called on "Invoke selected code".
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.CanExit">
+            <summary>
+            Checks whether it is possible to exit the session safely (may require user interaction).
+            </summary>
+            <returns>true if exit is safe.</returns>
+            <remarks>
+            If there are background jobs this methods calls <see cref="M:PowerShellFar.Actor.ShowJobs"/>
+            so that you are prompted to remove jobs manually. If you do not remove all the jobs
+            then the method returns false.
+            <para>
+            It can be used to prevent closing of Far by [F10] with existing background jobs.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.GetHistory(System.Int32)">
+            <summary>
+            Gets PowerShellFar commands from history.
+            </summary>
+            <remarks>
+            PowerShellFar command history is absolutely different from PowerShell command history; PowerShell mechanism is not used
+            internally and you should not use it, i.e. forget about <c>Add-History</c>, <c>$MaximumHistoryCount</c>, and etc. - you
+            don't need them in PowerShellFar. The history is stored in a file, so that commands can be used in other sessions.
+            <para>
+            Some standard history commands are partially implemented as internal functions.
+            <c>Get-History</c> returns command strings, <c>Invoke-History</c> calls <see cref="M:PowerShellFar.Actor.ShowHistory"/>.
+            </para>
+            </remarks>
+            <param name="count">Number of last commands to be returned. 0: all commands.</param>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowConsole">
+            <summary>
+            Shows a new modal editor console.
+            </summary>
+            <remarks>
+            This method opens a modal editor console, it can be called in the middle of something to perform actions manually
+            and then to continue interrupted execution on exit. Basically it is so called PowerShell nested prompt.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowConsole(FarNet.OpenMode)">
+            <summary>
+            Shows a new editor console in specified mode.
+            Called on "Editor console".
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowPanel">
+            <summary>
+            Shows a menu of available PowerShellFar panels to open.
+            Called on "Power panel".
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowJobs">
+            <summary>
+            Shows the background job list.
+            Called on "Background jobs" and by <see cref="M:PowerShellFar.Actor.CanExit"/>.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowHistory">
+            <summary>
+            Shows PowerShellFar command history and invokes or insert the selected command or text.
+            Called on "Command history".
+            </summary>
+            <seealso cref="M:PowerShellFar.Actor.GetHistory(System.Int32)"/>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowModules">
+            <summary>
+            Shows a menu with available modules and registered snap-ins.
+            Called on "Module+".
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowDebugger">
+            <summary>
+            Shows PowerShell debugger tools menu.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowErrors">
+            <summary>
+            Shows PowerShell errors.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Actor.ShowHelp">
+            <summary>
+            Shows help, normally for the current command or parameter in an editor line.
+            </summary>
+            <remarks>
+            For the current token in an editor line (editor, editbox, cmdline) it gets help
+            information and shows it in the viewer. In code editors (*.ps1, *.psm1, *.psd1,
+            *.psfconsole, input code boxes) this action is associated with [ShiftF1].
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.ExpandCode(FarNet.ILine)">
+            <summary>
+            Expands PowerShell code in an edit line.
+            </summary>
+            <param name="editLine">Editor line, command line or dialog edit box line; if null then <see cref="P:FarNet.IFar.Line"/> is used.</param>
+            <remarks>
+            It implements so called TabExpansion using a menu and inserting a selected text into a current line being edited.
+            The edit line can belong to the internal editor, the command line or a dialogs.
+            <para>
+            When it is called the first time it loads the script TabExpansion.ps1 from the module directory
+            which installs the global function TabExpansion. After that this function is always called and
+            returned selected text is inserted into the edit line.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.CreatePipeline">
+            <summary>
+            Gets a new pipeline or nested one.
+            </summary>
+            <returns>Pipeline; it has to be disposed.</returns>
+        </member>
+        <member name="M:PowerShellFar.Actor.Act(System.String,PowerShellFar.OutputWriter,System.Boolean)">
+            <summary>
+            Invokes PowerShell command with pipeline.
+            </summary>
+            <param name="code">PowerShell code.</param>
+            <param name="writer">Output writer or null.</param>
+            <param name="addHistory">Add command to history.</param>
+        </member>
+        <member name="M:PowerShellFar.Actor.Go(System.Object[])">
+            <summary>
+            Invokes step processing.
+            </summary>
+            <remarks>
+            This is a helper method to invoke a step sequence. Step sequence is usually kept in a step unit script.
+            It is recommended to use some naming convension to distinguish between these scripts and the others.
+            <para>
+            For example, assume that step unit scripts are named as "*+.ps1". Then we can create Far Manager association:
+            </para>
+            <ul>
+            <li>Mask: *+.ps1</li>
+            <li>Command (Enter): >: $Psf.Go((&amp; '.\!.!')) #</li>
+            </ul>
+            <para>
+            Having done this we can press enter on "*+.ps1" files and their steps will be invoked.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Actor.InvokeScriptFromEditor">
+            <summary>
+            Invokes the script opened in the current editor.
+            </summary>
+            <remarks>
+            [F5] is the hardcoded shortcut. A different key can be used with a macro:
+            the example macro in the .hlf file shows how to do that.
+            <para>
+            The action is the same as to invoke the script from the input command box
+            but if the file is modified then it is saved before invoking.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Actor.Settings">
+            <summary>
+            Gets the configuration settings and the session settings.
+            </summary>
+            <remarks>
+            Permanent settings are changed in the module settings panel.
+            Session preferences are usually set in the profile.
+            <para>
+            See also .hlf topic [Settings].
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Actor.ActiveText">
+            <summary>
+            Gets or sets the active text of active editor or editor line.
+            </summary>
+            <remarks>
+            Gets or sets selected text if selection exists in the current editor or an editor line,
+            else a line text if any kind of editor line is active.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Actor.AppHome">
+            <summary>
+            Returns PowerShellFar home path. Designed for internal use.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Actor.IsRunning">
+            <summary>
+            Is it running?
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Actor.Providers">
+            <summary>
+            Provider settings.
+            </summary>
+            <remarks>
+            These optional settings configure appearance of provider data.
+            See <c>Profile-.ps1</c> for examples.
+            <para>
+            Keys are provider names, e.g. 'FileSystem', 'Registry', 'Alias', and etc.
+            Keys are case sensitive by default, but you can replace the hashtable with case insensitive (e.g. @{...}).
+            </para>
+            <para>
+            Values are dictionaries with keys mapped to property names of <see cref="T:PowerShellFar.ItemPanel"/>,
+            e.g. <see cref="P:PowerShellFar.TablePanel.Columns"/>, <see cref="P:PowerShellFar.TablePanel.ExcludeMemberPattern"/>, and etc.
+            Their values depend on that properties, see help.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Actor.Stepper">
+            <summary>
+            Gets currently running stepper instance if any or null.
+            </summary>
+            <remarks>
+            It is designed mosttly for use from a step script block being processed.
+            It's fine to use this in order to check stepping mode by not null result.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Actor.Manager">
+            <summary>
+            FarNet module manager of the PowerShellFar module.
+            </summary>
+            <remarks>
+            It may be used in scripts in order to register new module actions, get/set the current UI culture, and etc.
+            <para>
+            In order to just get the current UI culture better use the standard PowerShell way:
+            <c>$PSUICulture</c> or <c>$Host.CurrentUICulture</c>
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Actor.Transcript">
+            <summary>
+            Transcript writer, ready to write.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Job">
+            <summary>PowerShellFar background job.</summary>
+            <remarks>
+            A job is created by <c>Start-FarJob</c> cmdlet (<see cref="T:PowerShellFar.Commands.StartFarJobCommand"/>)
+            and automatically started immediately (normally) or started later by <see cref="M:PowerShellFar.Job.StartJob"/> (advanced).
+            Properties are mostly the same as properties of PowerShell job, but some of them have different types though names are the same.
+            <para>
+            There are two kind of Far jobs: UI jobs and output jobs.
+            </para>
+            <para>
+            UI jobs are included in the background job list. Job output and errors are converted into
+            formatted text redirected into a file. A file that can be opened in from a job list in a
+            viewer during or after the job processing. UI jobs may be hidden (excluded from the list);
+            they may get visible (included into the list) on errors.
+            </para>
+            <para>
+            Output jobs are never included into the job list. A caller is completely responsible for
+            their life cycle, for example he has to call <see cref="M:PowerShellFar.Job.Dispose"/>. Processing of output
+            is up to a user.
+            </para>
+            </remarks>
+            <seealso cref="T:PowerShellFar.Commands.StartFarJobCommand"/>
+        </member>
+        <member name="M:PowerShellFar.Job.#ctor(PowerShellFar.JobCommand,System.Object,System.String,System.Boolean,System.Int32)">
+            <summary>
+            New job.
+            </summary>
+            <remarks>
+            Keep seconds for UI-less jobs: 0 ~ hidden mode, in this case a job creates UI on errors, as it is not attended.
+            Other UI-less jobs are completely owned creators.
+            </remarks>
+        </member>
+        <member name="F:PowerShellFar.Job.Disposed">
+            <summary>
+            Is <see cref="M:PowerShellFar.Job.Dispose"/> called?
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Job.ToLine(System.Int32)">
+            <summary>
+            Gets a text line.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Job.Dispose">
+            <summary>
+            Disposes the job.
+            </summary>
+            <remarks>
+            If you own this object, e.g. call <c>Start-FarJob</c> with <see cref="P:PowerShellFar.Commands.StartFarJobCommand.Output"/> switch
+            then you should dispose it after use. It is OK to call this for already disposed object.
+            <para>
+            NOTE: The job must not be running.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Job.StopJob">
+            <summary>
+            Stops the job.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Job.AsyncTimerCallback(System.Object)">
+            <summary>
+            Called by the timer thread, must only post the call for Far
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Job.WatchJobs">
+            <summary>
+            Watch the jobs, notifies about finished, removes discardable and disposed.
+            </summary>
+            <remarks>
+            Normally it is posted by <see cref="M:PowerShellFar.Job.AsyncTimerCallback(System.Object)"/>.
+            It is ok to call it directly but from the main thread only.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.Job.StartJob">
+            <summary>
+            Starts the job.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Command">
+            <summary>
+            Gets the command that is invoked by this job.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Name">
+            <summary>
+            Gets the friendly name to identify the job.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Finished">
+            <summary>
+            Gets the wait handle that is signaled when job is finished.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Parameters">
+            <summary>
+            Gets the job command parameters.
+            </summary>
+            <remarks>
+            <c>IDictionary</c> for named parameters, <c>IList</c> for arguments, or a single argument.
+            <para>
+            Note that parameters can be used also for output via class instance properties,
+            normally when primary <see cref="P:PowerShellFar.Job.Output"/> data should not be mixed with others.
+            Mind thread safety issues when a job works with not thread safe instances.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Job.JobStateInfo">
+            <summary>
+            Gets the status of the job.
+            </summary>
+            <remarks>
+            Properties:
+            <para>
+            <c>State</c>: Gets the current job state: <c>NotStarted</c>, <c>Running</c>, <c>Stopping</c>, <c>Stopped</c>, <c>Failed</c>, and <c>Completed</c>.
+            </para>
+            <para>
+            <c>Reason</c>: Gets the reason for the last state change if the state changed because of an error.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.Job.Output">
+            <summary>
+            Output of the job started for output. It is null for other jobs.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Debug">
+            <summary>
+            Gets the buffer where debug information is stored.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Error">
+            <summary>
+            Gets the buffer where error information is stored.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Progress">
+            <summary>
+            Gets the buffer where progress information is stored.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Verbose">
+            <summary>
+            Gets the buffer where verbose information is stored.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Warning">
+            <summary>
+            Gets the buffer where warning information is stored.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.JobCommand">
+            <summary>
+            Job command.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.StateText">
+            <summary>
+            Job state text. Values: NotStarted, Running, Stopping, Stopped, Failed, Completed, and Errors (Completed with errors).
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.Length">
+            <summary>
+            Output data stream length.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.IsHidden">
+            <summary>
+            Is the job 'hidden' ~ no UI, no output?
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.IsError">
+            <summary>
+            Is there any error?
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.IsRunning">
+            <summary>
+            Is the job running?
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.IsFinished">
+            <summary>
+            Is the job finished?
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.IsSucceeded">
+            <summary>
+            Is the job succeeded, i.e. completed with no errors?
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Job.FileName">
+            <summary>
+            Output file name or null if output is not started.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.PropertyPanel">
+            <summary>
+            Panel exploring PowerShell provider item properties.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PropertyPanel.#ctor(PowerShellFar.PropertyExplorer)">
+            <summary>
+            New property panel with the item property explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PropertyPanel.WhenPropertyChanged(System.String)">
+            <summary>
+            Should be called when an item property is changed.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PropertyPanel.HelpMenuInitItems(PowerShellFar.HelpMenuItems,PowerShellFar.PanelMenuEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.PropertyPanel.UICreateFile(FarNet.CreateFileEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.PropertyPanel.Explorer">
+            
+        </member>
+        <member name="T:PowerShellFar.FolderTree">
+            <summary>
+            <see cref="T:PowerShellFar.TreePanel"/> with provider container items.
+            </summary>
+            <remarks>
+            See <see cref="T:PowerShellFar.TreePanel"/> for details.
+            </remarks>
+        </member>
+        <member name="T:PowerShellFar.TreePanel">
+            <summary>
+            Panel with <see cref="T:PowerShellFar.TreeFile"/> items.
+            </summary>
+            <remarks>
+            Available view modes:
+            <ul>
+            <li>[Ctrl0] - tree and description columns</li>
+            <li>[Ctrl1] - tree column and description status</li>
+            </ul>
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.TreePanel.#ctor(PowerShellFar.TreeExplorer)">
+            
+        </member>
+        <member name="M:PowerShellFar.TreePanel.OpenFile(FarNet.FarFile)">
+            <summary>
+            Opens/closes the node.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.TreePanel.UIKeyPressed(System.Int32,FarNet.KeyStates)">
+            
+        </member>
+        <member name="M:PowerShellFar.TreePanel.UIGetFiles(FarNet.GetFilesEventArgs)">
+            
+        </member>
+        <member name="P:PowerShellFar.TreePanel.Explorer">
+            
+        </member>
+        <member name="M:PowerShellFar.FolderTree.#ctor(PowerShellFar.FolderExplorer)">
+            <summary>
+            New folder tree with the explorer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FolderTree.#ctor(System.String)">
+            <summary>
+            New folder tree at the given location.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FolderTree.#ctor">
+            <summary>
+            New folder tree at the current location.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FolderTree.UIRedrawing(FarNet.PanelEventArgs)">
+            
+        </member>
+        <member name="M:PowerShellFar.FolderTree.OpenFileMembers(FarNet.FarFile)">
+            <summary>
+            Opens <see cref="T:PowerShellFar.MemberPanel"/> for a file.
+            File <c>Data</c> must not be null.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FolderTree.OpenFile(FarNet.FarFile)">
+            <summary>
+            Opens path on another panel (FileSystem) or ItemPanel for other providers.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FolderTree.ShowHelpForPanel">
+            <summary>
+            Shows help.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.UniformUI">
+            <summary>
+            Base PowerShell host user interface.
+            </summary>
+            <remarks>
+            Basically all writing methods are called in here and they recall a writer.
+            Writers are easy to change dynamically for the same UI instance.
+            For example push/pop logic is used in <see cref="T:PowerShellFar.FarUI"/>.
+            </remarks>
+        </member>
+        <member name="M:PowerShellFar.FarUI.Prompt(System.String,System.String,System.Collections.ObjectModel.Collection{System.Management.Automation.Host.FieldDescription})">
+            <summary>
+            Shows a dialog with a number of input fields.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FarUI.PromptForChoice(System.String,System.String,System.Collections.ObjectModel.Collection{System.Management.Automation.Host.ChoiceDescription},System.Int32)">
+            <summary>
+            Shows a dialog with a number of choices.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FarUI.ReadLine">
+            <summary>
+            Reads a string.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.FarUI.WriteProgress(System.Int64,System.Management.Automation.ProgressRecord)">
+            <summary>
+            Shows progress information. Used by Write-Progress cmdlet.
+            It actually works at most once a second (for better performance on frequent calls).
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.FarUI.Writer">
+            <summary>
+            Current writer or the fallback console writer.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.JobUI.Close">
+            <summary>
+            Closes if it is opened.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.JobUI.Writing">
+            <summary>
+            Gets ready for writing.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.JobUI.GetWriter">
+            <summary>
+            Gets opened writer.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.JobUI.FileName">
+            <summary>
+            Output file name or null.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.JobUI.Length">
+            <summary>
+            Output length.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.DataPanel">
+            <summary>
+            Panel exploring a data table.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.Dispose">
+            <summary>
+            Disposes internal data. Normally it is called internally.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.SaveData">
+            <summary>
+			Calls the As.. script if any or the Do.. method.
+		</summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.DoSaveData">
+            <summary>
+            Called by <see cref="M:PowerShellFar.DataPanel.SaveData"/>.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.Open">
+            <summary>
+            Fills data table and shows the panel.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.CanClose">
+            ??
+        </member>
+        <member name="M:PowerShellFar.DataPanel.OpenFile(FarNet.FarFile)">
+            <summary>
+            Opens a member panel to edit the record.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.BuildDeleteCommand">
+            <summary>
+            Builds DELETE command.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.BuildInsertCommand">
+            <summary>
+            Builds INSERT command.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.BuildUpdateCommand">
+            <summary>
+            Builds UPDATE command.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.DataPanel.UIKeyPressed(System.Int32,FarNet.KeyStates)">
+            
+        </member>
+        <member name="M:PowerShellFar.DataPanel.CanCloseChild">
+            
+        </member>
+        <member name="M:PowerShellFar.DataPanel.UIClosed">
+            
+        </member>
+        <member name="P:PowerShellFar.DataPanel.Explorer">
+            
+        </member>
+        <member name="P:PowerShellFar.DataPanel.XmlFile">
+            <summary>
+            Gets or sets the XML data source file.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.XmlSchema">
+            <summary>
+            Gets or sets the XML schema definition file.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.TableName">
+            <summary>
+            Gets or sets the table name.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.XmlReadMode">
+            <summary>
+            Gets or sets the XML reading mode. 
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.XmlWriteMode">
+            <summary>
+            Gets or sets the XML writing mode. 
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.Factory">
+            <summary>
+            Database provider factory instance.
+            See <b>System.Data.Common.DbProviderFactories</b> methods <b>GetFactoryClasses</b>, <b>GetFactory</b>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.Connection">
+            <summary>
+            Connection.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.Adapter">
+            <summary>
+            Data adapter.
+            You have to set it and configure at least its <c>SelectCommand</c>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.Table">
+            <summary>
+            A table which records are used as panel items.
+            </summary>
+            <remarks>
+            Normally this table is created, assigned and filled internally.
+            If an external table is set then <see cref="P:PowerShellFar.DataPanel.XmlFile"/> or <see cref="P:PowerShellFar.DataPanel.AsSaveData"/> might be useful.
+            </remarks>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.AsSaveData">
+            <summary>
+            Called by <see cref="M:PowerShellFar.DataPanel.SaveData"/>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.DefaultTitle">
+            
+        </member>
+        <member name="P:PowerShellFar.DataPanel.ViewSort">
+            <summary>
+            Gets or sets the sort column or columns, and sort order. See <see cref="P:System.Data.DataView.Sort"/>.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.DataPanel.ViewRowFilter">
+            <summary>
+            Gets or sets the expression used to filter which rows are viewed. See <see cref="P:System.Data.DataView.RowFilter"/>.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Resource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Resource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Resource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.Resource.PowerShellFar">
+             <summary>
+               Looks up a localized string similar to 
+            &lt;#
+            .SYNOPSIS
+            	The internal profile.
+            	Author: Roman Kuzmin
+            #&gt;
+            
+            # Ignore errors
+            trap { continue }
+            
+            # Hide &apos;more.com&apos;
+            Set-Alias more.com more
+            
+            &lt;#
+            .SYNOPSIS
+            	FarNet &apos;Clear-Host&apos;.
+            #&gt;
+            function Clear-Host
+            {
+            	$Far.UI.Clear()
+            }
+            
+            &lt;#
+            .SYNOPSIS
+            	FarNet &apos;more&apos;.
+            #&gt;
+            function more
+            (
+            	[string[]]$paths
+            )
+            {
+            	if ($paths -and $paths.length -ne 0)  {
+            		foreach ($file in $paths) {
+            			Get-Content $file
+            		}
+            	}
+            	else {
+            		$input
+            	}
+            }
+            
+            &lt;#
+            .SYNOPSIS
+            	Far friendly &apos;Get-History&apos;.
+            #&gt;
+            function  [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="T:PowerShellFar.WriteMode">
+            <summary>
+            UI output modes.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.GetValues">
+            <summary>
+            Gets object sequence. Used for lazy evaluation. Suitable for script blocks.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Zoo">
+            <summary>
+            For internal use and testing.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Zoo.Initialize(System.Management.Automation.Runspaces.RunspaceConfiguration)">
+            
+        </member>
+        <member name="M:PowerShellFar.Zoo.TablePanelSetupColumns(System.Object[])">
+            
+        </member>
+        <member name="M:PowerShellFar.Zoo.ShowTranscript(System.Boolean)">
+            
+        </member>
+        <member name="T:PowerShellFar.ModuleException">
+            
+        </member>
+        <member name="M:PowerShellFar.ModuleException.#ctor">
+            
+        </member>
+        <member name="M:PowerShellFar.ModuleException.#ctor(System.String)">
+            
+        </member>
+        <member name="M:PowerShellFar.ModuleException.#ctor(System.String,System.Exception)">
+            
+        </member>
+        <member name="M:PowerShellFar.ModuleException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            
+        </member>
+        <member name="T:PowerShellFar.Prm">
+            <summary>
+            Parameters. Use them to avoid typos.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Kit">
+            <summary>
+            Helper methods.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Kit.ToString``1(``0)">
+            <summary>
+            Converts with culture.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Kit.ToString(System.DateTime,System.String)">
+            <summary>
+            Converts with culture.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Kit.PositionMessage(System.String)">
+            <summary>
+            Formats a position message.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.PathInfoEx">
+            <summary>
+            Extra <see cref="T:System.Management.Automation.PathInfo"/>.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.PathInfoEx.#ctor(System.String)">
+            
+        </member>
+        <member name="P:PowerShellFar.PathInfoEx.Path">
+            <summary>
+            Gets the friendly path.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.PathInfoEx.Provider">
+            <summary>
+            Gets the provider info.
+            </summary>
+        </member>
+        <member name="P:PowerShellFar.PathInfoEx.DriveName">
+            <summary>
+            Gets the drive name or null.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.UserAction">
+            <summary>
+            User actions.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.UserAction.None">
+            <summary>None.</summary>
+        </member>
+        <member name="F:PowerShellFar.UserAction.Enter">
+            <summary>Enter is pressed.</summary>
+        </member>
+        <member name="F:PowerShellFar.UserAction.CtrlR">
+            <summary>CtrlR is pressed.</summary>
+        </member>
+        <member name="T:PowerShellFar.ButtonSet">
+            <summary>
+            Standard message box button set.
+            </summary>
+        </member>
+        <member name="F:PowerShellFar.ButtonSet.Ok">
+            
+        </member>
+        <member name="F:PowerShellFar.ButtonSet.OkCancel">
+            
+        </member>
+        <member name="F:PowerShellFar.ButtonSet.AbortRetryIgnore">
+            
+        </member>
+        <member name="F:PowerShellFar.ButtonSet.YesNo">
+            
+        </member>
+        <member name="F:PowerShellFar.ButtonSet.YesNoCancel">
+            
+        </member>
+        <member name="F:PowerShellFar.ButtonSet.RetryCancel">
+            
+        </member>
+        <member name="T:My.PathEx">
+            <summary>
+            My System.IO.Path extensions.
+            </summary>
+            <remarks>
+            System.IO.Path is not OK due to invalid file system chars that are valid for other providers.
+            </remarks>
+        </member>
+        <member name="M:My.PathEx.IsFSPath(System.String)">
+            <summary>
+            Does a string looks like a file system path?
+            </summary>
+        </member>
+        <member name="M:My.PathEx.TryGetFilePath(System.Object)">
+            <summary>
+            Tries to recognize an existing file path by an object.
+            </summary>
+            <param name="value">Any object, e.g. FileInfo, String.</param>
+            <returns>Existing file path or null.</returns>
+        </member>
+        <member name="T:My.ProviderInfoEx">
+            <summary>
+            My System.Management.Automation.ProviderInfo extensions.
+            </summary>
+        </member>
+        <member name="M:My.ProcessEx.Start(System.String,System.String)">
+            <summary>
+            Just a wrapper and helper to watch calls.
+            </summary>
+        </member>
+        <member name="M:My.ProcessEx.StartNotepad(System.String)">
+            <summary>
+            Simple call helper. Eventually may help with a custom editor.
+            </summary>
+        </member>
+        <member name="T:PowerShellFar.Wrap">
+            <summary>
+            Wrappers for types difficult to create in PowerShell scripts.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Wrap.ConverterToString(System.String)">
+            <summary>
+            Converter to a string by a property name.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Wrap.ConverterToString(System.Management.Automation.ScriptBlock)">
+            <summary>
+            Converter to a string by a script operating on $_.
+            </summary>
+        </member>
+        <member name="M:PowerShellFar.Wrap.Comparison(System.Management.Automation.ScriptBlock)">
+            <summary>
+            Comparison script.
+            </summary>
+            <param name="script">
+            The script compares <c>$args[0]</c> and <c>$args[1]</c> and returns [int]: 0: equal, -1: less, +1: greater.
+            Exception is thrown if it returns something else.
+            </param>
+        </member>
+    </members>
+</doc>

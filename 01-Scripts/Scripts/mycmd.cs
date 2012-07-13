@@ -11,7 +11,7 @@ public class App {
     var psi = new ProcessStartInfo();
     psi.FileName = "cmd.exe";
 //    psi.Arguments = String.Join(" ", args);
-    psi.Arguments = "/C cmd.exe 2>&1";
+    psi.Arguments = "/C cmd.exe /K 2>&1";
     psi.WorkingDirectory = Directory.GetCurrentDirectory();
     psi.UseShellExecute = false;
     psi.RedirectStandardInput = true;

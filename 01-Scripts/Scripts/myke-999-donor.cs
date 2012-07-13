@@ -48,6 +48,7 @@ public class Donor : Kep {
       status = status && transplantDir("build/pack/misc/scala-devel/plugins/continuations.jar", "build/locker/classes/continuations");
       status = status && transplantDir("build/quick/classes/library/scala/util/continuations", "build/locker/classes/library/scala/util/continuations");
       status = status && transplantDir("lib/forkjoin.jar/scala/concurrent/forkjoin", "build/locker/classes/library/scala/concurrent/forkjoin");
+      status = status && transplantDir("build/asm/classes/scala/tools/asm", "build/locker/classes/compiler/scala/tools/asm");
       status = status && transplantDir("lib/fjbg.jar/ch/epfl/lamp/fjbg", "build/locker/classes/compiler/ch/epfl/lamp/fjbg");
       status = status && transplantDir("lib/fjbg.jar/ch/epfl/lamp/util", "build/locker/classes/compiler/ch/epfl/lamp/util");
       status = status && transplantDir("lib/msil.jar/ch/epfl/lamp/compiler/msil", "build/locker/classes/compiler/ch/epfl/lamp/compiler/msil");
@@ -69,6 +70,9 @@ public class Donor : Kep {
 
         println();
         status = status && donnee().packLockerIntoJars();
+
+        // works around an infrastructure bug that I'm cba to fix right know
+        // transplantFile(@"C:\Projects\scala-partest.jar", "/build/locker/lib/scala-partest.jar");
       }
 
       return status;

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!DOCTYPE hrd []>
+<hrd xmlns="http://colorer.sf.net/2003/hrd">
+
+<!--
+
+White background palette from Roman Kuzmin <nightroman@gmail.com>
+Distributed with the PowerShellFar module: http://code.google.com/p/farnet
+
+INSTALLATION
+
+Add hrd element(s) to the standard catalog-*.xml or a custom color scheme file:
+
+<hrd class="console" name="RomanConsole" description="White from Roman Kuzmin">
+<location link="...\RomanConsole.hrd"/>
+</hrd>
+
+<hrd class="rgb" name="RomanRainbow" description="White from Roman Kuzmin">
+<location link="...\RomanRainbow.hrd"/>
+</hrd>
+
+-->
+
+<assign name="def:Text" fore="#0" back="#F"/>
+
+<assign name="def:Syntax"/>
+
+<assign name="def:PairStart" fore="#5" back='#7'/>
+<assign name="def:PairEnd" fore="#5" back='#7'/>
+<assign name="def:PairStrongStart" fore="#0" back="#E"/>
+<assign name="def:PairStrongEnd" fore="#0" back="#E"/>
+
+<assign name="def:Number" fore="#5"/>
+<assign name="def:NumberSuffix" fore="#5"/>
+
+<assign name="def:String" fore="#4"/>
+<assign name="def:StringContent" fore="#D"/>
+<assign name="def:StringEdge" fore="#C"/>
+<assign name="def:Character" fore="#1"/>
+<assign name="def:CharacterContent" fore="#1"/>
+
+<assign name="def:Comment" fore="#2"/>
+<assign name="def:CommentContent" fore="#2"/>
+<assign name="def:CommentEdge" fore="#7"/>
+<assign name="def:CommentDoc" fore="#8"/>
+<assign name="def:CommentDocContent" fore="#8"/>
+<assign name="def:CommentDocEdge" fore="#7"/>
+
+<assign name="def:Symbol" fore="#9"/>
+<assign name="def:SymbolStrong" fore="#9"/>
+<assign name="def:Operator" fore="#9"/>
+<assign name="def:Prefix" fore="#1"/>
+
+<assign name="def:Keyword" fore="#9"/>
+<assign name="def:KeywordStrong" fore="#9" back="#7"/>
+<assign name="def:TypeKeyword" fore="#3"/>
+
+<assign name="def:Constant" fore="#6"/>
+<assign name="def:BooleanConstant" fore="#6"/>
+<assign name="def:Identifier" fore="#0"/>
+
+<assign name="def:Register" fore="#4"/>
+<assign name="def:Var" fore="#C"/>
+<assign name="def:VarStrong" fore="#D"/>
+
+<assign name="def:Directive" fore="#9"/>
+
+<assign name="def:Parameter" fore="#2"/>
+
+<assign name="def:Tag" fore="#0"/>
+<assign name="def:OpenTag" fore="#7"/>
+<assign name="def:CloseTag" fore="#7"/>
+
+<assign name="def:Label" fore="#6"/>
+<assign name="def:LabelStrong" fore="#F" back="#7"/>
+
+<assign name="def:Insertion" fore="#8" back="#E"/>
+
+<assign name="def:URI" fore="#9"/>
+<assign name="def:EMail" fore="#9"/>
+<assign name="def:Date" fore="#3"/>
+<assign name="def:Time" fore="#1"/>
+
+<assign name="def:Error" fore="#F" back="#4"/>
+<assign name="def:ErrorText" fore="#D"/>
+
+<assign name="def:TODO" fore="#4" back="#7"/>
+<assign name="def:Debug" fore="#4" back="#7"/>
+
+<assign name="def:HorzCross" fore="#8" back="#E"/>
+<assign name="def:VertCross" fore="#8" back="#E"/>
+
+</hrd>

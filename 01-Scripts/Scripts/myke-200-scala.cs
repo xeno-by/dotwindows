@@ -177,7 +177,7 @@ public class Scala : Git {
 
   public virtual String inferScalaClasspath() {
     var sourcesRoot = inferScalaSourcesRoot();
-    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
+    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\asm\classes;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
   }
 
   [Action]
