@@ -22,4 +22,13 @@ public class Icfpc : Sbt {
   public override ExitCode compile() {
     return Console.batch("sbt compile", home: project + "\\scala");
   }
+
+  public override ExitCode run(Arguments arguments) {
+    var url = readln("Map url");
+    return Console.batch("sbt \"game " + url + "\"", home: project + "\\scala");
+  }
+
+  public override ExitCode runTest() {
+    return Console.batch("sbt our-test", home: project + "\\scala");
+  }
 }
