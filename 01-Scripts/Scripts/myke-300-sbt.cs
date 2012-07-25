@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 
 public class Sbt : Git {
   public virtual String sbtproject { get { return null; } }
+  public virtual String prelude { get { return null; } }
 
   public Sbt() : base() { init(); }
   public Sbt(FileInfo file) : base(file) { init(); }
@@ -48,22 +49,28 @@ public class Sbt : Git {
     }
   }
 
+  public virtual ExitCode sbt(params String[] commands) {
+    var list = new List<String>();
+    if (sbtproject != null) list.Add("project " + sbtproject);
+    if (prelude != null) list.Add(prelude);
+    list.AddRange(commands);
+    var commandLine = String.Join(" ", list.Select(command => "\"" + command + "\"").ToArray());
+    return Console.batch("sbt " + commandLine, home: sbtroot);
+  }
+
   [Action]
   public virtual ExitCode clean() {
-    var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} clean", preamble), home: sbtroot);
+    return sbt("clean");
   }
 
   [Action]
   public virtual ExitCode rebuild() {
-    var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} clean compile", preamble), home: sbtroot);
+    return sbt("clean", "compile");
   }
 
   [Default, Action]
   public virtual ExitCode compile() {
-    var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} compile", preamble), home: sbtroot);
+    return sbt("compile");
   }
 
   private class ProjectInfo {
@@ -76,6 +83,7 @@ public class Sbt : Git {
     var log = new FileInfo(Path.GetTempFileName());
     if (log.Exists) log.Delete();
 
+    // sbt("compile", "show runtime:scala-home", "show runtime:dependency-classpath", "show discovered-main-classes")
     var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
     Console.batch(String.Format("{0} compile \"show runtime:scala-home\" \"show runtime:dependency-classpath\" \"show discovered-main-classes\" | tee {1}", preamble, log.FullName), home: dir);
 
@@ -161,7 +169,6 @@ public class Sbt : Git {
 
   [Action]
   public override ExitCode runTest() {
-    var preamble = String.Format("sbt {0}", sbtproject == null ? null : "\"project " + sbtproject + "\"");
-    return Console.batch(String.Format("{0} test", preamble), home: sbtroot);
+    return sbt("test");
   }
 }

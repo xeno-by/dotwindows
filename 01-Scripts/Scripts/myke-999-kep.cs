@@ -55,6 +55,10 @@ public class Kep : Git {
   public Kep(DirectoryInfo dir, Arguments arguments) : base(dir) { init(); this.arguments = arguments; }
   private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
+  public override String getTargetOfPullRequest(String branch) {
+    return "scala:2.10.x";
+  }
+
   public virtual bool inPlayground { get {
     return dir.FullName.Replace("\\", "/").Contains("/sandbox");
   } }
@@ -321,7 +325,7 @@ public class Kep : Git {
   public virtual ExitCode compileAlt() {
     if (inPlayground || inTest) {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
-      return scala.compile();
+      return scala.compileAlt();
     } else {
       var status = runAnt("build");
       if (!status) return status;
@@ -663,20 +667,28 @@ public class Kep : Git {
     return status;
   }
 
-  [Action, MenuItem(description = "Deploy to Kepler", priority = 999.2)]
-  public virtual ExitCode deployKepler() {
+  [Action, MenuItem(description = "Deploy STARR to Kepler (sloppy)", priority = 999.2)]
+  public virtual ExitCode deployStarrSloppy() {
     var source = mostUptodateLibs();
     if (source == null) { println("Couldn't find neither pack nor palo nor lolo to deploy"); return -1; }
 
     println("Deploying starr upon ourselves...");
     var target = new Kep().project;
     var status = transplantFile(source + "lib/scala-library.jar", target + "/lib/scala-library.jar");
+    status = deleteFile(target + "/lib/scala-library.jar.desired.sha1");
     status = status && transplantFile(source + "lib/scala-reflect.jar", target + "/lib/scala-reflect.jar");
+    status = deleteFile(target + "/lib/scala-reflect.jar.desired.sha1");
     status = status && transplantFile(source + "lib/scala-compiler.jar", target + "/lib/scala-compiler.jar");
+    status = deleteFile(target + "/lib/scala-compiler.jar.desired.sha1");
     return status;
   }
 
-  [Action, MenuItem(description = "Deploy to Ensime", priority = 999.1)]
+  [Action, MenuItem(description = "Deploy STARR to Kepler (conventional)", priority = 999.1)]
+  public virtual ExitCode deployStarrConventional() {
+    return runAnt("starr.done");
+  }
+
+  [Action, MenuItem(description = "Deploy to Ensime", priority = 999.05)]
   public virtual ExitCode deployEnsime() {
     var status = packLockerIntoJars();
     if (!status) return status;

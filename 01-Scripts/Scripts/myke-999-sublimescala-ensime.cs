@@ -15,6 +15,7 @@ using System.Xml.XPath;
 
 public class SublimeScalaEnsime : Sbt {
   public override String project { get { return @"%PROJECTS%\SublimeScala\Ensime".Expand(); } }
+  public override String prelude { get { return "++ 2.10.0-SNAPSHOT"; } }
 
   public SublimeScalaEnsime() : base() {}
   public SublimeScalaEnsime(FileInfo file) : base(file) {}
@@ -28,7 +29,7 @@ public class SublimeScalaEnsime : Sbt {
 
   [Action, MenuItem(description = "Deploy to Sublime", priority = 999.2)]
   public virtual ExitCode deployToSublime() {
-    var result = Console.batch("sbt stage", home: project);
+    var result = sbt("stage");
     return result && transplantDir("dist_2.10.0-SNAPSHOT", @"%APPDATA%\Sublime Text 2\Packages\SublimeEnsime\server");
   }
 
@@ -36,7 +37,7 @@ public class SublimeScalaEnsime : Sbt {
   public virtual ExitCode deployToDownload() {
     var result = deployToSublime();
 
-    var version = "ensime_2.10.0-SNAPSHOT-0.9.4";
+    var version = "ensime_2.10.0-SNAPSHOT-0.9.5";
     var src = @"%APPDATA%\Sublime Text 2\Packages\SublimeEnsime\server".Expand();
     var dest = (@"%TMP%\" + version).Expand();
     result = result && transplantDir(src, dest);

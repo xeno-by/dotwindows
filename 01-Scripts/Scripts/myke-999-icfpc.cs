@@ -19,16 +19,36 @@ public class Icfpc : Sbt {
   public Icfpc(FileInfo file) : base(file) {}
   public Icfpc(DirectoryInfo dir) : base(dir) {}
 
+  [Action]
   public override ExitCode compile() {
     return Console.batch("sbt compile", home: project + "\\scala");
   }
 
+  [Action]
   public override ExitCode run(Arguments arguments) {
-    var url = readln("Map url");
-    return Console.batch("sbt \"game " + url + "\"", home: project + "\\scala");
+    // var url = Config.rawTarget == "" ? readln("Map url") : Config.rawTarget;
+    var url = Config.rawTarget == "" ? "03" : Config.rawTarget;
+    // var url = "03";
+    return Console.batch("sbt \"chess " + url + " trace\"", home: project + "\\scala");
   }
 
+  [Action]
+  public ExitCode game(Arguments arguments) {
+    var url = Config.rawTarget == "" ? readln("Map url") : Config.rawTarget;
+    return Console.batch("sbt \"game " + url + " trace\"", home: project + "\\scala");
+  }
+
+  [Action]
   public override ExitCode runTest() {
-    return Console.batch("sbt our-test", home: project + "\\scala");
+    return runAllTests();
+  }
+
+  [Action]
+  public ExitCode runAllTests() {
+    // var algo = Config.rawTarget == "" ? readln("Algo") : Config.rawTarget;
+    var algo = Config.rawTarget == "" ? "chess" : Config.rawTarget;
+    // var algo = "chess";
+    env["Meaningful"] = "1";
+    return Console.batch("sbt \"tourney " + algo + "\"", home: project + "\\scala");
   }
 }

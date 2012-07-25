@@ -16,6 +16,7 @@ using Microsoft.Win32.SafeHandles;
 
 public class Scala : Git {
   public static String[] profile { get { return File.ReadAllLines("%SCRIPTS_HOME%/scalac.profile".Expand()); } }
+  public static String distro { get { return File.ReadAllText("%SCRIPTS_HOME%/scalac.distro".Expand()); } }
   public static String staticJavaopts { get { return (profile.ElementAtOrDefault(0) ?? "").Expand(); } }
   public static String staticScalaopts { get { return (profile.ElementAtOrDefault(1) ?? "").Expand(); } }
 
@@ -96,7 +97,7 @@ public class Scala : Git {
     return inferred ?? defaultCompiler();
   } }
 
-  public virtual String buildCompilerInvocation(String command) {
+  public virtual String buildCompilerInvocation(String command, bool alt) {
     command = command.Expand();
 
     var magicPrefix = "scalac ";
@@ -136,7 +137,7 @@ public class Scala : Git {
     var bootTemplate = @"%JAVA_HOME%\bin\java.exe -Xbootclasspath/a:""$CLASSPATH$"" $JAVAOPTS$ scala.tools.nsc.Main $SCALAOPTS$";
 
     command = useBootClasspath ? bootTemplate : nobootTemplate;
-    command = command.Replace("$CLASSPATH$", inferScalaClasspath());
+    command = command.Replace("$CLASSPATH$", inferScalaClasspath(alt));
     command = command.Replace("$JAVAOPTS$", javaOpts);
     command = command.Replace("$SCALAOPTS$", scalaOpts);
 
@@ -144,39 +145,44 @@ public class Scala : Git {
     return command.Expand();
   }
 
-  public virtual String buildRunnerInvocation(String mainClass, String arguments) {
-    var invocation = buildCompilerInvocation("scalac " + " " + mainClass + " " + arguments);
+  public virtual String buildRunnerInvocation(String mainClass, String arguments, bool alt) {
+    var invocation = buildCompilerInvocation("scalac " + " " + mainClass + " " + arguments, alt);
     return invocation.Replace(" scala.tools.nsc.Main ", " scala.tools.nsc.MainGenericRunner ");
   }
 
-  public virtual String buildReplInvocation() {
-    var invocation = buildCompilerInvocation("scalac " + String.Join(" ", flags.ToArray()));
+  public virtual String buildReplInvocation(bool alt) {
+    var invocation = buildCompilerInvocation("scalac " + String.Join(" ", flags.ToArray()), alt: alt);
     return invocation.Replace(" scala.tools.nsc.Main ", " scala.tools.nsc.MainGenericRunner ");
   }
 
-  public virtual String inferScalaSourcesRoot() {
-    var target = dir;
-    DirectoryInfo sourcesRoot = null;
-    while (target.FullName != target.Root.FullName) {
-      var token = target.GetFiles("pull-binary-libs.sh").FirstOrDefault();
-      if (token != null) {
-        sourcesRoot = target;
-        break;
+  public virtual String inferScalaSourcesRoot(bool alt) {
+    alt = alt || distro == "alt";
+    if (alt) {
+      return new DirectoryInfo(@"%PROJECTS%\Scala".Expand()).FullName;
+    } else {
+      var target = dir;
+      DirectoryInfo sourcesRoot = null;
+      while (target.FullName != target.Root.FullName) {
+        var token = target.GetFiles("pull-binary-libs.sh").FirstOrDefault();
+        if (token != null) {
+          sourcesRoot = target;
+          break;
+        }
+        target = target.Parent;
       }
-      target = target.Parent;
-    }
 
-    sourcesRoot = sourcesRoot ?? new DirectoryInfo(@"%PROJECTS%\Kepler".Expand());
-    return sourcesRoot.FullName;
+      sourcesRoot = sourcesRoot ?? new DirectoryInfo(@"%PROJECTS%\Kepler".Expand());
+      return sourcesRoot.FullName;
+    }
   }
 
-  public virtual String inferScalaHome() {
-    var sourcesRoot = inferScalaSourcesRoot();
+  public virtual String inferScalaHome(bool alt) {
+    var sourcesRoot = inferScalaSourcesRoot(alt);
     return @"%ROOT%\build\locker\classes".Replace("%ROOT%", sourcesRoot);
   }
 
-  public virtual String inferScalaClasspath() {
-    var sourcesRoot = inferScalaSourcesRoot();
+  public virtual String inferScalaClasspath(bool alt) {
+    var sourcesRoot = inferScalaSourcesRoot(alt);
     return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\asm\classes;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
   }
 
@@ -194,10 +200,19 @@ public class Scala : Git {
 
   [Default, Action]
   public virtual ExitCode compile() {
+    return compileImpl(alt: false);
+  }
+
+  [Default, Action]
+  public virtual ExitCode compileAlt() {
+    return compileImpl(alt: true);
+  }
+
+  public virtual ExitCode compileImpl(bool alt) {
     if (!accept()) { println("scalac: don't know how to compile the stuff you asked"); return -1; }
     ExitCode status = null;
 
-    var scalaHome = inferScalaHome();
+    var scalaHome = inferScalaHome(alt);
     if (scalaHome == null) { println("scalac: don't know how to infer my home"); return -1; }
 
     var classes = scalaHome.EndsWith("classes");
@@ -361,10 +376,11 @@ public class Scala : Git {
       watcher.Renamed += (o, e) => files.Add(new FileInfo(e.FullPath));
       watcher.EnableRaisingEvents = true;
 
+      if (alt || distro == "alt") println("[compiling with scala-alt]");
       var compilers = compiler.Split(new []{Environment.NewLine}, StringSplitOptions.None).ToList();
       status = compilers.Aggregate((ExitCode)0, (curr, compiler1) => {
         if (!curr) return curr;
-        var invocation = buildCompilerInvocation(compiler1);
+        var invocation = buildCompilerInvocation(compiler1, alt);
         if (invocation != null && invocation.Contains("-Xprompt")) return Console.interactive(invocation, home: dir);
         return Console.batch(invocation, home: dir);
       });
@@ -422,14 +438,34 @@ public class Scala : Git {
 
   [Action, Meaningful]
   public virtual ExitCode run() {
+    return runImpl(alt: false);
+  }
+
+  [Action, Meaningful]
+  public virtual ExitCode runAlt() {
+    return runImpl(alt: true);
+  }
+
+  public virtual ExitCode runImpl(bool alt) {
+    if (alt || distro == "alt") println("[running with scala-alt]");
     Func<String> readMainclass = () => inferMainclass() ?? Console.readln(prompt: "Main class", history: String.Format("mainclass {0}", compiler));
     Func<String> readArguments = () => inferArguments() ?? Console.readln(prompt: "Run arguments", history: String.Format("run {0}", compiler));
-//    return compile() && Console.interactive(buildRunnerInvocation(readMainclass(), readArguments()), home: dir);
-    return compile() && Console.batch(buildRunnerInvocation(readMainclass(), readArguments()), home: dir);
+//    return compileImpl(alt) && Console.interactive(buildRunnerInvocation(readMainclass(), readArguments()), home: dir);
+    return compileImpl(alt) && Console.batch(buildRunnerInvocation(readMainclass(), readArguments(), alt), home: dir);
   }
 
   [Action, DontTrace]
   public virtual ExitCode repl() {
-    return Console.interactive(buildReplInvocation(), home: inferScalaHome());
+    return replImpl(alt: false);
+  }
+
+  [Action, DontTrace]
+  public virtual ExitCode replAlt() {
+    return replImpl(alt: true);
+  }
+
+  public virtual ExitCode replImpl(bool alt) {
+    if (alt || distro == "alt") println("[repling with scala-alt]");
+    return Console.interactive(buildReplInvocation(alt), home: inferScalaHome(alt));
   }
 }

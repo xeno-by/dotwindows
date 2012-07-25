@@ -3,7 +3,7 @@
 	<Protocol>0</Protocol>
 	<UserName>xeno</UserName>
 	<Password crypt="1"></Password>
-	<URL>ftp://xeno@192.168.1.1:2121/DCIM/100MEDIA</URL>
+	<URL>ftp://xeno@192.168.1.4:2121/DCIM/100MEDIA</URL>
 	<PromptPsw>1</PromptPsw>
 	<ProxyType>0</ProxyType>
 	<ProxyHost>127.0.0.1</ProxyHost>

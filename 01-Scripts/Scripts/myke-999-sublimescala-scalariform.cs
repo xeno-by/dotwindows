@@ -20,7 +20,7 @@ public class SublimeScalaScalariform : Sbt {
   public SublimeScalaScalariform(FileInfo file, Arguments arguments) : base(file) {}
   public SublimeScalaScalariform(DirectoryInfo dir, Arguments arguments) : base(dir) {}
 
-  [Default, MenuItem(description = "Deploy to Sublime", priority = 999.2)]
+  [Default, MenuItem(description = "Deploy to .m2", priority = 999.2)]
   public virtual ExitCode deploy() {
     return Console.batch("sbt \"project scalariform\" publish".Expand(), home: project);
   }

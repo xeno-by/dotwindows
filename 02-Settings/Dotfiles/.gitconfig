@@ -12,5 +12,9 @@
   abbrev = 10
   quotepath = true
   excludesFile = ~/.gitignore
+  bare = false
+  symlinks = false
+  ignorecase = true
+  hideDotFiles = dotGitOnly
 [rerere]
   enabled = 1

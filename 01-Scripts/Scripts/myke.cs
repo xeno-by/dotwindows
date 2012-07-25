@@ -1714,6 +1714,33 @@ public abstract class Base {
       return -1;
     }
   }
+
+  protected ExitCode deleteFile(String target) {
+    target = (target.Expand().Contains(":") ? target : ((transplantTo == null ? null : (transplantTo + "\\")) + target)).Expand().Replace("/", "\\");
+    print("Deleting {0}... ", target);
+
+    try {
+      ExitCode status = 0;
+      if (File.Exists(target)) status = DeleteFile(target);
+      if (status) println("[  OK  ]");
+      return status;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
+
+  public ExitCode DeleteFile(string targetFile) {
+    try {
+      File.Delete(targetFile);
+      return 0;
+    } catch (Exception ex) {
+      println("[FAILED]");
+      println(ex);
+      return -1;
+    }
+  }
 }
 
 public abstract class Conn : Base {
@@ -2417,6 +2444,10 @@ public abstract class Git : Prj {
     }
   }
 
+  public virtual String getTargetOfPullRequest(String branch) {
+    return null;
+  }
+
   public virtual String getBranchPullRequestUrl(String branch) {
     String remote = null;
     if (branch.StartsWith("remotes/")) {
@@ -2429,7 +2460,11 @@ public abstract class Git : Prj {
 
     var url = getGithubUrl(remote);
     if (url == null) return null;
-    else return url + "/pull/new/" + branch;
+    else {
+      var target = getTargetOfPullRequest(branch);
+      var prefix = target == null ? "" : (target + "...");
+      return url + "/pull/new/" + prefix + branch;
+    }
   }
 
   public virtual String getCommitUrl(String commit) {
