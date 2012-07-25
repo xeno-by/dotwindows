@@ -57,7 +57,10 @@ public class Scala : Git {
   }
 
   public override bool accept() {
-    return (Config.action == "compile" && sources.Count() > 0 && compiler != null) || Config.action == "run" || Config.action == "repl";
+    var action = Config.action;
+    if (action == "diff-vanilla-and-alt") return true;
+    if (action.EndsWith("-alt")) action = action.Substring(0, action.Length - 4);
+    return (action == "compile" && sources.Count() > 0 && compiler != null) || action == "run" || action == "repl";
   }
 
   public virtual String compiler { get {
@@ -203,7 +206,7 @@ public class Scala : Git {
     return compileImpl(alt: false);
   }
 
-  [Default, Action]
+  [Action]
   public virtual ExitCode compileAlt() {
     return compileImpl(alt: true);
   }
@@ -417,6 +420,20 @@ public class Scala : Git {
         return symlink.Substring(iof + 2);
       }
     }
+  }
+
+  [Action, MenuItem(hotkey = "d", description = "Diff vanilla and alt", priority = 70)]
+  public virtual ExitCode diffVanillaAndAlt() {
+    var mods = flags.Count != 0 ? flags.ToString() : "-Xprint:typer,cleanup";
+    var status = clean();
+    status = status && println("Building with vanilla...");
+    status = status && Console.batch(String.Format("scalac {0} {1} > %TMP%/vanilla.log", mods, file != null ? file.FullName : dir.FullName));
+    status = clean();
+    status = status && println("Building with alt...");
+    status = status && Console.batch(String.Format("scalacalt {0} {1} > %TMP%/alt.log", mods, file != null ? file.FullName : dir.FullName));
+    status = clean();
+    status = status && println("Running mydiff %TMP%/vanilla.log %TMP%/alt.log".Expand());
+    return status && Console.ui("mydiff %TMP%/vanilla.log %TMP%/alt.log".Expand());
   }
 
   public virtual String inferMainclass() {

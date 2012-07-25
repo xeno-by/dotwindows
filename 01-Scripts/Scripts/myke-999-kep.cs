@@ -702,4 +702,14 @@ public class Kep : Git {
     status = status && transplantFile(source + "lib/scala-compiler.jar", "%APPDATA%/Sublime Text 2/Packages/SublimeEnsime/scala/scala-compiler.jar");
     return status;
   }
+
+  [Action, MenuItem(hotkey = "d", description = "Diff vanilla and alt", priority = 70)]
+  public virtual ExitCode diffVanillaAndAlt() {
+    if (inPlayground) {
+      var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
+      return scala.diffVanillaAndAlt();
+    } else {
+      return -1;
+    }
+  }
 }

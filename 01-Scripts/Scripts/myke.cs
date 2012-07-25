@@ -1242,7 +1242,7 @@ public static class Connectors {
 
   public static List<Type> all { get {
     var root = Assembly.GetExecutingAssembly();
-    var t_connectors = root.GetTypes().Where(t => t.IsDefined(typeof(ConnectorAttribute), true)).ToList();
+    var t_connectors = root.GetTypes().Where(t => t.IsDefined(typeof(ConnectorAttribute), true) && !t.IsInterface && !t.IsAbstract).ToList();
     t_connectors.Sort(new ConnectorsComparer());
     return t_connectors;
   } }
