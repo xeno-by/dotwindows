@@ -57,7 +57,7 @@ public class App {
 
     var opts = new List<String>();
     opts.Add("-Xbootclasspath/a:%CLASSPATH%");
-    opts.Add("-Dpartest.scalacopts=-Xcheckinit");
+    // opts.Add("-Dpartest.scalacopts=-Xcheckinit");
     opts.Add("scala.tools.partest.nest.NestRunner");
     //opts.Add("--debug");
     //opts.Add("--verbose");

@@ -17,8 +17,10 @@ using Microsoft.Win32.SafeHandles;
 public class Scala : Git {
   public static String[] profile { get { return File.ReadAllLines("%SCRIPTS_HOME%/scalac.profile".Expand()); } }
   public static String distro { get { return File.ReadAllText("%SCRIPTS_HOME%/scalac.distro".Expand()); } }
-  public static String staticJavaopts { get { return (profile.ElementAtOrDefault(0) ?? "").Expand(); } }
-  public static String staticScalaopts { get { return (profile.ElementAtOrDefault(1) ?? "").Expand(); } }
+  public static String staticJavaopts { get {
+    return (profile.ElementAtOrDefault(0) ?? "").Expand(); } }
+  public static String staticScalaopts {
+    get { return (profile.ElementAtOrDefault(1) ?? "").Expand(); } }
 
   // public String defaultJavaopts { get { return staticJavaopts + (dir.IsChildOrEquivalentTo("%PROJECTS%\\KeplerUnderRefactoring".Expand()) ? " -Dscala.repl.vids=1 -Dscala.repl.autoruncode=%HOME%/.scala_autorun -Dscala.repl.maxprintstring=0" : "");; } }
   public String defaultJavaopts { get { return staticJavaopts; } }
@@ -186,7 +188,7 @@ public class Scala : Git {
 
   public virtual String inferScalaClasspath(bool alt) {
     var sourcesRoot = inferScalaSourcesRoot(alt);
-    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\asm\classes;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
+    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\asm\classes;%ROOT%\build\libs\forkjoin.jar;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
   }
 
   [Action]
@@ -424,16 +426,18 @@ public class Scala : Git {
 
   [Action, MenuItem(hotkey = "d", description = "Diff vanilla and alt", priority = 70)]
   public virtual ExitCode diffVanillaAndAlt() {
-    var mods = flags.Count != 0 ? flags.ToString() : "-Xprint:typer,cleanup";
+    var mods = flags.Count != 0 ? new Arguments(flags).ToString() : "-Xprint:typer,cleanup";
     var status = clean();
-    status = status && println("Building with vanilla...");
-    status = status && Console.batch(String.Format("scalac {0} {1} > %TMP%/vanilla.log", mods, file != null ? file.FullName : dir.FullName));
-    status = clean();
+    var uid = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
     status = status && println("Building with alt...");
-    status = status && Console.batch(String.Format("scalacalt {0} {1} > %TMP%/alt.log", mods, file != null ? file.FullName : dir.FullName));
+    status = status && Console.batch(String.Format("scalacalt {0} {1} > %TMP%/alt.{2}.log", mods, file != null ? file.FullName : dir.FullName, uid));
     status = clean();
-    status = status && println("Running mydiff %TMP%/vanilla.log %TMP%/alt.log".Expand());
-    return status && Console.ui("mydiff %TMP%/vanilla.log %TMP%/alt.log".Expand());
+    status = status && println("Building with vanilla...");
+    status = status && Console.batch(String.Format("scalac {0} {1} > %TMP%/vanilla.{2}.log", mods, file != null ? file.FullName : dir.FullName, uid));
+    status = clean();
+    var diffcmd = String.Format("mydiff %TMP%/alt.{0}.log %TMP%/vanilla.{0}.log".Expand(), uid);
+    status = status && println("Running " + diffcmd);
+    return status && Console.ui(diffcmd);
   }
 
   public virtual String inferMainclass() {

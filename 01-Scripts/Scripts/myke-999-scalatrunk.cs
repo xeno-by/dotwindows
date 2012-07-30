@@ -19,9 +19,9 @@ public class ScalaTrunk : Kep {
   public ScalaTrunk(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) { this.arguments = arguments; }
 
   public override String project { get { return @"%PROJECTS%\Scala".Expand(); } }
-  public override String profile { get { return profileAlt; } }
-  public override String profileClean { get { return profileAltClean; } }
-  public override String profileLibrary { get { return profileAltLibrary; } }
-  public override String profileReflect { get { return profileAltReflect; } }
-  public override String profileCompiler { get { return profileAltCompiler; } }
+  // public override String profile { get { return profileAlt; } }
+  // public override String profileClean { get { return profileAltClean; } }
+  // public override String profileLibrary { get { return profileAltLibrary; } }
+  // public override String profileReflect { get { return profileAltReflect; } }
+  // public override String profileCompiler { get { return profileAltCompiler; } }
 }
