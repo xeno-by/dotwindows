@@ -26,8 +26,12 @@ public class Scala : Git {
   public String defaultJavaopts { get { return staticJavaopts; } }
   public String defaultScalaopts { get { return staticScalaopts; } }
 
-  public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); }
-  public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { init(arguments); }
+  public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); warnIfJava7(); }
+  public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { init(arguments); warnIfJava7(); }
+  private void warnIfJava7() {
+    var javaVer = Console.eval("java -version")[0];
+    if (javaVer.Contains("1.7")) println("[" + javaVer + "]");
+  }
 
   private List<FileInfo> sources;
   private List<String> flags;
