@@ -44,8 +44,7 @@ Windows Registry Editor Version 5.00
 "ILMERGE_HOME"="C:\\Program Files (x86)\\Microsoft\\ILMerge"
 "INCLUDE"="C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\include;C:\\Program Files\\Microsoft SDKs\\Windows\\v7.1\\Include"
 "JAVA_HOME"=hex(2):63,00,3a,00,5c,00,50,00,52,00,4f,00,47,00,52,00,41,00,7e,00,\
-  31,00,5c,00,4a,00,61,00,76,00,61,00,5c,00,4a,00,44,00,4b,00,31,00,36,00,7e,\
-  00,31,00,2e,00,30,00,5f,00,33,00,00,00
+  31,00,5c,00,4a,00,61,00,76,00,61,00,5c,00,4a,00,44,00,4b,00,00,00
 "JD_HOME"="C:\\Program Files (x86)\\jd"
 "LANG"="C.UTF-8"
 "LC_ALL"="C.UTF-8"

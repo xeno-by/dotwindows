@@ -10,8 +10,8 @@ val rm = scala.reflect.runtime.universe.rootMirror
 def show(cl: ClassLoader): String = scala.reflect.runtime.ReflectionUtils.show(cl)
 import scala.tools.reflect.ToolBox
 import scala.tools.reflect.Eval
-import scala.reflect.makro.Context
-//import scala.reflect.macros.Context
+//import scala.reflect.makro.Context
+import scala.reflect.macros.Context
 def mirrorThatLoaded(sym: Symbol) = {
   val u = scala.reflect.runtime.universe.asInstanceOf[scala.reflect.internal.SymbolTable]
   val m = u.mirrorThatLoaded(sym.asInstanceOf[u.Symbol])

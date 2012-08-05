@@ -47,12 +47,14 @@ public class Scala : Git {
         return new List<Object>{file1};
       } else if (Directory.Exists(argument)) {
         var dir1 = new DirectoryInfo(argument);
-        return dir1.GetFiles("*.scala", SearchOption.TopDirectoryOnly).ToList();
+        var scalas = dir1.GetFiles("*.scala", SearchOption.TopDirectoryOnly).ToList();
+        var javas = dir1.GetFiles("*.java", SearchOption.TopDirectoryOnly).ToList();
+        return Enumerable.Concat(scalas, javas).ToList();
       } else {
         return new List<Object>{argument};
       }
     }).ToList();
-    sources = combo.OfType<FileInfo>().Where(fi => fi.Extension == ".scala").ToList();
+    sources = combo.OfType<FileInfo>().Where(fi => fi.Extension == ".scala" || fi.Extension == ".java").ToList();
     flags = combo.OfType<String>().ToList();
 
     env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)";
