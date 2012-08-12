@@ -350,9 +350,11 @@ public class Kep : Git {
 
   [Action, Meaningful]
   public virtual ExitCode run() {
-    if (inPlayground || inTest) {
+    if (inPlayground) {
       var scala = file != null ? new Scala(file, arguments): new Scala(dir, arguments);
       return scala.run();
+    } else if (inTest) {
+      return runTest();
     } else {
       //var options = new List<String>();
       //options.Add("-deprecation");
