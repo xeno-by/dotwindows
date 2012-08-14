@@ -980,6 +980,7 @@ public static class FileSystem {
   public static String GetRealPath(this String path) {
     if (path == null) return null;
     path = Path.GetFullPath(path);
+    if (!File.Exists(path) && !Directory.Exists(path)) return path;
 
     for (var parent = Path.GetDirectoryName(path); parent != null; parent = Path.GetDirectoryName(parent)) {
       if (parent.IsSymlink()) {

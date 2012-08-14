@@ -29,8 +29,8 @@ public class Scala : Git {
   public Scala(FileInfo file, Arguments arguments) : base(file) { init(arguments); warnIfJava7(); }
   public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { init(arguments); warnIfJava7(); }
   private void warnIfJava7() {
-    var javaVer = Console.eval("java -version")[0];
-    if (javaVer.Contains("1.7")) println("[" + javaVer + "]");
+    var javaVer = Console.eval("java -version");
+    if (javaVer != null && javaVer[0].Contains("1.7")) println("[" + javaVer + "]");
   }
 
   private List<FileInfo> sources;
