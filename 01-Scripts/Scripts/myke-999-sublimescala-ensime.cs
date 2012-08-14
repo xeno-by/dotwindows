@@ -30,7 +30,7 @@ public class SublimeScalaEnsime : Sbt {
   [Action, MenuItem(description = "Deploy to Sublime", priority = 999.2)]
   public virtual ExitCode deployToSublime() {
     var result = sbt("stage");
-    return result && transplantDir("dist_2.10.0-SNAPSHOT", @"%APPDATA%\Sublime Text 2\Packages\sublime-ensime\server");
+    return result && transplantDir("dist_2.10.0-SNAPSHOT", @"%APPDATA%\Sublime Text 2\Packages\Ensime\server");
   }
 
   [Action, MenuItem(description = "Deploy to Downloads", priority = 999.1)]
@@ -38,7 +38,7 @@ public class SublimeScalaEnsime : Sbt {
     var result = deployToSublime();
 
     var version = "ensime_2.10.0-SNAPSHOT-0.9.6.5";
-    var src = @"%APPDATA%\Sublime Text 2\Packages\sublime-ensime\server".Expand();
+    var src = @"%APPDATA%\Sublime Text 2\Packages\Ensime\server".Expand();
     var dest = (@"%TMP%\" + version).Expand();
     result = result && transplantDir(src, dest);
 
