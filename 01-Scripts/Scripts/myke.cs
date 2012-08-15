@@ -1817,7 +1817,7 @@ public class Universal : Conn {
     return 0;
   }
 
-  [Action, DontTrace]
+  [Action]
   public virtual ExitCode open() {
     return Console.ui(file != null ? file.FullName : dir.FullName);
   }

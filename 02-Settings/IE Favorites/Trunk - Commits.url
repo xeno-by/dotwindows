@@ -3,7 +3,8 @@ BASEURL=https://github.com/scala/scala/commits/master
 [{000214A0-0000-0000-C000-000000000046}]
 Prop3=19,11
 [InternetShortcut]
-URL=https://github.com/scala/scala/commits/master
+URL=https://github.com/scala/scala/commits/2.10.x
 IDList=
 IconFile=https://github.com/favicon.ico
 IconIndex=1
+HotKey=0

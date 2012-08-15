@@ -30,6 +30,7 @@ public class Kep : Git {
   public virtual String profileAltLibrary { get { return "quick.lib"; } }
   public virtual String profileAltReflect { get { return "quick.reflect"; } }
   public virtual String profileAltCompiler { get { return "quick.comp"; } }
+  public virtual String profileAltScalap { get { return "quick.scalap"; } }
 
   public virtual String antExecutable() { return "ant" + " -Dscalac.args=\"\"\"" + String.Join(" ", arguments.ToArray()) + "\"\"\""; }
   public virtual ExitCode runAnt(String commandLine) {
@@ -299,6 +300,25 @@ public class Kep : Git {
   [Action]
   public virtual ExitCode rebuildAltCompilerAndReflectWithYourkit() {
     return rebuildAltCompilerAndReflectWithYourkit();
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltScalap() {
+    return rebuildAltScalapInternal(false);
+  }
+
+  [Action]
+  public virtual ExitCode rebuildAltScalapWithYourkit() {
+    return rebuildAltScalapInternal(true);
+  }
+
+  private ExitCode rebuildAltScalapInternal(bool yourkit) {
+    var scalapclasses = new DirectoryInfo(project + "\\build\\quick\\classes\\scalap");
+    if (scalapclasses.Exists) ZlpIOHelper.DeleteDirectory(scalapclasses.FullName, true);
+    var scalapToken = new FileInfo(project + "\\build\\quick\\scalap.complete");
+    if (scalapToken.Exists) scalapToken.Delete();
+    var flags = yourkit ? "/yourkit " : "";
+    return runAnt(flags + profileAltScalap);
   }
 
   [Action]
