@@ -37,7 +37,12 @@ public class SublimeScalaEnsime : Sbt {
   public virtual ExitCode deployToDownload() {
     var result = deployToSublime();
 
-    var version = "ensime_2.10.0-SNAPSHOT-0.9.6.5";
+    var build = File.ReadAllLines(project + "\\project\\Build.scala");
+    var line_version = build.Select(line => line.Trim()).Where(line => line.StartsWith("version := ")).Single();
+    var s_version = line_version.Substring(line_version.IndexOf(":=") + 2).Trim();
+    s_version = s_version.Substring(1, s_version.Length - 3);
+    var version = "ensime_2.10-" + s_version;
+
     var src = @"%APPDATA%\Sublime Text 2\Packages\Ensime\server".Expand();
     var dest = (@"%TMP%\" + version).Expand();
     result = result && transplantDir(src, dest);

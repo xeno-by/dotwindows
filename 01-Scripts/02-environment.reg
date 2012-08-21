@@ -30,8 +30,8 @@ Windows Registry Editor Version 5.00
   00,65,00,6e,00,6f,00,2e,00,62,00,79,00,5c,00,41,00,70,00,70,00,44,00,61,00,\
   74,00,61,00,5c,00,52,00,6f,00,61,00,6d,00,69,00,6e,00,67,00,5c,00,53,00,55,\
   00,42,00,4c,00,49,00,4d,00,7e,00,31,00,5c,00,50,00,61,00,63,00,6b,00,61,00,\
-  67,00,65,00,73,00,5c,00,53,00,55,00,42,00,4c,00,49,00,4d,00,7e,00,33,00,5c,\
-  00,73,00,65,00,72,00,76,00,65,00,72,00,00,00
+  67,00,65,00,73,00,5c,00,45,00,6e,00,73,00,69,00,6d,00,65,00,5c,00,73,00,65,\
+  00,72,00,76,00,65,00,72,00,00,00
 "FAR_HOME"="C:\\Program Files (x86)\\Far Manager"
 "FLAC_HOME"="C:\\Program Files (x86)\\flac"
 "FP_NO_HOST_CHECK"="NO"
@@ -268,6 +268,7 @@ Windows Registry Editor Version 5.00
 "QTJAVA"="C:\\Program Files (x86)\\QuickTime\\QTSystem\\QTJava.zip"
 "REFLECTOR_HOME"="C:\\Program Files (x86)\\Reflector\\"
 "SBT_HOME"="C:\\Program Files (x86)\\sbt\\"
+"SCALA_HOME"="C:\\Projects\\Kepler\\build\\pack"
 "SCRIPTS_HOME"="C:\\Program Files (x86)\\scripts"
 "SHELL"="c:\\cygwin\\bin\\bash.exe"
 "SOFTWARE"="d:\\Dropbox\\Software\\Windows"
@@ -277,12 +278,12 @@ Windows Registry Editor Version 5.00
 "TMP"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,\
   25,00,5c,00,54,00,45,00,4d,00,50,00,00,00
 "USERNAME"="SYSTEM"
-"VBOX_INSTALL_PATH"="C:\\Program Files\\Oracle\\VirtualBox\\"
 "VS100COMNTOOLS"="C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools\\"
 "windir"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,\
   00,25,00,00,00
 "windows_tracing_flags"="3"
 "XENODRIVE"="d:"
 "XPS2IMG_HOME"="C:\\Program Files (x86)\\xps2img"
+"VBOX_INSTALL_PATH"="C:\\Program Files\\Oracle\\VirtualBox\\"
 
 

@@ -2208,7 +2208,24 @@ public abstract class Git : Prj {
     if (!verifyRepo()) return -1;
     var branch = Config.sanitizedRawTarget;
     if (branch == "") branch = getCurrentBranch();
-    return Console.batch("git push origin +" + branch, home: repo.GetRealPath());
+    var result = Console.batch("git push origin " + branch, home: repo.GetRealPath());
+    if (!result) {
+      // todo. detect the real reason of the failure
+      // and show the offending commits (local and remote ones)
+      println();
+      println("Push has failed (presumably because of a non-fast-forward update).");
+      print("Do you want to force it? ");
+      var answer = System.Console.ReadLine();
+      if (answer == null) return result;
+      answer = answer.ToLower();
+      if (answer == "y" || answer == "yes" || answer == "yep") {
+        println();
+        return Console.batch("git push origin +" + branch, home: repo.GetRealPath());
+      } else {
+        return result;
+      }
+    }
+    return result;
   }
 
   [Action, DontTrace, MenuItem(description = "Pull from origin", priority = 9999)]
