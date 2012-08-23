@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Connector(name = "nemerle", priority = 200, description =
+[Connector(name = "nemerle", priority = 201, description =
   "Builds a nemerle program using the command-line provided in the first line of the target file.\r\n" +
   "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using msbuild.")]
 
@@ -43,12 +43,12 @@ public class Nemerle : Git {
     macrocmd += "-out macros.dll";
     var result = println("Compiling macros...") && Console.batch(macrocmd, home: dir) && println("Produced macros.dll") && println();
 
-    var appfiles = dir.GetFiles("*.n").Where(f => !macrofiles.Contains(f)).ToList();
+    var appfiles = dir.GetFiles("*.n").Where(f => !macrofiles.Select(f1 => f1.Name).Contains(f.Name)).ToList();
     var appcmd = "ncc -no-color -nowarn:10003 -nowarn:10005 -nowarn:168 ";
     appcmd += "-debug+ ";
     appcmd += "-r System.Core.dll -r Nemerle.Linq.dll ";
-    appcmd += "-m macros.dll";
-    appcmd += String.Join(" ", appfiles.Select(f => f.Name));
+    appcmd += "-m macros.dll ";
+    appcmd += (String.Join(" ", appfiles.Select(f => f.Name)) + " ");
     appcmd += "-out app.exe";
     return result && println("Compiling app...") && Console.batch(appcmd, home: dir) && println("Produced app.exe");
   }
