@@ -15,10 +15,10 @@ public class Sbt : Git {
   public virtual String sbtproject { get { return null; } }
   public virtual String prelude { get { return null; } }
 
-  public Sbt() : base() { init(); }
-  public Sbt(FileInfo file) : base(file) { init(); }
-  public Sbt(DirectoryInfo dir) : base(dir) { init(); }
-  private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
+  public Sbt() : base() {}
+  public Sbt(FileInfo file) : base(file) {}
+  public Sbt(DirectoryInfo dir) : base(dir) {}
+  public override void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   public override String project { get { return sbtroot == null ? null : sbtroot.FullName; } }
   public DirectoryInfo sbtroot { get {

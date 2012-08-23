@@ -13,8 +13,8 @@ using System.Text.RegularExpressions;
 public class Csc : Git {
   private Lines lines;
 
-  public Csc(FileInfo file, Lines lines) : base(file) { this.lines = lines; init(); }
-  private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]cs)\\(([0-9]+),[0-9]+\\)"; }
+  public Csc(FileInfo file, Lines lines) : base(file) { this.lines = lines; }
+  public override void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]cs)\\(([0-9]+),[0-9]+\\)"; }
 
   public virtual bool isconsole { get {
     return !lines.Any(line => line.Contains("[STAThread]"));

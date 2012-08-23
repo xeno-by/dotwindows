@@ -13,10 +13,10 @@ using Microsoft.Win32;
 public class LibGit2SharpProject : Git {
   public override String project { get { return @"%PROJECTS%\LibGit2Sharp".Expand(); } }
 
-  public LibGit2SharpProject() : base() { init(); }
-  public LibGit2SharpProject(FileInfo file) : base(file) { init(); }
-  public LibGit2SharpProject(DirectoryInfo dir) : base(dir) { init(); }
-  private void init() {
+  public LibGit2SharpProject() : base() {}
+  public LibGit2SharpProject(FileInfo file) : base(file) {}
+  public LibGit2SharpProject(DirectoryInfo dir) : base(dir) {}
+  public override void init() {
     env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]cs)\\(([0-9]+),[0-9]+\\)";
     env["ResultBaseDir"] = project + "\\" + "LibGit2Sharp";
   }

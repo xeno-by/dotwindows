@@ -14,8 +14,8 @@ using Microsoft.Win32.SafeHandles;
   "Handles ruby programs.")]
 
 public class Ruby : Git {
-  public Ruby(FileInfo file) : base(file) { init(); }
-  private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]rb):([0-9]+)"; }
+  public Ruby(FileInfo file) : base(file) {}
+  public override void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]rb):([0-9]+)"; }
 
   public override bool accept() {
     return file.Extension == ".rb";

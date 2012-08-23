@@ -115,6 +115,7 @@ public class App {
           ExitCode exitCode = -1;
           try {
             Config.conn_action = conn.GetType().actions()[action];
+            conn.init();
             exitCode = (ExitCode)actions[action]();
             return exitCode;
           } finally {
@@ -1761,6 +1762,7 @@ public abstract class Conn : Base {
   }
 
   public abstract bool accept();
+  public virtual void init() {} // executed right before an action is called reflectively
 
   public virtual DirectoryInfo root { get {
     return dir;

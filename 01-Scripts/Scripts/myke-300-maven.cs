@@ -11,10 +11,10 @@ using System.Text.RegularExpressions;
   "Supports projects that can be built under maven")]
 
 public class Maven : Git {
-  public Maven() : base() { init(); }
-  public Maven(FileInfo file) : base(file) { init(); }
-  public Maven(DirectoryInfo dir) : base(dir) { init(); }
-  private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
+  public Maven() : base() {}
+  public Maven(FileInfo file) : base(file) {}
+  public Maven(DirectoryInfo dir) : base(dir) {}
+  public override void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   public override String project { get { return mvnroot == null ? null : mvnroot.FullName; } }
   public DirectoryInfo mvnroot { get {

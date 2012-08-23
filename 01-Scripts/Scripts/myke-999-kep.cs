@@ -51,10 +51,10 @@ public class Kep : Git {
 //  }
 
   protected Arguments arguments;
-  public Kep() : base() { init(); }
-  public Kep(FileInfo file, Arguments arguments) : base(file) { init(); this.arguments = arguments; }
-  public Kep(DirectoryInfo dir, Arguments arguments) : base(dir) { init(); this.arguments = arguments; }
-  private void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
+  public Kep() : base() {}
+  public Kep(FileInfo file, Arguments arguments) : base(file) { this.arguments = arguments; }
+  public Kep(DirectoryInfo dir, Arguments arguments) : base(dir) { this.arguments = arguments; }
+  public override void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   public override String getTargetOfPullRequest(String branch) {
     return "scala:2.10.x";
