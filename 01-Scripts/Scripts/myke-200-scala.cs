@@ -27,16 +27,12 @@ public class Scala : Git {
   public String defaultScalaopts { get { return staticScalaopts; } }
 
   private Arguments arguments;
-  public Scala(FileInfo file, Arguments arguments) : base(file) { this.arguments = arguments; }
-  public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { this.arguments = arguments; }
+  public Scala(FileInfo file, Arguments arguments) : base(file) { this.arguments = arguments; calculateSources(); }
+  public Scala(DirectoryInfo dir, Arguments arguments) : base(dir) { this.arguments = arguments; calculateSources(); }
 
   private List<FileInfo> sources;
   private List<String> flags;
-  public override void init() {
-    // warn if java 7 is to be used
-    var javaVer = Console.eval("java -version");
-    if (javaVer != null && javaVer[0].Contains("1.7")) println("[" + javaVer + "]");
-
+  private void calculateSources() {
     var head = ((FileSystemInfo)file ?? dir).FullName;
     if (head == Path.GetFullPath(".")) head = ".";
     else {
@@ -61,6 +57,12 @@ public class Scala : Git {
     }).ToList();
     sources = combo.OfType<FileInfo>().Where(fi => fi.Extension == ".scala" || fi.Extension == ".java").ToList();
     flags = combo.OfType<String>().ToList();
+  }
+
+  public override void init() {
+    // warn if java 7 is to be used
+    var javaVer = Console.eval("java -version");
+    if (javaVer != null && javaVer[0].Contains("1.7")) println("[" + javaVer + "]");
 
     env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)";
   }
