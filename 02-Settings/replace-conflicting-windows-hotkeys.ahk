@@ -22,17 +22,21 @@ WinGetTitle sTitle
 If (InStr(sTitle, "-")=0) {
   Send EXIT{Enter}
 } else {
-  Send ^w
+  Send ^d
 }
-
 return
 
 ; Use backslash instead of backtick (yes, I am a C++ programmer).
 #EscapeChar \
 
 ; Paste in command window.
-^V::
-SendInput {Raw}%clipboard%
+^v::
+WinGetTitle sTitle
+If (InStr(sTitle, "-")=0) {
+  SendInput {Raw}%clipboard%
+} else {
+  Send ^v
+}
 return
 
 #IfWinActive
