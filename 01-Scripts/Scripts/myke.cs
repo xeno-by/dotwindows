@@ -1632,14 +1632,14 @@ public abstract class Base {
 
   protected virtual String transplantTo { get { return null; } }
 
-  protected ExitCode transplantFile(String from, String to) {
+  protected ExitCode transplantFile(String from, String to, Boolean overwrite = true) {
     from = (from.Expand().Contains(":") ? from : ((transplantFrom == null ? null : (transplantFrom + "\\")) + from)).Expand().Replace("/", "\\");
     to = (to.Expand().Contains(":") ? to : ((transplantTo == null ? null : (transplantTo + "\\")) + to)).Expand().Replace("/", "\\");
     print("Copying {0} to {1}... ", from, to);
 
     try {
       ExitCode status = -1;
-      if (File.Exists(from)) status = CopyFile(from, to);
+      if (File.Exists(from)) status = CopyFile(from, to, overwrite);
       if (status) println("[  OK  ]");
       return status;
     } catch (Exception ex) {
@@ -1649,11 +1649,11 @@ public abstract class Base {
     }
   }
 
-  public ExitCode CopyFile(string sourceFile, string destFile) {
+  public ExitCode CopyFile(string sourceFile, string destFile, Boolean overwrite = true) {
     try {
       var parentDir = new DirectoryInfo(Path.GetDirectoryName(destFile));
       if (!parentDir.Exists) parentDir.Create();
-      File.Copy(sourceFile, destFile, true);
+      File.Copy(sourceFile, destFile, overwrite);
       return 0;
     } catch (Exception ex) {
       println("[FAILED]");
@@ -1662,14 +1662,14 @@ public abstract class Base {
     }
   }
 
-  public ExitCode transplantDir(String from, String to) {
+  public ExitCode transplantDir(String from, String to, Boolean overwrite = true) {
     from = (from.Expand().Contains(":") ? from : ((transplantFrom == null ? null : (transplantFrom + "\\")) + from)).Expand().Replace("/", "\\");
     to = (to.Expand().Contains(":") ? to : ((transplantTo == null ? null : (transplantTo + "\\")) + to)).Expand().Replace("/", "\\");
     print("Copying {0} to {1}... ", from, to);
 
     try {
       ExitCode status = -1;
-      status = CopyDirectory(from, to);
+      status = CopyDirectory(from, to, overwrite);
       if (status) println("[  OK  ]");
       return status;
     } catch (Exception ex) {
@@ -1679,7 +1679,7 @@ public abstract class Base {
     }
   }
 
-  public ExitCode CopyDirectory(string sourceFolder, string destFolder) {
+  public ExitCode CopyDirectory(string sourceFolder, string destFolder, Boolean overwrite = true) {
     try {
       int iof = -1;
       while ((iof = sourceFolder.IndexOf(".jar")) != -1) {
@@ -1691,7 +1691,7 @@ public abstract class Base {
         sourceFolder = temp + "\\" + insideArchive;
       }
 
-      if (ZlpIOHelper.DirectoryExists(destFolder)) ZlpIOHelper.DeleteDirectory(destFolder, true);
+      if (ZlpIOHelper.DirectoryExists(destFolder) && overwrite) ZlpIOHelper.DeleteDirectory(destFolder, true);
       if (!ZlpIOHelper.DirectoryExists(destFolder)) ZlpIOHelper.CreateDirectory(destFolder);
 
       var files = new ZlpDirectoryInfo(sourceFolder).GetFiles();

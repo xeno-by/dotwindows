@@ -18,7 +18,7 @@ public class Nemerle : Git {
   public override void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]n):([0-9]+):([0-9]+)"; }
 
   public override bool accept() {
-    return dir.GetFiles("*.n").Count() > 0;
+    return (file == null && dir.GetFiles("*.n").Count() > 0) || file.Extension == ".n";
   }
 
   [Action]
