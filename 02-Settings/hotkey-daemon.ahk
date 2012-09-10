@@ -8,6 +8,10 @@ return
 Run, "C:\Program Files (x86)\Launchy\Launchy.exe" /show
 return
 
+Launch_App2::
+Run, "C:\Program Files (x86)\scripts\flags.exe"
+return
+
 #t::
 Winset, Alwaysontop, , A
 return
@@ -40,3 +44,28 @@ If (InStr(sTitle, "-")=0) {
 return
 
 #IfWinActive
+
+;#IfWinActive ahk_class SUMATRA_PDF_FRAME
+;f5::
+;FormatTime, TimeString,, HH:mm:ss
+;FileAppend, F5: %TimeString%\n, D:\\Sumatra.log
+;Send {F5}
+;return
+;
+;PgUp::
+;FormatTime, TimeString,, HH:mm:ss
+;WinGetText, Text
+;StringSplit, Lines, Text, \n
+;FileAppend, PgUp: %TimeString% at%Lines3%\n, D:\\Sumatra.log
+;Send {PgUp}
+;return
+;
+;PgDn::
+;FormatTime, TimeString,, HH:mm:ss
+;WinGetText, Text
+;StringSplit, Lines, Text, \n
+;FileAppend, PgDn: %TimeString% at%Lines3%\n, D:\\Sumatra.log
+;Send {PgDn}
+;return
+;
+;#IfWinActive
