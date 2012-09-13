@@ -518,7 +518,7 @@ public static class Console {
     }
   }
 
-  private static List<String> internalEval(String command, DirectoryInfo home = null) {
+  private static EvalResult internalEval(String command, DirectoryInfo home = null) {
     var script = Path.GetTempFileName() + ".bat";
     File.AppendAllText(script, "@echo off" + "\r\n"); // always @echo off, so that eval works correctly
     File.AppendAllText(script, "cd /D \"" + (home ?? new DirectoryInfo(".")).FullName + "\"" + "\r\n");
@@ -558,7 +558,7 @@ public static class Console {
         p.BeginOutputReadLine();
         p.BeginErrorReadLine();
         p.WaitForExit();
-        return p.ExitCode == 0 ? buf.ToString().Split(new []{"\r\n"}, StringSplitOptions.None).ToList() : null;
+        return new EvalResult(p.ExitCode, buf.ToString().Split(new []{"\r\n"}, StringSplitOptions.None).ToList());
       } else {
         return null;
       }
@@ -709,15 +709,49 @@ public static class Console {
     }
   }
 
-  public static List<String> eval(String command) {
+  public class EvalResult {
+    public ExitCode status;
+    public List<String> lines;
+
+    public EvalResult(ExitCode status, List<String> lines) {
+      this.status = status;
+      this.lines = lines;
+    }
+
+    public static EvalResult operator !(EvalResult c) {
+      return new EvalResult(!c.status, c.lines);
+    }
+
+    public static EvalResult operator &(EvalResult c1, EvalResult c2) {
+      return c1 ? c2 : c1;
+    }
+
+    public static EvalResult operator |(EvalResult c1, EvalResult c2) {
+      return c1 ? c1 : c2;
+    }
+
+    public static bool operator true(EvalResult c) {
+      return (bool)c.status;
+    }
+
+    public static bool operator false(EvalResult c) {
+      return (bool)c.status;
+    }
+
+    public static implicit operator bool(EvalResult c) {
+      return (bool)c.status;
+    }
+  }
+
+  public static EvalResult eval(String command) {
     return eval(command, null as DirectoryInfo);
   }
 
-  public static List<String> eval(String command, String home = null) {
+  public static EvalResult eval(String command, String home = null) {
     return eval(command, home == null ? null as DirectoryInfo : new DirectoryInfo(home));
   }
 
-  public static List<String> eval(String command, DirectoryInfo home = null) {
+  public static EvalResult eval(String command, DirectoryInfo home = null) {
     if (home == null) {
       home = new DirectoryInfo(".");
       if (Directory.Exists(Config.target)) home = new DirectoryInfo(Config.target);
@@ -2015,6 +2049,7 @@ public abstract class Prj : Universal {
     wildcards.ForEach(wildcard => {
       wildcard = wildcard.Replace("/", "\\");
 
+      println(wildcard);
       var relativeTo = Path.GetDirectoryName(wildcard);
       if (!wildcard.Contains("\\")) {
         relativeTo = Path.GetFullPath(new DirectoryInfo(".").FullName);
@@ -2246,20 +2281,6 @@ public abstract class Git : Prj {
     return Console.batch("git pull upstream " + branch, home: repo.GetRealPath());
   }
 
-  [Action, DontTrace, MenuItem(description = "Create test suite from kitteh failure", priority = 9997)]
-  public virtual ExitCode createTestSuiteFromKittehFailure() {
-    return -1;
-  }
-
-  [Action, DontTrace, MenuItem(description = "Create test suite from manual failure", priority = 9996)]
-  public virtual ExitCode createTestSuiteFromManualFailure() {
-    return -1;
-  }
-
-  public virtual ExitCode createTestSuiteFromJenkinsLog(String url) {
-    return -1;
-  }
-
   [Action, DontTrace, MenuItem(hotkey = "z", description = "Submit pull request", priority = 190)]
   public virtual ExitCode smartPullRequest() {
     if (!verifyRepo()) return -1;
@@ -2460,8 +2481,8 @@ public abstract class Git : Prj {
   }
 
   public virtual String getGithubUrl(String remote) {
-    var lines = Console.eval("git remote -v", home: repo.GetRealPath());
-    var line = lines.Where(line2 => line2.StartsWith(remote)).FirstOrDefault();
+    var remotes = Console.eval("git remote -v", home: repo.GetRealPath());
+    var line = remotes.lines.Where(line2 => line2.StartsWith(remote)).FirstOrDefault();
     if (line == null) return null;
     line = line.Substring(remote.Length).Trim();
     line = line.Substring(0, line.LastIndexOf("(") - 1).Trim();
@@ -2604,9 +2625,9 @@ public abstract class Git : Prj {
   }
 
   public virtual String getCurrentStatus() {
-    var lines = Console.eval("git status", home: repo.GetRealPath());
-    if (lines == null) return null;
-    return String.Join("\r\n", lines.ToArray());
+    var status = Console.eval("git status", home: repo.GetRealPath());
+    if (!status.status) return null;
+    return String.Join("\r\n", status.lines.ToArray());
   }
 
   [Action, DontTrace, Meaningful]

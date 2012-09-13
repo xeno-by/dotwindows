@@ -619,9 +619,20 @@ public class Kep : Git {
     }
   }
 
-  public virtual String getJenkinsUrl(String remote) {
-    var lines = Console.eval("git remote -v", home: repo.GetRealPath());
-    var line = lines.Where(line2 => line2.StartsWith(remote)).FirstOrDefault();
+  public class GithubRepo {
+    public String user;
+    public String repo;
+
+    public GithubRepo(String user, String repo) {
+      this.user = user;
+      this.repo = repo;
+    }
+  }
+
+  public virtual GithubRepo getGithubRepo(String remote) {
+    var remotes = Console.eval("git remote -v", home: repo.GetRealPath());
+    if (!remotes) return null;
+    var line = remotes.lines.Where(line2 => line2.StartsWith(remote)).FirstOrDefault();
     if (line == null) return null;
     line = line.Substring(remote.Length).Trim();
     line = line.Substring(0, line.LastIndexOf("(") - 1).Trim();
@@ -630,16 +641,23 @@ public class Kep : Git {
     var re1 = "^git://github.com/(?<user>.*?)/(?<repo>.*).git$";
     var m1 = Regex.Match(url1, re1);
     if (m1.Success) {
-      return m1.Result("https://scala-webapps.epfl.ch/jenkins/job/scala-checkin-manual/buildWithParameters?githubUsername=${user}&repository=${repo}");
+      return new GithubRepo(m1.Result("${user}"), m1.Result("${repo}"));
     } else {
       var re2 = "^git@github.com:(?<user>.*?)/(?<repo>.*).git$";
       var m2 = Regex.Match(url1, re2);
       if (m2.Success) {
-        return m2.Result("https://scala-webapps.epfl.ch/jenkins/job/scala-checkin-manual/buildWithParameters?githubUsername=${user}&repository=${repo}");
+        return new GithubRepo(m2.Result("${user}"), m2.Result("${repo}"));
       } else {
         return null;
       }
     }
+  }
+
+  public virtual String getJenkinsUrl(String remote) {
+    var repo = getGithubRepo(remote);
+    if (repo == null) return null;
+    var template = "https://scala-webapps.epfl.ch/jenkins/job/scala-checkin-manual/buildWithParameters?githubUsername={0}&repository={1}";
+    return String.Format(template, repo.user, repo.repo);
   }
 
   public virtual String getBranchJenkinsUrl(String branch) {
@@ -655,6 +673,46 @@ public class Kep : Git {
     var url = getJenkinsUrl(remote);
     if (url == null) return null;
     else return url + "&branch=" + branch;
+  }
+
+  public virtual String getGithubBranchLabel(String branch) {
+    String remote = null;
+    if (branch.StartsWith("remotes/")) {
+      branch = branch.Substring("remotes/".Length);
+      remote = branch.Substring(0, branch.IndexOf("/") - 1);
+      branch = branch.Substring(branch.IndexOf("/") + 1);
+    } else {
+      remote = "origin";
+    }
+
+    var repo = getGithubRepo(remote);
+    if (repo == null) return null;
+    else return String.Format("{0}:{1}", repo.user, branch);
+  }
+
+  [Action, DontTrace, MenuItem(description = "Create test suite from kitteh failure", priority = 9997)]
+  public virtual ExitCode createTestSuiteFromKittehFailureStep1() {
+    var label = getGithubBranchLabel(getCurrentBranch());
+    if (label == null) return -1;
+    var status = Console.eval("pull-request-status.py " + label);
+    var dumpFile = Path.GetTempPath() + "pull-request-status";
+    File.WriteAllLines(dumpFile, status.lines.ToArray());
+    println(status.status);
+    return 0;
+  }
+
+  [Action]
+  public virtual ExitCode createTestSuiteFromKittehFailureStep2(Arguments arguments) {
+    var dumpFile = Path.GetTempPath() + "pull-request-status";
+    if (!File.Exists(dumpFile)) return -1;
+    var lines = File.ReadAllLines(dumpFile);
+
+    var status = makeTestSuite(arguments);
+    if (!status) return status;
+
+    var profile = arguments.Last();
+    addTestSuiteTests(profile, lines.Select(line => line.Trim()).Where(line => line != "").ToList(), removeNonMatching: true);
+    return 0;
   }
 
   public String mostUptodateLibs() {

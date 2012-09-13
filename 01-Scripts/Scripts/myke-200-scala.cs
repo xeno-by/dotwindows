@@ -62,7 +62,7 @@ public class Scala : Git {
   public override void init() {
     // warn if java 7 is to be used
     var javaVer = Console.eval("java -version");
-    if (javaVer != null && javaVer[0].Contains("1.7")) println("[" + javaVer + "]");
+    if (javaVer && javaVer.lines[0].Contains("1.7")) println("[" + String.Join("\r\n", javaVer.lines.ToArray()) + "]");
 
     env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)";
   }

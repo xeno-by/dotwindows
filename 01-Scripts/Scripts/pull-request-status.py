@@ -5,12 +5,12 @@ if len(sys.argv) != 2:
   print "usage: " + sys.argv[0] + " <label>"
   print "where label is something like \"scalamacros:ticket/6323\""
   print "(note that the label shouldn't include the name of the repository!"
-  sys.exit(-1)
+  sys.exit(1)
 label = sys.argv[1]
 
 pulls = json.loads(Resource("https://api.github.com/repos/scala/scala/pulls").get().body_string())
 relevant_pulls = [pull for pull in pulls if pull["head"]["label"] == label]
-if len(relevant_pulls) != 1: sys.exit(1)
+if len(relevant_pulls) != 1: sys.exit(100)
 pull = relevant_pulls[0]
 
 comments = json.loads(Resource("https://api.github.com/repos/scala/scala/issues/" + str(pull["number"]) + "/comments").get().body_string())
@@ -31,10 +31,10 @@ for comment in reversed(relevant_comments):
         if relevant_lines:
           for line in relevant_lines:
             print line[len(prefix):-len(suffix)]
-          sys.exit(2)
+          sys.exit(103)
     elif status == "Success":
-      sys.exit(0)
+      sys.exit(102)
     else:
       raise Exception("unknown build status in " + comment["body"])
 
-sys.exit(0)
+sys.exit(101)
