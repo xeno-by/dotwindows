@@ -2246,6 +2246,20 @@ public abstract class Git : Prj {
     return Console.batch("git pull upstream " + branch, home: repo.GetRealPath());
   }
 
+  [Action, DontTrace, MenuItem(description = "Create test suite from kitteh failure", priority = 9997)]
+  public virtual ExitCode createTestSuiteFromKittehFailure() {
+    return -1;
+  }
+
+  [Action, DontTrace, MenuItem(description = "Create test suite from manual failure", priority = 9996)]
+  public virtual ExitCode createTestSuiteFromManualFailure() {
+    return -1;
+  }
+
+  public virtual ExitCode createTestSuiteFromJenkinsLog(String url) {
+    return -1;
+  }
+
   [Action, DontTrace, MenuItem(hotkey = "z", description = "Submit pull request", priority = 190)]
   public virtual ExitCode smartPullRequest() {
     if (!verifyRepo()) return -1;
@@ -2269,7 +2283,8 @@ public abstract class Git : Prj {
     if (branch == "") branch = getCurrentBranch();
     var url = getBranchUrl(branch);
     if (url == null) return -1;
-    return Console.batch("git push origin +" + getCurrentBranch(), home: repo.GetRealPath()) && Console.ui(url);
+    // return Console.batch("git push origin +" + getCurrentBranch(), home: repo.GetRealPath()) && Console.ui(url);
+    return Console.ui(url);
   }
 
   [Action, DontTrace, MenuItem(hotkey = "q", description = "Show commit at GitHub", priority = 110)]
@@ -2279,7 +2294,8 @@ public abstract class Git : Prj {
     if (commit == "") commit = getCurrentHead();
     var url = getCommitUrl(commit);
     if (url == null) return -1;
-    return Console.batch("git push origin +" + getCurrentBranch(), home: repo.GetRealPath()) && Console.ui(url);
+    // return Console.batch("git push origin +" + getCurrentBranch(), home: repo.GetRealPath()) && Console.ui(url);
+    return Console.ui(url);
   }
 
   [Action, DontTrace, MenuItem(hotkey = "x", description = "Show file at GitHub (current revision)", priority = 90)]
@@ -2288,7 +2304,8 @@ public abstract class Git : Prj {
     var file = Config.rawTarget;
     var url = getFileUrlRevisionAware(file);
     if (url == null) return -1;
-    return Console.batch("git push origin +" + getCurrentBranch(), home: repo.GetRealPath()) && Console.ui(url);
+    // return Console.batch("git push origin +" + getCurrentBranch(), home: repo.GetRealPath()) && Console.ui(url);
+    return Console.ui(url);
   }
 
   [Action, DontTrace, MenuItem(hotkey = "c", description = "Show file at GitHub (revision-agnostic)", priority = 80)]
@@ -2297,7 +2314,8 @@ public abstract class Git : Prj {
     var file = Config.rawTarget;
     var url = getFileUrlRevisionAgnostic(file);
     if (url == null) return -1;
-    return smartPush() && Console.ui(url);
+    // return smartPush() && Console.ui(url);
+    return Console.ui(url);
   }
 
   [Action, DontTrace]

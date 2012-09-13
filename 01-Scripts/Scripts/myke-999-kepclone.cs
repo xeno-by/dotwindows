@@ -20,7 +20,7 @@ public class KepClone : Kep {
 
   public override bool accept() { return dir.FullName.GetRealPath().ToUpper().StartsWith(@"%PROJECTS%\Kepler".Expand().GetRealPath().ToUpper()); }
   public override String project { get {
-    var root = dir;
+    var root = new DirectoryInfo(dir.FullName.GetRealPath());
     while (root.Parent != null) {
       if (root.Parent.FullName == @"%PROJECTS%".Expand()) return root.FullName;
       root = root.Parent;
