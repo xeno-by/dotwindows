@@ -11,14 +11,12 @@ using System.Text.RegularExpressions;
   "This no-hassle approach can do the trick for simple programs, but for more complex scenarios consider using msbuild.")]
 
 public class Nemerle : Git {
-  private Lines lines;
-
   public Nemerle(DirectoryInfo dir) : base(dir) {}
   public Nemerle(FileInfo file) : base(file) {}
   public override void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]n):([0-9]+):([0-9]+)"; }
 
   public override bool accept() {
-    return (file == null && dir.GetFiles("*.n").Count() > 0) || file.Extension == ".n";
+    return (file == null && dir.GetFiles("*.n").Count() > 0) || (file != null && file.Extension == ".n");
   }
 
   [Action]

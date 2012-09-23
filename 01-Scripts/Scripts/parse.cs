@@ -18,14 +18,19 @@ public class Parse {
       }
     }
 
-    var file = Path.GetTempFileName();
-    if (!code.Contains("class") && !code.Contains("object")) code = "object wrapper { " + code + " }";
+    code = code.Trim();
+
+    var file = Path.GetTempFileName() + ".scala";
+    if (!code.StartsWith("class") && !code.StartsWith("object") && !code.StartsWith("trait")) code = "object wrapper { " + code + " }";
     File.WriteAllText(file, code);
+    var dir = Path.GetDirectoryName(file);
+    var name = Path.GetFileName(file);
 
     var process = new Process();
     var scala = @"%SCRIPTS_HOME%\scalac.exe".Expand();
     process.StartInfo.FileName = scala;
-    process.StartInfo.Arguments = "-language:experimental.macros -Xprint:parser -Yshow-trees -Ystop-after:parser \"" + file + "\"";
+    process.StartInfo.WorkingDirectory = dir;
+    process.StartInfo.Arguments = "-language:experimental.macros -Xprint:parser -Yshow-trees -Yshow-trees-compact -Yshow-trees-stringified -Ystop-after:parser " + name;
     process.StartInfo.UseShellExecute = false;
     process.Start();
     process.WaitForExit();

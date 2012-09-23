@@ -503,7 +503,7 @@ public class Kep : Git {
     } else if (profile == "reify") {
       filter = (fullName, shortName, text0) => {
         var text = text0();
-        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("Manifest") || text.Contains("ClassTag") || text.Contains("AbsTypeTag") || text.Contains("TypeTag");
+        var pos = fullName.Contains("reify") || text.Contains("reify") || text.Contains("Manifest") || text.Contains("ClassTag") || text.Contains("WeakTypeTag") || text.Contains("TypeTag");
         var neg = shortName.StartsWith("test\\files\\run\\macro-def-path-dependent");
         return pos && !neg;
       };
@@ -603,15 +603,20 @@ public class Kep : Git {
     return result;
   }
 
-  [Action, MenuItem(hotkey = "s", description = "Build in Jenkins", priority = 180)]
-  public virtual ExitCode smartJenkins() {
+  [Action, MenuItem(hotkey = "s", description = "Build in Jenkins (retain results)", priority = 180)]
+  public virtual ExitCode smartJenkinsRetain() { return smartJenkins(retain: true); }
+
+  [Action, MenuItem(hotkey = "j", description = "Build in Jenkins (don't retain results)", priority = 179)]
+  public virtual ExitCode smartJenkinsNoRetain() { return smartJenkins(retain: false); }
+
+  public virtual ExitCode smartJenkins(Boolean retain) {
     if (!verifyRepo()) return -1;
     var gitStatus = getCurrentStatus();
     if (gitStatus != null && gitStatus.Contains("nothing to commit")) {
       println("Nothing to commit");
       var branch = Config.rawTarget;
       if (branch == "") branch = getCurrentBranch();
-      var url = getBranchJenkinsUrl(branch);
+      var url = getBranchJenkinsUrl(branch) + "&storeArtifacts=" + (retain ? "on" : "off");
       if (url == null) return -1;
       return smartPush() && Console.ui(url);
     } else {

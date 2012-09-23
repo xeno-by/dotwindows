@@ -43,7 +43,7 @@ public class Scala : Git {
 
     arguments = new Arguments((arguments ?? new Arguments()).Concat(new List<String>{head}).ToList());
     var combo = arguments.SelectMany<String, Object>(argument => {
-      if (File.Exists(argument)) {
+      if (File.Exists(Environment.CurrentDirectory + "\\" + argument)) {
         var file1 = new FileInfo(argument);
         return new List<Object>{file1};
       } else if (Directory.Exists(argument)) {
@@ -71,7 +71,7 @@ public class Scala : Git {
     var action = Config.action;
     if (action == "diff-vanilla-and-alt") return true;
     if (action.EndsWith("-alt")) action = action.Substring(0, action.Length - 4);
-    return (action == "compile" && sources.Count() > 0 && compiler != null) || action == "run" || action == "repl";
+    return (action == "compile" && sources.Count() > 0 && compiler != null) || action == "run" || action == "repl" || action == "decompile";
   }
 
   public virtual String compiler { get {
@@ -169,6 +169,24 @@ public class Scala : Git {
     return invocation.Replace(" scala.tools.nsc.Main ", " scala.tools.nsc.MainGenericRunner ");
   }
 
+  public virtual String buildDecompilerInvocation(bool alt) {
+    var f_classpathConfig = new FileInfo("%SCRIPTS_HOME%/scalac.classpath".Expand());
+    var useBootClasspath = f_classpathConfig.Exists && File.ReadAllText(f_classpathConfig.FullName) == "boot";
+    var nobootTemplate = @"%JAVA_HOME%\bin\java.exe -cp ""$CLASSPATH$"" $JAVAOPTS$ scala.tools.scalap.Main $SCALAOPTS$";
+    var bootTemplate = @"%JAVA_HOME%\bin\java.exe -Xbootclasspath/a:""$CLASSPATH$"" $JAVAOPTS$ scala.tools.scalap.Main $SCALAOPTS$";
+
+    var javaOpts = "-Dscala.usejavacp=true";
+    var scalaOpts = "-cp " + dir + Config.rawCommandLine;
+
+    var command = useBootClasspath ? bootTemplate : nobootTemplate;
+    command = command.Replace("$CLASSPATH$", inferScalaClasspath(alt));
+    command = command.Replace("$JAVAOPTS$", javaOpts);
+    command = command.Replace("$SCALAOPTS$", scalaOpts);
+
+    // println(command);
+    return command.Expand();
+  }
+
   public virtual String inferScalaSourcesRoot(bool alt) {
     alt = alt || distro == "alt";
     if (alt) {
@@ -197,7 +215,8 @@ public class Scala : Git {
 
   public virtual String inferScalaClasspath(bool alt) {
     var sourcesRoot = inferScalaSourcesRoot(alt);
-    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\asm\classes;%ROOT%\build\libs\forkjoin.jar;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
+    return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;%ROOT%\build\locker\lib\scala-partest.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\asm\classes;%ROOT%\build\libs\forkjoin.jar;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
+    // return @"%ROOT%\test\files\codelib\code.jar;%ROOT%\lib\jline.jar;C:\Projects\Donor\build\pack\lib\scalap.jar;%ROOT%\lib\fjbg.jar;%ROOT%\build\locker\classes\compiler;%ROOT%\build\asm\classes;%ROOT%\build\libs\forkjoin.jar;%ROOT%\build\locker\classes\reflect;%ROOT%\build\locker\classes\library".Replace("%ROOT%", sourcesRoot);
   }
 
   [Action]
@@ -497,5 +516,20 @@ public class Scala : Git {
   public virtual ExitCode replImpl(bool alt) {
     if (alt || distro == "alt") println("[repling with scala-alt]");
     return Console.interactive(buildReplInvocation(alt), home: inferScalaHome(alt));
+  }
+
+  [Action, DontTrace]
+  public virtual ExitCode decompile() {
+    return decompileImpl(alt: false);
+  }
+
+  [Action, DontTrace]
+  public virtual ExitCode decompileAlt() {
+    return decompileImpl(alt: true);
+  }
+
+  public virtual ExitCode decompileImpl(bool alt) {
+    if (alt || distro == "alt") println("[decompiling with scala-alt]");
+    return Console.interactive(buildDecompilerInvocation(alt), home: inferScalaHome(alt));
   }
 }

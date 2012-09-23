@@ -18,7 +18,13 @@ public class KepClone : Kep {
   public KepClone(FileInfo file, Arguments arguments) : base(file, arguments) { this.arguments = arguments; }
   public KepClone(DirectoryInfo dir, Arguments arguments) : base(dir, arguments) { this.arguments = arguments; }
 
-  public override bool accept() { return dir.FullName.GetRealPath().ToUpper().StartsWith(@"%PROJECTS%\Kepler".Expand().GetRealPath().ToUpper()); }
+  public override bool accept() {
+    // var prefix = @"%PROJECTS%\Kepler".Expand().GetRealPath().ToUpper();
+    var prefix = @"%PROJECTS%\Kepler".Expand().ToUpper();
+    var real = dir.FullName.GetRealPath().ToUpper();
+    if (Config.verbose) println("prefix = " + prefix + ", real = " + real);
+    return real.StartsWith(prefix);
+  }
   public override String project { get {
     var root = new DirectoryInfo(dir.FullName.GetRealPath());
     while (root.Parent != null) {

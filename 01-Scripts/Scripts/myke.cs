@@ -57,9 +57,9 @@ public class App {
     var originalTarget = Config.target;
     var t_all = Connectors.all;
     if (Config.verbose) {
-      Console.println();
-      Console.println("connectors: ");
-      Help.printConnectors();
+      // Console.println();
+      // Console.println("connectors: ");
+      // Help.printConnectors();
     }
 
     while (Config.target != null) {
