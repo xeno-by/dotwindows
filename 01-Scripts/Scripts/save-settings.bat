@@ -12,6 +12,7 @@ copy "%SCRIPTS_HOME%\myke-backend.el" "%HOME%\.emacs.d\solutions\myke-backend.el
 copy "%SCRIPTS_HOME%\myke-frontend.el" "%HOME%\.emacs.d\solutions\myke-frontend.el" /Y
 
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\Settings\console.reg" "HKEY_CURRENT_USER\Console"
+regedit /e "%DROPBOX%\Software\Windows\Far Manager\Settings\console.reg" "HKEY_CURRENT_USER\Software\ConEmu"
 call "%~dp0\save-settings-privacy-enable.bat"
 regedit /e "%DROPBOX%\Software\Windows\Far Manager\Settings\settings-public.reg" "HKEY_CURRENT_USER\Software\Far2"
 call "%~dp0\save-settings-privacy-disable.bat"

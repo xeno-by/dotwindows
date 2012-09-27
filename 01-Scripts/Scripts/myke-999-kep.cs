@@ -616,7 +616,7 @@ public class Kep : Git {
       println("Nothing to commit");
       var branch = Config.rawTarget;
       if (branch == "") branch = getCurrentBranch();
-      var url = getBranchJenkinsUrl(branch) + "&storeArtifacts=" + (retain ? "on" : "off");
+      var url = getBranchJenkinsUrl(branch) + "&storeArtifacts=" + (retain ? "true" : "false");
       if (url == null) return -1;
       return smartPush() && Console.ui(url);
     } else {
@@ -796,5 +796,20 @@ public class Kep : Git {
     } else {
       return -1;
     }
+  }
+
+  [Action, MenuItem(hotkey = "e", description = "Scaladoc for scala.reflect", priority = 60)]
+  public virtual ExitCode scaladocForScalaReflect() {
+    var buildXml = project + "/build.xml";
+    var oldScript = File.ReadAllText(buildXml);
+    var newScript = oldScript.Replace("diagrams=\"on\"", "diagrams=\"off\"");
+    newScript = newScript.Replace("<files includes=\"${src.dir}/actors-migration\"/>", "");
+    newScript = newScript.Replace("<files includes=\"${src.dir}/actors\"/>", "");
+    newScript = newScript.Replace("<files includes=\"${src.dir}/library\"/>", "");
+    newScript = newScript.Replace("<files includes=\"${src.dir}/swing\"/>", "");
+    newScript = newScript.Replace("<files includes=\"${src.dir}/continuations/library\"/>", "");
+    File.WriteAllText(buildXml, newScript);
+    try { return runAnt("docs.lib"); }
+    finally { File.WriteAllText(buildXml, oldScript); }
   }
 }

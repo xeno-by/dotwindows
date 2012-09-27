@@ -1,0 +1,10 @@
+[DEFAULT]
+BASEURL=file:///C:/Projects/Kepler/build/scaladoc/library/index.html
+[DOC_template]
+BASEURL=file:///C:/Projects/Kepler/build/scaladoc/library/package.html
+ORIGURL=package.html
+[{000214A0-0000-0000-C000-000000000046}]
+Prop3=19,9
+[InternetShortcut]
+URL=file:///C:/Projects/Kepler/build/scaladoc/library/index.html#package
+IDList=

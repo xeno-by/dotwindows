@@ -18,3 +18,4 @@ def mirrorThatLoaded(sym: Symbol) = {
   val m = u.mirrorThatLoaded(sym.asInstanceOf[u.Symbol])
   m.asInstanceOf[scala.reflect.runtime.universe.Mirror]
 }
+//def uniques = ru.asInstanceOf[scala.reflect.internal.Types].uniques.asInstanceOf[scala.reflect.internal.util.HashSet[_]]
