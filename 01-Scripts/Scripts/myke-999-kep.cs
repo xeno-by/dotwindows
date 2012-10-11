@@ -57,7 +57,7 @@ public class Kep : Git {
   public override void init() { env["ResultFileRegex"] = "([:.a-z_A-Z0-9\\\\/-]+[.]scala):([0-9]+)"; }
 
   public override String getTargetOfPullRequest(String branch) {
-    return "scala:2.10.x";
+    return "scala:2.10.0-wip";
   }
 
   public virtual bool inPlayground { get {

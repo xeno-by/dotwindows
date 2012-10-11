@@ -1,0 +1,9 @@
+[DEFAULT]
+BASEURL=http://lampsvn.epfl.ch/trac/scala-old/wiki/Scaladoc/AuthorDocs
+[{000214A0-0000-0000-C000-000000000046}]
+Prop3=19,2
+[InternetShortcut]
+URL=http://lampsvn.epfl.ch/trac/scala-old/wiki/Scaladoc/AuthorDocs
+IDList=
+IconFile=http://lampsvn.epfl.ch/trac/scala-old/chrome/common/trac.ico
+IconIndex=1
